@@ -9,6 +9,7 @@ public class GestioneImpianto extends JFrame {
 	public GestioneImpianto(Impianto i) {
 		
 		super("Gestione Impianto Di "+i.getNomeImpianto());
+		
 		pack();
 		setVisible(true);
 	}
