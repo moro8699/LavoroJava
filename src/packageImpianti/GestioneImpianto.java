@@ -1,5 +1,8 @@
 package packageImpianti;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import javax.swing.JFrame;
 
 public class GestioneImpianto extends JFrame {
@@ -10,8 +13,12 @@ public class GestioneImpianto extends JFrame {
 		
 		super("Gestione Impianto Di "+i.getNomeImpianto());
 		
-		pack();
+		setSize(500,500);
+		
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation ((int)(dim.getWidth()-this.getWidth())/2, (int)(dim.getHeight()-this.getHeight())/2);
 		setVisible(true);
+		
 	}
 
 }
