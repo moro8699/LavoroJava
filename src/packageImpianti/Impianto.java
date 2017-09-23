@@ -10,22 +10,42 @@ public class Impianto implements Serializable {
 	private static final long serialVersionUID = -8722710677459377737L;
 	private String nomeImpianto="";
 	private ArrayList<Dipendente> impianto;
+	private boolean inizializzato;
+	private int risorseNecessarie;
 	
-	public Impianto(String nomeImpianto){
+	public Impianto(String nomeImpianto, int risorseNecessarie){
 		
-		impianto = new ArrayList<Dipendente>();
 		setNomeImpianto(nomeImpianto);
+		setRisorseNecessarie(risorseNecessarie);
+		impianto = new ArrayList<Dipendente>();
+		setInizializzato(false);
 	}
 	
+	public Impianto(String nomeImpianto) {
+		this(nomeImpianto, 0);
+	}
+	
+	//Metodi Setter & Getter
 	public String getNomeImpianto() {
 		return nomeImpianto;
-	}
-	
+	}	
 	public void setImpianto (String nomeImpianto){
 		this.nomeImpianto = nomeImpianto;
 	}
 	public void setNomeImpianto(String nomeImpianto) {
 		this.nomeImpianto = nomeImpianto;
+	}
+	public boolean isInizializzato() {
+		return inizializzato;
+	}
+	public void setInizializzato(boolean inizializzato) {
+		this.inizializzato = inizializzato;
+	}
+	public int getRisorseNecessarie() {
+		return risorseNecessarie;
+	}
+	public void setRisorseNecessarie(int risorseNecessarie) {
+		this.risorseNecessarie = risorseNecessarie;
 	}
 	
 	public boolean rimuoviDipendente(Dipendente d){
@@ -67,6 +87,13 @@ public class Impianto implements Serializable {
 		
 	}
 	
+	public void inizializzaImpianto(int risorseNecessarie) {
+		if (risorseNecessarie > 0) {
+			setRisorseNecessarie(risorseNecessarie);
+			setInizializzato(true);
+		}
+	}
+	
 	@Override
 	public boolean equals (Object obj){
 		if (obj == null) return false;
@@ -79,6 +106,8 @@ public class Impianto implements Serializable {
 	public String toString(){
 		return getNomeImpianto();
 	}
+
+	
 	
 	
 }
