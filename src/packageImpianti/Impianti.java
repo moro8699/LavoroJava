@@ -100,6 +100,7 @@ public class Impianti implements Serializable {
 				svuotaImpianto(temp);
 				cancellaModel(i.toString());
 				listaImpianti.remove(temp);
+				salvaLista(FILE_LISTA_IMP);
 				return true;
 			}	
 		}
