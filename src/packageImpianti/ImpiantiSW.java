@@ -1,7 +1,6 @@
 package packageImpianti;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -46,25 +45,29 @@ public class ImpiantiSW extends JFrame {
 		
 		JPanel centroEst = new JPanel();
 		centroEst.setLayout(new BoxLayout(centroEst, BoxLayout.Y_AXIS));
+		JPanel aggiungiRimuovi = new JPanel();
 		aggiungiImpianto = new JButton("+");
 		aggiungiImpianto.addActionListener(new AggiungiImpianto());
-		centroEst.add(aggiungiImpianto);
-		aggiungiImpianto.setAlignmentX(Component.CENTER_ALIGNMENT);
+		aggiungiRimuovi.add(aggiungiImpianto);
 		rimuoviImpianto = new JButton(" - ");
-		rimuoviImpianto.addActionListener(new RimuoviImpianto());
-		centroEst.add(rimuoviImpianto);
-		rimuoviImpianto.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rimuoviImpianto.addActionListener(new RimuoviImpianto());		
+		aggiungiRimuovi.add(rimuoviImpianto);			
+		centroEst.add(aggiungiRimuovi);
+		//aggiungiRimuovi.setAlignmentX(Component.CENTER_ALIGNMENT);
 		apriImpianto = new JButton("Apri Gestione Impianto");
 		apriImpianto.addActionListener(new ApriGestioneImpianto());
-		centroEst.add(apriImpianto);
-		apriImpianto.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JPanel jPApriImpianto = new JPanel();
+		jPApriImpianto.add(apriImpianto);
+		centroEst.add(jPApriImpianto);
+		//jPApriImpianto.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
 		centro.add(centroEst);		
 		
 		getContentPane().setLayout(new BorderLayout());		
 		getContentPane().add(nord, BorderLayout.NORTH);
 		getContentPane().add(centro, BorderLayout.CENTER);
 		
-		setSize(350,300);
+		setSize(350,200);
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation ((int)(dim.getWidth()-this.getWidth())/2, (int)(dim.getHeight()-this.getHeight())/2);
@@ -98,7 +101,7 @@ public class ImpiantiSW extends JFrame {
 						Iterator<Dipendente> iter = ListaDipendenti.getListaDipendenti().iterator();
 						while (iter.hasNext()){
 							Dipendente d = iter.next();
-							if (imp.equals(d.getImpiantoDiAppartenenza())) ListaDipendenti.dissociaImpianto(d);
+							if (imp.getNomeImpianto().equals(d.getImpiantoDiAppartenenza())) ListaDipendenti.dissociaImpianto(d);
 						}
 						for (int i= 0 ; i< modelImpianti.size(); i++){
 							if (imp.getNomeImpianto().equals(modelImpianti.getElementAt(i))){
@@ -109,6 +112,7 @@ public class ImpiantiSW extends JFrame {
 					}
 				}
 			}
+			pack();
 		}
 		
 	}
@@ -167,7 +171,7 @@ public class ImpiantiSW extends JFrame {
 						modelImpianti.addElement(nuovoImpianto.getText());
 						Impianti.salvaLista(Impianti.getFileLista());
 						setVisible(false);					
-				} else {JOptionPane.showMessageDialog(null, "Impianto già presente");}				 	
+				} else {JOptionPane.showMessageDialog(null, "Impianto già presente");}
 			}
 			
 		}
