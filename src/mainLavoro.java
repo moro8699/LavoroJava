@@ -15,7 +15,6 @@ public class mainLavoro {
 		
  		new Principale();
  		
-		Impianti.salvaLista(Impianti.getFileLista());
 		ElencoTelefonicoDipendenti.salvaLista(ElencoTelefonicoDipendenti.getFileElencoTel());
 		ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
 		ElencoPresenze.salvaLista(ElencoPresenze.getFileElencoPresenze());
