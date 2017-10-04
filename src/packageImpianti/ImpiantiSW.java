@@ -83,7 +83,10 @@ public class ImpiantiSW extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String impianto = impianti.getSelectedValue();
-			if (impianto != null) new GestioneImpianto(Impianti.getImpiantoDaModel(impianto));
+			if (impianto != null) {
+				new GestioneImpianto(Impianti.getImpiantoDaModel(impianto));
+				setVisible(false);
+			}
 		}
 		
 	}
