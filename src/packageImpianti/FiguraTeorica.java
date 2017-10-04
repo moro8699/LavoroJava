@@ -1,15 +1,26 @@
 package packageImpianti;
 
+import javax.swing.table.DefaultTableModel;
+
 import packageDipendenti.Dipendente;
 
 public class FiguraTeorica {
 	
-	private Impianto impianto;
-	private String mansione;
-	private Dipendente dipendente;
-	public FiguraTeorica(Impianto impianto, String mansione) {
+	private Impianto impianto = null;
+	private String mansione = "", identifiactivo = "";
+	private Dipendente dipendente = null;
+
+	public FiguraTeorica(Impianto impianto, String mansione, String identificativo) {
 		setImpianto(impianto);
 		setMansione(mansione);
+		setIdentifiactivo(identificativo);
+	}
+	
+	public String getIdentifiactivo() {
+		return identifiactivo;
+	}
+	public void setIdentifiactivo(String identifiactivo) {
+		this.identifiactivo = identifiactivo;
 	}
 	public String getMansione() {
 		return mansione;
@@ -30,5 +41,8 @@ public class FiguraTeorica {
 	public Dipendente getDipendente() {
 		return dipendente;
 	}
+	
+
+
 	
 }
