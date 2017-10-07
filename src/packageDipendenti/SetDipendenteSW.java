@@ -21,7 +21,7 @@ import packageImpianti.Impianto;
 public class SetDipendenteSW extends JFrame {
 	
 	private static final long serialVersionUID = -8722179695766788480L;
-	
+	private int rowAttuale = 0;
 	protected JTextField nome, cognome;
 	protected JLabel matricola, recapiti;
 	protected static JLabel impianto;
@@ -38,6 +38,7 @@ public class SetDipendenteSW extends JFrame {
 		matricola = new JLabel(d.getMatricola());
 		impianto = new JLabel(d.labelImpianto());
 		recapiti = new JLabel(ElencoTelefonicoDipendenti.cercaTelefoni(d));
+		rowAttuale = Principale.posizioneAttualeTable();
 		
 		JPanel centro = new JPanel();
 		JPanel nord = new JPanel();
@@ -165,16 +166,10 @@ public class SetDipendenteSW extends JFrame {
 				if (dip.equals(d)){
 					dip.setNome(nome.getText());
 					dip.setCognome(cognome.getText());
-
-					for (int i =0; i< Principale.getModelDip().size(); i++){
-						Dipendente temp = Principale.modelToDipendente(Principale.getModelDip().getElementAt(i));
-						if (temp.equals(d)){
-							Principale.getModelDip().remove(i);
-							Principale.getModelDip().addElement(d.toString());
-							break;
-						}
-						
-					}
+					Principale.getModelloTable().setValueAt
+						(cognome.getText() + " " + nome.getText() , rowAttuale, Principale.COLONNA_COGNOME_NOME);
+					Principale.getModelloTable().setValueAt
+						(dip.getImpiantoDiAppartenenza() , rowAttuale, Principale.COLONNA_IMPIANTO);
 				}
 			}
 			ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());

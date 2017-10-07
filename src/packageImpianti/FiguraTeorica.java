@@ -1,7 +1,5 @@
 package packageImpianti;
 
-import javax.swing.table.DefaultTableModel;
-
 import packageDipendenti.Dipendente;
 
 public class FiguraTeorica {

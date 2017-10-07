@@ -13,9 +13,11 @@ import packageImpianti.Impianto;
 public class Dipendente implements Serializable {
 
 	private static final long serialVersionUID = -7500270499673162065L;
-
-	LocalDate dataCreazioneIstanza = null;
+	public static final short IDONEO = 0, IDONEO_PARZIALE = 1, INIDONEO = 2;
+	
+	private LocalDate dataCreazioneIstanza = null, dataAssunzione = null;
 	private String nome ="", cognome ="", matricola="", impiantoDiAppartenenza="";
+	private int statoAttuale = IDONEO;
 	
 	public Dipendente(String nome, String cognome, String matricola){
 		setNome(nome);
@@ -23,7 +25,8 @@ public class Dipendente implements Serializable {
 		this.matricola = matricola;
 		dataCreazioneIstanza = LocalDate.now();	
 	}
-
+	
+	
 	public String getNome() {
 		return nome;
 	}
@@ -39,9 +42,30 @@ public class Dipendente implements Serializable {
 	public String getMatricola() {
 		return matricola;
 	}
-
 	public String getImpiantoDiAppartenenza() {
 		return impiantoDiAppartenenza;
+	}	
+	public LocalDate getDataAssunzione() {
+		if (dataAssunzione != null) return dataAssunzione;
+		return LocalDate.MIN;
+	}
+	public void setDataAssunzione(LocalDate dataAssunzione) {
+		this.dataAssunzione = dataAssunzione;
+	}
+	public LocalDate getDataCreazioneIstanza() {
+		return dataCreazioneIstanza;
+	}
+	public int getStato() {
+		return statoAttuale;
+	}
+	public void setDipendenteIdoneo() {
+		statoAttuale = IDONEO;
+	}
+	public void setDipendenteIdoneoParziale() {
+		statoAttuale = IDONEO_PARZIALE;
+	}
+	public void setDipendenteInidoneo() {
+		statoAttuale = INIDONEO;
 	}
 	
 	public String labelImpianto(){
@@ -77,7 +101,7 @@ public class Dipendente implements Serializable {
 	
 	@Override
 	public String toString(){
-		return getMatricola() + " " + getNome() + " " + getCognome();
+		return getCognome() + " " + getNome() + " (" + getMatricola() + ")";
 	}
 
 
