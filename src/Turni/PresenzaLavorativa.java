@@ -6,9 +6,9 @@ import packageImpianti.Impianto;
 public class PresenzaLavorativa extends Presenza {
 
 	
-	public PresenzaLavorativa(Impianto i, String identificativo, LocalTime inizio, LocalTime fine, LocalTime pausa) {
+	public PresenzaLavorativa(Impianto i, String identificativo, String annotazione, LocalTime inizio, LocalTime fine, LocalTime pausa) {
 		
-		super(i, identificativo, inizio, fine, pausa);
+		super(i, identificativo, annotazione, inizio, fine, pausa);
 		
 	}
 	

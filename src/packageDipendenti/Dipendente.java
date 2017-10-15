@@ -73,6 +73,17 @@ public class Dipendente implements Serializable {
 		return impiantoDiAppartenenza;
 	}
 	
+	public String labelAssunzione(){
+		if (dataAssunzione == null) return "** NON INSERITA **";
+		return dataAssunzione.toString();
+	}
+	
+	public String labelStato () {
+		if (statoAttuale == IDONEO) return "Idoneo";
+		if (statoAttuale == IDONEO_PARZIALE) return "Idoneo Parziale";
+		if (statoAttuale == INIDONEO) return "Inidoneo";
+		return "";
+	}
 	public void setImpiantoDiAppartenenza(String impiantoDiAppartenenza) {
 		this.impiantoDiAppartenenza = impiantoDiAppartenenza;
 		
@@ -103,9 +114,5 @@ public class Dipendente implements Serializable {
 	public String toString(){
 		return getCognome() + " " + getNome() + " (" + getMatricola() + ")";
 	}
-
-
-	
-	
 	
 }

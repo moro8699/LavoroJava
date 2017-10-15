@@ -7,19 +7,20 @@ import packageImpianti.Impianto;
 public abstract class Presenza {
 	
 	protected Impianto i = null;
-	protected String identificativo = "";
+	protected String identificativo = "", annotazione = "";
 	protected LocalTime inizio = null, fine = null, pausa = null;
 	
-	public Presenza (Impianto i, String identificativo, LocalTime inizio, LocalTime fine, LocalTime pausa) {	
+	public Presenza (Impianto i, String identificativo, String annotazione, LocalTime inizio, LocalTime fine, LocalTime pausa) {	
 		this.i = i;
 		this.identificativo = identificativo;
 		this.inizio = inizio;
 		this.fine = fine;
-		this.pausa = pausa;	
+		this.pausa = pausa;
+		this.annotazione = annotazione;
 	}
 	
-	public Presenza (Impianto i, String identificativo, LocalTime inizio, LocalTime fine){
-		this(i, identificativo, inizio, fine, LocalTime.MIN);
+	public Presenza (Impianto i, String identificativo, String annotazione, LocalTime inizio, LocalTime fine){
+		this(i, identificativo, annotazione, inizio, fine, LocalTime.MIN);
 	}
 	
 	public Impianto getImpianto(){

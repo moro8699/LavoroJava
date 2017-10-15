@@ -142,7 +142,6 @@ public class Principale extends JFrame {
 		header.addElement("Matricola");
 		header.addElement("Dipendente");
 		header.addElement("Impianto");
-		header.addElement("Assunzione");
 		header.addElement("Stato Attuale");
 		
 		inizializzaTabellaPersonale();
@@ -186,8 +185,7 @@ public class Principale extends JFrame {
 		dipendenteVector.addElement(d.getMatricola());
 		dipendenteVector.addElement(d.getCognome() + " " + d.getNome());
 		dipendenteVector.addElement(d.labelImpianto());
-		dipendenteVector.addElement(d.getDataAssunzione().toString());
-		dipendenteVector.addElement("" + d.getStato()); //Temporaneo, inserire il tipo di stato
+		dipendenteVector.addElement("" + d.labelStato());
 		
 		return dipendenteVector;
 	}

@@ -25,20 +25,20 @@ import packageImpianti.Impianto;
 public class SetDipendenteSW extends JFrame {
 	
 	private static final long serialVersionUID = -8722179695766788480L;
-	protected  final int R_NOME =0, R_COGNOME =1, R_IMPIANTO =2, R_ASSUNZ =3, R_RECAPITI =4;
+	protected final static int R_NOME =0, R_COGNOME =1, R_IMPIANTO =2, R_ASSUNZ =3, R_RECAPITI =4;
 	private int rowAttuale = 0;
 	protected JLabel matricola, recapiti;
 	protected static JLabel impianto;
 	protected JButton ok, cancel, assegnaImpianto, modRecapiti;
-	protected Dipendente d;
-	private JTable datiDipendente;
+	private static Dipendente d;
+	protected static JTable datiDipendente;
 	private Vector<String> nomeRiga, dipendente, header;
 	private Vector<Vector<String>> dati;
 	private DefaultTableModel modelloDatiDipendente;
 	
 	public SetDipendenteSW (Dipendente d){
 		
-		this.d = d;
+		SetDipendenteSW.d = d;
 		
 		inizializzaDatiDipendente();
 		
@@ -48,6 +48,7 @@ public class SetDipendenteSW extends JFrame {
 
 			@Override
 		    public boolean isCellEditable(int row, int column) {
+				if (row == R_IMPIANTO && column == 1) return false;
 		        if (row == R_RECAPITI && column == 1) return false;		       
 				if (column != 0) return true;
 		        return false;
@@ -80,6 +81,7 @@ public class SetDipendenteSW extends JFrame {
 		cancel.addActionListener(new Cancel());
 		modRecapiti = new JButton("Gestione Recapiti");
 		modRecapiti.addActionListener(new Recapiti());
+		assegnaImpianto = new JButton("Assegnazione Impianto");
 		
 		sud.add(ok);
 		sud.add(cancel);
@@ -109,7 +111,7 @@ public class SetDipendenteSW extends JFrame {
 		nomeRiga.add(R_IMPIANTO, "Impianto");
 		dipendente.add(R_IMPIANTO, d.labelImpianto());
 		nomeRiga.add(R_ASSUNZ, "Assunzione");
-		dipendente.add(R_ASSUNZ, d.getDataAssunzione().toString());
+		dipendente.add(R_ASSUNZ, d.labelAssunzione());
 		nomeRiga.add(R_RECAPITI, "Recapiti");
 		dipendente.add(R_RECAPITI, ElencoTelefonicoDipendenti.cercaTelefoni(d));
 		
@@ -120,6 +122,10 @@ public class SetDipendenteSW extends JFrame {
 			dati.addElement(temp);
 		}
 		
+	}
+	
+	public static void aggiornaRecapiti(){
+		datiDipendente.setValueAt(ElencoTelefonicoDipendenti.cercaTelefoni(d), R_RECAPITI, 1);
 	}
 	
 	class ApriAssegnaImpianto implements ActionListener {
@@ -186,8 +192,6 @@ public class SetDipendenteSW extends JFrame {
 		}
 	}
 	
-	
-	
 	class Ok implements ActionListener{
 		
 		Dipendente dipendente;
@@ -233,7 +237,7 @@ public class SetDipendenteSW extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			new GestioneRecapiti(d);
-			
+		
 		}
 		
 	}

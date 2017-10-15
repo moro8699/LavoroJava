@@ -62,6 +62,7 @@ public class GestioneRecapiti extends JFrame {
 				if (listaRecapiti.getSelectedValue()!= null){
 					Telefono t = modelToTelefono(listaRecapiti.getSelectedValue(), d);
 					ElencoTelefonicoDipendenti.rimuoviNumero(t);
+					SetDipendenteSW.aggiornaRecapiti();
 					model.remove(listaRecapiti.getSelectedIndex());
 				}
 			}
@@ -129,6 +130,7 @@ public class GestioneRecapiti extends JFrame {
 						JOptionPane.showMessageDialog(null, "Recapito già Esistente");
 					else {
 						ElencoTelefonicoDipendenti.salvaLista(ElencoTelefonicoDipendenti.getFileElencoTel());
+						SetDipendenteSW.aggiornaRecapiti();
 						setVisible(false);
 					}
 				}

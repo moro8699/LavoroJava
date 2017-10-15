@@ -6,9 +6,9 @@ import packageImpianti.Impianto;
 
 public class Riposo extends Presenza {
 
-	public Riposo(Impianto i, String identificativo) {
+	public Riposo(Impianto i, String identificativo, String annotazione) {
 		
-		super(i, identificativo, LocalTime.of(00, 00), LocalTime.of(23, 59), LocalTime.of(00, 00));
+		super(i, identificativo, annotazione, LocalTime.of(00, 00), LocalTime.of(23, 59), LocalTime.of(00, 00));
 		
 	}
 	

@@ -11,7 +11,7 @@ public class TestPresenza {
 			LocalTime fine = LocalTime.of(6, 0);
 			LocalTime pausa = LocalTime.of(0, 0);
 		
-			Presenza p = new PresenzaLavorativa(new Impianto("Firenze SMN"),"3T" , inizio, fine, pausa);
+			Presenza p = new PresenzaLavorativa(new Impianto("Firenze SMN"),"3T" ,"Notte Traghettatore", inizio, fine, pausa);
 		
 			ElencoPresenze.addElemento(p);
 			
