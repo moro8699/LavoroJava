@@ -15,9 +15,10 @@ public class Dipendente implements Serializable {
 	private static final long serialVersionUID = -7500270499673162065L;
 	public static final short IDONEO = 0, IDONEO_PARZIALE = 1, INIDONEO = 2;
 	
-	private LocalDate dataCreazioneIstanza = null, dataAssunzione = null;
+	private LocalDate dataCreazioneIstanza = null;
+	private LocalDate dataAssunzione = null;
 	private String nome ="", cognome ="", matricola="", impiantoDiAppartenenza="";
-	private int statoAttuale = IDONEO;
+	private int statoDisalute = IDONEO;
 	
 	public Dipendente(String nome, String cognome, String matricola){
 		setNome(nome);
@@ -55,17 +56,17 @@ public class Dipendente implements Serializable {
 	public LocalDate getDataCreazioneIstanza() {
 		return dataCreazioneIstanza;
 	}
-	public int getStato() {
-		return statoAttuale;
+	public int getStatoDiSalute() {
+		return statoDisalute;
 	}
 	public void setDipendenteIdoneo() {
-		statoAttuale = IDONEO;
+		statoDisalute = IDONEO;
 	}
 	public void setDipendenteIdoneoParziale() {
-		statoAttuale = IDONEO_PARZIALE;
+		statoDisalute = IDONEO_PARZIALE;
 	}
 	public void setDipendenteInidoneo() {
-		statoAttuale = INIDONEO;
+		statoDisalute = INIDONEO;
 	}
 	
 	public String labelImpianto(){
@@ -78,10 +79,10 @@ public class Dipendente implements Serializable {
 		return dataAssunzione.toString();
 	}
 	
-	public String labelStato () {
-		if (statoAttuale == IDONEO) return "Idoneo";
-		if (statoAttuale == IDONEO_PARZIALE) return "Idoneo Parziale";
-		if (statoAttuale == INIDONEO) return "Inidoneo";
+	public String labelStatoDiSalute () {
+		if (statoDisalute == IDONEO) return "Idoneo";
+		if (statoDisalute == IDONEO_PARZIALE) return "Idoneo Parziale";
+		if (statoDisalute == INIDONEO) return "Inidoneo";
 		return "";
 	}
 	public void setImpiantoDiAppartenenza(String impiantoDiAppartenenza) {
