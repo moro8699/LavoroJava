@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -12,12 +13,14 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import Generici.Controllo;
 import main.Principale;
 import packageImpianti.Impianti;
 import packageImpianti.Impianto;
@@ -128,6 +131,15 @@ public class SetDipendenteSW extends JFrame {
 		datiDipendente.setValueAt(ElencoTelefonicoDipendenti.cercaTelefoni(d), R_RECAPITI, 1);
 	}
 	
+	public void inserisciDataAssunzione (Dipendente d, String data){
+		if (!(Controllo.verificaDataInserita(data))) {
+			JOptionPane.showMessageDialog(null, "La data Inserita deve essere di tipo aaaa-mm-gg");
+		} else {
+			String[] dataSplit = data.split("-");
+			d.setDataAssunzione(LocalDate.of(Integer.parseInt(dataSplit[0]), Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[2])));
+		}
+	}
+	
 	class ApriAssegnaImpianto implements ActionListener {
 
 		@Override
@@ -202,7 +214,8 @@ public class SetDipendenteSW extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			
 			String nome = (String) datiDipendente.getValueAt(R_NOME, 1),
-					cognome = (String) datiDipendente.getValueAt(R_COGNOME, 1);
+					cognome = (String) datiDipendente.getValueAt(R_COGNOME, 1),
+					dataAss = (String) datiDipendente.getValueAt(R_ASSUNZ, 1);
 			
 			Dipendente d = new Dipendente(nome, cognome, dipendente.getMatricola());
 			Iterator<Dipendente> it = ListaDipendenti.getListaDipendenti().iterator();
@@ -211,6 +224,7 @@ public class SetDipendenteSW extends JFrame {
 				if (dip.equals(d)){
 					dip.setNome(nome);
 					dip.setCognome(cognome);
+					inserisciDataAssunzione(dip, dataAss);
 					Principale.getModelloTable().setValueAt
 						(cognome + " " + nome , rowAttuale, Principale.COLONNA_COGNOME_NOME);
 					Principale.getModelloTable().setValueAt
