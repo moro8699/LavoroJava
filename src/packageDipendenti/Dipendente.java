@@ -15,8 +15,7 @@ public class Dipendente implements Serializable {
 	private static final long serialVersionUID = -7500270499673162065L;
 	public static final short IDONEO = 0, IDONEO_PARZIALE = 1, INIDONEO = 2;
 	
-	private LocalDate dataCreazioneIstanza = null;
-	private LocalDate dataAssunzione = null;
+	private LocalDate dataCreazioneIstanza = null, dataAssunzione = null, dataDiNascita = null;
 	private String nome ="", cognome ="", matricola="", impiantoDiAppartenenza="";
 	private int statoDisalute = IDONEO;
 	
@@ -26,7 +25,6 @@ public class Dipendente implements Serializable {
 		this.matricola = matricola;
 		dataCreazioneIstanza = LocalDate.now();	
 	}
-	
 	
 	public String getNome() {
 		return nome;
@@ -47,8 +45,7 @@ public class Dipendente implements Serializable {
 		return impiantoDiAppartenenza;
 	}	
 	public LocalDate getDataAssunzione() {
-		if (dataAssunzione != null) return dataAssunzione;
-		return LocalDate.MIN;
+		return dataAssunzione;
 	}
 	public void setDataAssunzione(LocalDate dataAssunzione) {
 		this.dataAssunzione = dataAssunzione;
@@ -68,18 +65,14 @@ public class Dipendente implements Serializable {
 	public void setDipendenteInidoneo() {
 		statoDisalute = INIDONEO;
 	}
-	
-	public String labelImpianto(){
-		if (impiantoDiAppartenenza.isEmpty()) return "** NON ASSEGNATO **";
-		return impiantoDiAppartenenza;
+	public LocalDate getDataDiNascita() {
+		return dataDiNascita;
+	}
+	public void setDataDiNascita(LocalDate dataDiNascita) {
+		this.dataDiNascita = dataDiNascita;
 	}
 	
-	public String labelAssunzione(){
-		if (dataAssunzione == null) return "** NON INSERITA **";
-		return dataAssunzione.toString();
-	}
-	
-	public String labelStatoDiSalute () {
+	public String StatoDiSaluteToString () {
 		if (statoDisalute == IDONEO) return "Idoneo";
 		if (statoDisalute == IDONEO_PARZIALE) return "Idoneo Parziale";
 		if (statoDisalute == INIDONEO) return "Inidoneo";
@@ -89,7 +82,7 @@ public class Dipendente implements Serializable {
 		this.impiantoDiAppartenenza = impiantoDiAppartenenza;
 		
 	}
-	
+	/*
 	public boolean dissocia () {
 		if (!(this.impiantoDiAppartenenza.isEmpty())){
 			Iterator<Impianto> iterator = Impianti.getListaImpianti().iterator();
@@ -102,7 +95,7 @@ public class Dipendente implements Serializable {
 			}
 		} return false;
 	}
-	
+	*/
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) return false;
@@ -115,5 +108,6 @@ public class Dipendente implements Serializable {
 	public String toString(){
 		return getCognome() + " " + getNome() + " (" + getMatricola() + ")";
 	}
+
 	
 }

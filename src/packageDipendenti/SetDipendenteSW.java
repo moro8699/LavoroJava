@@ -13,7 +13,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -28,9 +27,8 @@ import packageImpianti.Impianto;
 public class SetDipendenteSW extends JFrame {
 	
 	private static final long serialVersionUID = -8722179695766788480L;
-	protected final static int R_NOME =0, R_COGNOME =1, R_IMPIANTO =2, R_ASSUNZ =3, R_RECAPITI =4;
+	protected final static int R_NOME =0, R_COGNOME =1, R_IMPIANTO =2, R_NASCITA =3, R_ASSUNZ =4, R_RECAPITI =5;
 	private int rowAttuale = 0;
-	protected JLabel matricola, recapiti;
 	protected static JLabel impianto;
 	protected JButton ok, cancel, assegnaImpianto, modRecapiti;
 	private static Dipendente d;
@@ -85,10 +83,12 @@ public class SetDipendenteSW extends JFrame {
 		modRecapiti = new JButton("Gestione Recapiti");
 		modRecapiti.addActionListener(new Recapiti());
 		assegnaImpianto = new JButton("Assegnazione Impianto");
+		assegnaImpianto.addActionListener(new ApriAssegnaImpianto());
 		
 		sud.add(ok);
 		sud.add(cancel);
 		sud.add(modRecapiti);
+		sud.add(assegnaImpianto);
 		
 		setSize(500,350);		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -112,9 +112,11 @@ public class SetDipendenteSW extends JFrame {
 		nomeRiga.add(R_COGNOME, "Cognome");
 		dipendente.add(R_COGNOME, d.getCognome());
 		nomeRiga.add(R_IMPIANTO, "Impianto");
-		dipendente.add(R_IMPIANTO, d.labelImpianto());
+		dipendente.add(R_IMPIANTO, d.getImpiantoDiAppartenenza());
+		nomeRiga.add(R_NASCITA, "Data di Nascita");
+		dipendente.add(R_NASCITA, DataDiNascitaToString(d));
 		nomeRiga.add(R_ASSUNZ, "Assunzione");
-		dipendente.add(R_ASSUNZ, d.labelAssunzione());
+		dipendente.add(R_ASSUNZ, DataAssunzioneToString(d));
 		nomeRiga.add(R_RECAPITI, "Recapiti");
 		dipendente.add(R_RECAPITI, ElencoTelefonicoDipendenti.cercaTelefoni(d));
 		
@@ -127,18 +129,33 @@ public class SetDipendenteSW extends JFrame {
 		
 	}
 	
+	public String DataDiNascitaToString(Dipendente d) {
+		if (d.getDataDiNascita() == null) return "";
+		return d.getDataDiNascita().toString();
+	}
+	
+	public String DataAssunzioneToString(Dipendente d){
+		if (d.getDataAssunzione() == null) return "";
+		return d.getDataAssunzione().toString();
+	}
+	
 	public static void aggiornaRecapiti(){
 		datiDipendente.setValueAt(ElencoTelefonicoDipendenti.cercaTelefoni(d), R_RECAPITI, 1);
 	}
 	
 	public void inserisciDataAssunzione (Dipendente d, String data){
-		if (!(Controllo.verificaDataInserita(data))) {
-			JOptionPane.showMessageDialog(null, "La data Inserita deve essere di tipo aaaa-mm-gg");
-		} else {
+		if (Controllo.verificaDataInserita(data)){
 			String[] dataSplit = data.split("-");
-			d.setDataAssunzione(LocalDate.of(Integer.parseInt(dataSplit[0]), Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[2])));
+			d.setDataAssunzione(LocalDate.of(Integer.parseInt(dataSplit[0]), Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[2])));			
 		}
 	}
+	
+	public void inserisciDataDiNascita (Dipendente d, String data){
+		if (Controllo.verificaDataInserita(data)){
+			String[] dataSplit = data.split("-");
+			d.setDataDiNascita(LocalDate.of(Integer.parseInt(dataSplit[0]), Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[2])));			
+		}
+	}	
 	
 	class ApriAssegnaImpianto implements ActionListener {
 
@@ -186,12 +203,14 @@ public class SetDipendenteSW extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Impianto impianto = new Impianto((String) listaImpianti.getSelectedItem());
+				Impianto nuovoImpianto = new Impianto((String) listaImpianti.getSelectedItem()),
+						impiantoAttuale = Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza());	
 				Iterator<Impianto> iterator = Impianti.getListaImpianti().iterator();
 				while (iterator.hasNext()){
 					Impianto temp = iterator.next();
-					if (impianto.equals(temp)) {
-						d.dissocia();
+					if (nuovoImpianto.equals(temp)) {
+						//Da Testare
+						impiantoAttuale.rimuoviDipendente(d);
 						temp.assegnaDipendente(d);
 						SetDipendenteSW.impianto.setText(d.getImpiantoDiAppartenenza());
 						ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
@@ -215,7 +234,8 @@ public class SetDipendenteSW extends JFrame {
 			
 			String nome = (String) datiDipendente.getValueAt(R_NOME, 1),
 					cognome = (String) datiDipendente.getValueAt(R_COGNOME, 1),
-					dataAss = (String) datiDipendente.getValueAt(R_ASSUNZ, 1);
+					dataAssunzione = (String) datiDipendente.getValueAt(R_ASSUNZ, 1),
+					dataNascita = (String) datiDipendente.getValueAt(R_NASCITA, 1);
 			
 			Dipendente d = new Dipendente(nome, cognome, dipendente.getMatricola());
 			Iterator<Dipendente> it = ListaDipendenti.getListaDipendenti().iterator();
@@ -224,7 +244,8 @@ public class SetDipendenteSW extends JFrame {
 				if (dip.equals(d)){
 					dip.setNome(nome);
 					dip.setCognome(cognome);
-					inserisciDataAssunzione(dip, dataAss);
+					if (dataAssunzione!="") inserisciDataAssunzione(dip, dataAssunzione);
+					if (dataNascita != "") inserisciDataDiNascita(dip, dataNascita);
 					Principale.getModelloTable().setValueAt
 						(cognome + " " + nome , rowAttuale, Principale.COLONNA_COGNOME_NOME);
 					Principale.getModelloTable().setValueAt

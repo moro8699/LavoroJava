@@ -108,6 +108,15 @@ public class Impianti implements Serializable {
 		return false;
 	}
 	
+	public static Impianto getImpiantoSelezionato(String nomeImpianto) {
+		Iterator<Impianto> iterator = listaImpianti.iterator();
+		while(iterator.hasNext()) {
+			Impianto i = iterator.next();
+			if(i.getNomeImpianto().equals(nomeImpianto)) return i;
+		}
+		return null;
+	}
+	
 	public static void svuotaImpianto (Impianto i){
 		Iterator<Dipendente> iteratorD = ListaDipendenti.getListaDipendenti().iterator();
 		while (iteratorD.hasNext()){
