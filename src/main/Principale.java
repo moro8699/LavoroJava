@@ -185,7 +185,7 @@ public class Principale extends JFrame {
 		dipendenteVector.addElement(d.getMatricola());
 		dipendenteVector.addElement(d.getCognome() + " " + d.getNome());
 		dipendenteVector.addElement(d.labelImpianto());
-		dipendenteVector.addElement("" + d.labelStato());
+		dipendenteVector.addElement("" + d.labelStatoDiSalute());
 		
 		return dipendenteVector;
 	}
