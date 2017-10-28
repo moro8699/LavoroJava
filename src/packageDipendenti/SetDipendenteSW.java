@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.Vector;
@@ -13,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -146,15 +148,24 @@ public class SetDipendenteSW extends JFrame {
 	public void inserisciDataAssunzione (Dipendente d, String data){
 		if (Controllo.verificaDataInserita(data)){
 			String[] dataSplit = data.split("-");
-			d.setDataAssunzione(LocalDate.of(Integer.parseInt(dataSplit[0]), Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[2])));			
+			try {
+				d.setDataAssunzione(LocalDate.of(Integer.parseInt(dataSplit[0]), Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[2])));
+			} catch (DateTimeException e) {
+				JOptionPane.showMessageDialog(null, e.toString());
+			}
 		}
 	}
 	
 	public void inserisciDataDiNascita (Dipendente d, String data){
 		if (Controllo.verificaDataInserita(data)){
 			String[] dataSplit = data.split("-");
-			d.setDataDiNascita(LocalDate.of(Integer.parseInt(dataSplit[0]), Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[2])));			
+			try {
+				d.setDataDiNascita(LocalDate.of(Integer.parseInt(dataSplit[0]), Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[2])));			
+			} catch (DateTimeException e) {
+				JOptionPane.showMessageDialog(null, e.toString());
+			}
 		}
+		
 	}	
 	
 	class ApriAssegnaImpianto implements ActionListener {
