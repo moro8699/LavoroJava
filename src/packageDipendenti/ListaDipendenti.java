@@ -10,15 +10,18 @@ import java.util.regex.Pattern;
 
 import javax.swing.DefaultListModel;
 
+import packageImpianti.Impianti;
+import packageImpianti.Impianto;
+
 public class ListaDipendenti implements Serializable{
 	
 	private static final long serialVersionUID = -2879347912650820933L;
-	private static final String FILE_LISTA_DIP = "./SaveFiles/listaDipendenti.man";
+	private static final String FILE_SALVATAGGIO_LISTA_DIP = "./SaveFiles/listaDipendenti.man";
 	private ListaDipendenti(){}
 	private static ArrayList<Dipendente> listaDipendenti;
 	
 	public static String getFileLista() {
-		return FILE_LISTA_DIP;
+		return FILE_SALVATAGGIO_LISTA_DIP;
 	}
 	
 	public static int listaDipendentiSize (){
@@ -75,6 +78,16 @@ public class ListaDipendenti implements Serializable{
 		return null;
 	}
 	
+	public static Dipendente cercaDipendente(String matricola) {
+		Dipendente daCercare = new Dipendente("", "", matricola);
+		Iterator<Dipendente> i = listaDipendenti.iterator();
+		while(i.hasNext()) {
+			Dipendente d = i.next();
+			if (d.equals(daCercare)) return d;
+		}
+		return null;
+	}
+	
 	//Dissocia un dipendente da un Impianto
 	public static void dissociaImpianto (Dipendente d){
 		d.setImpiantoDiAppartenenza("");
@@ -108,6 +121,8 @@ public class ListaDipendenti implements Serializable{
 		while (i.hasNext()) {
 			Dipendente di = (Dipendente) i.next();
 			if (di.equals(d)){
+				Impianto impiantoDiAppartenenza = Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza());
+				if(impiantoDiAppartenenza != null) impiantoDiAppartenenza.rimuoviDipendente(di);
 				ElencoTelefonicoDipendenti.rimuoviNumeriDipendente(di);
 				i.remove();
 				ListaDipendenti.salvaLista(getFileLista());

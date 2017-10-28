@@ -51,7 +51,7 @@ public class Principale extends JFrame {
 	private static JTable tabellaPersonale;
 	private static DefaultTableModel modelloTable;
 	private Vector<String> header; 
-	private static Vector<Vector<String>> listaPersonale;
+	private Vector<Vector<String>> listaPersonale;
 	
 	public  Principale(){
 		
@@ -130,7 +130,7 @@ public class Principale extends JFrame {
 	public static DefaultTableModel getModelloTable () {
 		return modelloTable;
 	}
-	public static Vector<Vector<String>> getListaPersonale(){
+	public Vector<Vector<String>> getListaPersonale(){
 		return listaPersonale;
 	}
 	public static int posizioneAttualeTable() {
@@ -145,6 +145,14 @@ public class Principale extends JFrame {
 		header.addElement("Stato Attuale");
 		
 		inizializzaTabellaPersonale();
+	}
+	
+	public static void aggiornaImpiantiModel() {
+		int inizio =0, fine = getModelloTable().getRowCount();
+		for(int i = inizio; i<fine; i++) {
+			Dipendente d = ListaDipendenti.cercaDipendente((String) getModelloTable().getValueAt(i, COLONNA_MATRICOLA));
+			getModelloTable().setValueAt(d.getImpiantoDiAppartenenza(), i, COLONNA_IMPIANTO);
+		}
 	}
 	
 	private void inizializzaTabellaPersonale() {

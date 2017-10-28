@@ -203,23 +203,16 @@ public class SetDipendenteSW extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Impianto nuovoImpianto = new Impianto((String) listaImpianti.getSelectedItem()),
-						impiantoAttuale = Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza());	
-				Iterator<Impianto> iterator = Impianti.getListaImpianti().iterator();
-				while (iterator.hasNext()){
-					Impianto temp = iterator.next();
-					if (nuovoImpianto.equals(temp)) {
-						//Da Testare
-						impiantoAttuale.rimuoviDipendente(d);
-						temp.assegnaDipendente(d);
-						SetDipendenteSW.impianto.setText(d.getImpiantoDiAppartenenza());
-						ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
-						Impianti.salvaLista(Impianti.getFileLista());
-					}
-				}
-					setVisible(false);
+				Impianto nuovoImpianto = Impianti.getImpiantoSelezionato(listaImpianti.getItemAt(listaImpianti.getSelectedIndex()));		
+				Impianto impiantoAttuale = d.getImpiantoDiAppartenenza()!= "" ? Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza()) : null;
+				if (impiantoAttuale != null) impiantoAttuale.rimuoviDipendente(d);
+				nuovoImpianto.assegnaDipendente(d);
+				modelloDatiDipendente.setValueAt(nuovoImpianto.getNomeImpianto(), R_IMPIANTO, 1);
+				ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
+				Impianti.salvaLista(Impianti.getFileLista());
+				
+				setVisible(false);
 			}
-			
 		}
 	}
 	

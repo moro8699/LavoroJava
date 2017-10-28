@@ -2,10 +2,7 @@ package packageDipendenti;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Iterator;
 
-import packageImpianti.Impianti;
-import packageImpianti.Impianto;
 /**
  *  Astrae il concetto di Dipendente 
  *  
@@ -82,20 +79,7 @@ public class Dipendente implements Serializable {
 		this.impiantoDiAppartenenza = impiantoDiAppartenenza;
 		
 	}
-	/*
-	public boolean dissocia () {
-		if (!(this.impiantoDiAppartenenza.isEmpty())){
-			Iterator<Impianto> iterator = Impianti.getListaImpianti().iterator();
-			while (iterator.hasNext()){
-				Impianto i = iterator.next();
-				if (i.equals(new Impianto(this.impiantoDiAppartenenza))) {
-					i.rimuoviDipendente(this);
-					return true;
-				}
-			}
-		} return false;
-	}
-	*/
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) return false;

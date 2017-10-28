@@ -15,7 +15,7 @@ import packageDipendenti.ListaDipendenti;
 public class Impianti implements Serializable {
 	
 	private static final long serialVersionUID = 5944774531916148934L;
-	private static final String FILE_LISTA_IMP = "./SaveFiles/listaImpianti.man";
+	private static final String FILE_SALVATAGGIO_LISTA_IMP = "./SaveFiles/listaImpianti.man";
 	private static ArrayList<Impianto> listaImpianti;	
 	private Impianti(){}
 	
@@ -79,7 +79,7 @@ public class Impianti implements Serializable {
 			}
 		}
 		listaImpianti.add(i);
-		salvaLista(FILE_LISTA_IMP);
+		salvaLista(FILE_SALVATAGGIO_LISTA_IMP);
 		return true;
 		
 	}
@@ -100,7 +100,7 @@ public class Impianti implements Serializable {
 				svuotaImpianto(temp);
 				cancellaModel(i.toString());
 				listaImpianti.remove(temp);
-				salvaLista(FILE_LISTA_IMP);
+				salvaLista(FILE_SALVATAGGIO_LISTA_IMP);
 				return true;
 			}	
 		}
@@ -118,9 +118,9 @@ public class Impianti implements Serializable {
 	}
 	
 	public static void svuotaImpianto (Impianto i){
-		Iterator<Dipendente> iteratorD = ListaDipendenti.getListaDipendenti().iterator();
-		while (iteratorD.hasNext()){
-			Dipendente temp = iteratorD.next();
+		Iterator<Dipendente> iterator = ListaDipendenti.getListaDipendenti().iterator();
+		while (iterator.hasNext()){
+			Dipendente temp = iterator.next();
 			if (i.equals(new Impianto (temp.getImpiantoDiAppartenenza())))
 				i.rimuoviDipendente(temp);
 		}
@@ -136,7 +136,7 @@ public class Impianti implements Serializable {
 	}
 
 	public static String getFileLista() {
-		return FILE_LISTA_IMP;
+		return FILE_SALVATAGGIO_LISTA_IMP;
 	}
 
 	

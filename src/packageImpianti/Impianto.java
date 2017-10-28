@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import packageDipendenti.Dipendente;
+import packageDipendenti.ListaDipendenti;
 
 public class Impianto implements Serializable {
 	
@@ -49,13 +50,14 @@ public class Impianto implements Serializable {
 	}
 	
 	public boolean rimuoviDipendente(Dipendente d){
-		for (int i=0; i<impianto.size(); i++){
-			Dipendente temp = impianto.get(i);
+		Iterator<Dipendente> iterator = impianto.iterator();
+		Dipendente dipendenteReale = ListaDipendenti.confronta(d);
+		while(iterator.hasNext()) {
+			Dipendente temp = iterator.next();
 			if (temp.equals(d)){
-				impianto.remove(i);
-				System.out.println("Il dipendente " + d.getCognome() +" "+ d.getNome() + 
-					" (" + d.getMatricola() + ") rimosso dall'impianto di " + d.getImpiantoDiAppartenenza());
-				d.setImpiantoDiAppartenenza("");
+				impianto.remove(temp);
+				System.out.println("Il dipendente " + temp.toString() +" rimosso dall'impianto di " + temp.getImpiantoDiAppartenenza());
+				dipendenteReale.setImpiantoDiAppartenenza("");
 				return true;
 			}
 		}

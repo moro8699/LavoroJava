@@ -6,7 +6,6 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -18,7 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import packageDipendenti.Dipendente;
+import main.Principale;
 import packageDipendenti.ListaDipendenti;
 
 public class ImpiantiSW extends JFrame {
@@ -100,24 +99,22 @@ public class ImpiantiSW extends JFrame {
 						"Attenzione!! Tutti i Dipendenti Associati all'impianto selezionato saranno Dissociati.\nContinuare?",
 						"CONFERMA CANCELLAZIONE", JOptionPane.YES_NO_OPTION);
 				if (conferma == JOptionPane.YES_OPTION){
-					if (Impianti.rimuoviImpianto(imp)) {
-						Iterator<Dipendente> iter = ListaDipendenti.getListaDipendenti().iterator();
-						while (iter.hasNext()){
-							Dipendente d = iter.next();
-							if (imp.getNomeImpianto().equals(d.getImpiantoDiAppartenenza())) ListaDipendenti.dissociaImpianto(d);
-						}
+					if(Impianti.rimuoviImpianto(imp)) {
 						for (int i= 0 ; i< modelImpianti.size(); i++){
 							if (imp.getNomeImpianto().equals(modelImpianti.getElementAt(i))){
 								modelImpianti.remove(impianti.getSelectedIndex());
 								break;
 							}
 						}
+						Principale.aggiornaImpiantiModel();
+						Impianti.salvaLista(Impianti.getFileLista());
+						ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
 					}
 				}
-			}
-			pack();
-		}
+				pack();
+			}	
 		
+		}
 	}
 	
 	class AggiungiImpianto implements ActionListener {
