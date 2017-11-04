@@ -20,6 +20,14 @@ public class Turno {
 		
 	}
 	
+	public Turno (String identificativo, Impianto impiantoDiAppartenenza){
+		
+		this.identificativo = identificativo;
+		this.impiantoDiAppartenenza = impiantoDiAppartenenza;
+		turno = new ArrayList<Presenza>(); 
+		
+	}
+	
 	//Setter & Getter
 	public String getIdentificativo() {
 		return identificativo;
