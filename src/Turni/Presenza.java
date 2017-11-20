@@ -7,16 +7,16 @@ import packageImpianti.Impianto;
 public abstract class Presenza {
 	
 	protected Impianto i = null;
-	protected String identificativo = "", annotazione = "";
+	protected String identificativo = "", descrizione = "";
 	protected LocalTime inizio = null, fine = null, pausa = null;
 	
-	public Presenza (Impianto i, String identificativo, String annotazione, LocalTime inizio, LocalTime fine, LocalTime pausa) {	
+	public Presenza (Impianto i, String identificativo, String descrizione, LocalTime inizio, LocalTime fine, LocalTime pausa) {	
 		this.i = i;
 		this.identificativo = identificativo;
 		this.inizio = inizio;
 		this.fine = fine;
 		this.pausa = pausa;
-		this.annotazione = annotazione;
+		this.descrizione = descrizione;
 	}
 	
 	public Presenza (Impianto i, String identificativo, String annotazione, LocalTime inizio, LocalTime fine){
@@ -25,10 +25,21 @@ public abstract class Presenza {
 	
 	public Impianto getImpianto(){
 		return i;
-	}
-	
+	}	
 	public String getIdentificativo(){
 		return identificativo;
+	}
+	public String getDescrizione(){
+		return descrizione;
+	}
+	public LocalTime getInizio(){
+		return inizio;
+	}
+	public LocalTime getFine(){
+		return fine;
+	}
+	public LocalTime getPausa(){
+		return pausa;
 	}
 	
 	public LocalTime impegno(){
@@ -68,5 +79,14 @@ public abstract class Presenza {
 		
 		return LocalTime.of(oreImpegno, minutiImpegno);
 		
+	}
+	
+	@Override
+	public boolean equals (Object obj){
+		if (obj == null) return false;
+		if (!(obj instanceof Presenza)) return false;  
+		Presenza p = (Presenza) obj;		
+		return p.getIdentificativo().equals(this.getIdentificativo()) && 
+				p.getImpianto().equals(this.getImpianto());		
 	}
 }
