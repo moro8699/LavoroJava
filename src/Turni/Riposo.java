@@ -8,7 +8,13 @@ public class Riposo extends Presenza {
 
 	public Riposo(Impianto i, String identificativo, String annotazione) {
 		
-		super(i, identificativo, annotazione, LocalTime.of(00, 00), LocalTime.of(23, 59), LocalTime.of(00, 00));
+		super(i, identificativo, annotazione, LocalTime.MIN, LocalTime.MAX, LocalTime.MIN);
+		
+	}
+	
+	@Override
+	public LocalTime impegno() {
+		return LocalTime.MIN;
 		
 	}
 	

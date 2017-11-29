@@ -25,6 +25,7 @@ public class GestioneTurni extends JFrame {
 		getContentPane().setLayout(new BorderLayout());
 		
 		toolbar = new JToolBar();
+		toolbar.setFloatable(false);
 		gestionePresenze = new JButton("Gest. Presenze");
 		gestionePresenze.addActionListener(new ActionListener() {
 			

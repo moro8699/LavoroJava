@@ -3,9 +3,12 @@ package Turni;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,8 +21,9 @@ import packageImpianti.Impianto;
 public class GestionePresenze extends JFrame {
 
 	private static final long serialVersionUID = -9102017953366760739L;
-	private Impianto i;
+	protected Impianto i;
 	private JToolBar strumenti;
+	private JButton aggiungiPresenza;
 	private JScrollPane scrollPane;
 	private JTable tabellaPresenze;
 	private DefaultTableModel modelTabellaPresenze;
@@ -34,8 +38,20 @@ public class GestionePresenze extends JFrame {
 		getContentPane().setLayout(new BorderLayout());
 		
 		JPanel pnlToolbar = new JPanel();
+		pnlToolbar.setLayout(new BorderLayout());
 		strumenti = new JToolBar();
+		strumenti.setFloatable(false);
 		pnlToolbar.add(strumenti);
+		
+		aggiungiPresenza = new JButton(" + ");
+		aggiungiPresenza.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new SetPresenza(i);
+			}
+		});
+		strumenti.add(aggiungiPresenza);
 		
 		inizializzaElenco();
 		modelTabellaPresenze = new DefaultTableModel(elencoPresenze, header);
@@ -92,4 +108,5 @@ public class GestionePresenze extends JFrame {
 	public Impianto getImpianto(){
 		return i;
 	}
+	
 }
