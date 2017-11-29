@@ -1,11 +1,13 @@
 package Turni;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import packageImpianti.Impianto;
 
-public class Turno {
+public class Turno implements Serializable {
 	
+	private static final long serialVersionUID = 1306739086969388747L;
 	private Impianto impiantoDiAppartenenza = null;
 	private String identificativo ="";
 	private int giornate =0;

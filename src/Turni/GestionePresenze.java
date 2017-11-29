@@ -21,19 +21,19 @@ import packageImpianti.Impianto;
 public class GestionePresenze extends JFrame {
 
 	private static final long serialVersionUID = -9102017953366760739L;
-	protected Impianto i;
+	protected static Impianto i;
 	private JToolBar strumenti;
 	private JButton aggiungiPresenza;
 	private JScrollPane scrollPane;
 	private JTable tabellaPresenze;
-	private DefaultTableModel modelTabellaPresenze;
-	private Vector<Vector<String>> elencoPresenze;
-	private Vector<String> header;
+	private static DefaultTableModel modelTabellaPresenze;
+	private static Vector<Vector<String>> elencoPresenze;
+	private static Vector<String> header;
 	
 	public GestionePresenze(Impianto i){
 		
 		super ("Presenze utilizabili nell'impianto di " +i.toString());
-		this.i = i;
+		GestionePresenze.i = i;
 		
 		getContentPane().setLayout(new BorderLayout());
 		
@@ -71,29 +71,48 @@ public class GestionePresenze extends JFrame {
 		setVisible(true);
 	}
 	
-	private void inizializzaElenco(){
+	private static void inizializzaElenco(){
 		header = new Vector<String>();
 		header.addElement("Identificativo");
 		header.addElement("Descrizione");
 		header.addElement("Ora Inizio");
 		header.addElement("Ora Fine");
 		header.addElement("Pausa");
+		header.addElement("Impegno");
 		
 		elencoPresenze = caricaElencoPresenze();
 	}
 	
-	private Vector<Vector<String>> caricaElencoPresenze(){
+	public static void aggiungiPresenzaAModel(Presenza p){
+		modelTabellaPresenze.addRow(presenzaToVector(p));
+	}
+	
+	private static Vector<String> presenzaToVector(Presenza p){
+		Vector<String> temp = new Vector<String>();
+		
+		temp.add(0, p.getIdentificativo());
+		temp.add(1, p.getDescrizione());
+		temp.add(2, p.getInizio().toString());
+		temp.add(3, p.getFine().toString());
+		temp.add(4, p.getPausa().toString());
+		temp.add(5, p.impegno().toString());
+		
+		return temp;
+	}
+	
+	private static Vector<Vector<String>> caricaElencoPresenze(){
 		Vector<Vector<String>> temp = new Vector<Vector<String>>();
 		Iterator<Presenza> iterator = ElencoPresenze.getElencoPresenze().iterator();
 		while (iterator.hasNext()){
 			Presenza p = iterator.next();
 			if (p.getImpianto().equals(i)) temp.add(aggiungiPresenza(p.getIdentificativo(), p.getDescrizione(), 
-					p.getInizio().toString(), p.getFine().toString(), p.getPausa().toString()));
+					p.getInizio().toString(), p.getFine().toString(), p.getPausa().toString(), p.impegno().toString()));
 		}
 		return temp;
 	}
 	
-	private Vector<String> aggiungiPresenza(String idetificativo, String descrizione, String oraInizio, String oraFine, String pausa){
+	private static Vector<String> aggiungiPresenza(String idetificativo, String descrizione, String oraInizio, String oraFine, String pausa,
+			String impegno){
 		Vector<String> temp = new Vector<String>();
 		
 		temp.add(0, idetificativo);
@@ -101,6 +120,7 @@ public class GestionePresenze extends JFrame {
 		temp.add(2, oraInizio);
 		temp.add(3, oraFine);
 		temp.add(4, pausa);
+		temp.add(5, impegno);
 		
 		return temp;
 	}

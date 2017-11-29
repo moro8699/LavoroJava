@@ -6,6 +6,8 @@ import packageImpianti.Impianto;
 
 public class Riposo extends Presenza {
 
+	private static final long serialVersionUID = 722076034313498377L;
+
 	public Riposo(Impianto i, String identificativo, String annotazione) {
 		
 		super(i, identificativo, annotazione, LocalTime.MIN, LocalTime.MAX, LocalTime.MIN);

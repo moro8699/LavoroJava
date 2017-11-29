@@ -1,11 +1,13 @@
 package Turni;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 
 import packageImpianti.Impianto;
 
-public abstract class Presenza {
-	
+public abstract class Presenza implements Serializable {
+
+	private static final long serialVersionUID = -1765844892878514071L;
 	protected Impianto i = null;
 	protected String identificativo = "", descrizione = "";
 	protected LocalTime inizio = null, fine = null, pausa = null;

@@ -1,9 +1,11 @@
 package Turni;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 
-public class Assenza {
+public class Assenza implements Serializable {
 	
+	private static final long serialVersionUID = -200309008393607238L;
 	private String identificativo = "";
 	private final LocalTime INIZIO = LocalTime.MIDNIGHT, FINE = LocalTime.MAX;
 	

@@ -3,12 +3,20 @@ package Turni;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.LocalTime;
 import java.util.Vector;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import Generici.Controllo;
 import packageImpianti.Impianto;
 
 public class SetPresenza extends JFrame {
@@ -22,6 +30,7 @@ public class SetPresenza extends JFrame {
 	private Presenza p = null;
 	private Impianto i = null;
 	private DefaultTableModel modelPresenza;
+	private JButton ok;
 	
 	public SetPresenza(Impianto i) {
 		
@@ -40,6 +49,7 @@ public class SetPresenza extends JFrame {
 	public void inizializzaForm(){
 		
 		getContentPane().setLayout(new BorderLayout());
+		
 		modelPresenza = new DefaultTableModel(){
 		private static final long serialVersionUID = -8087792651113476340L;
 
@@ -61,6 +71,13 @@ public class SetPresenza extends JFrame {
 		scrollpane = new JScrollPane(presenza);
 		
 		getContentPane().add(scrollpane, BorderLayout.CENTER);
+		
+		JPanel sud = new JPanel();
+		ok = new JButton("OK");
+		if (p != null) ok.addActionListener(new ModificaPresenza());
+		else ok.addActionListener(new InserisciPresenza());
+		sud.add(ok);
+		getContentPane().add(sud, BorderLayout.SOUTH);
 		
 		setSize(500,250);		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -114,7 +131,6 @@ public class SetPresenza extends JFrame {
 		
 		caricaDatiPresenza();
 	}
-
 	 
 	private void caricaDatiPresenza(){
 		
@@ -131,6 +147,76 @@ public class SetPresenza extends JFrame {
 			
 		}
 		 
+	}
+	
+	public boolean verificaCampi (){		
+		
+		if (Controllo.verificaRigaVuota((String) presenza.getValueAt(R_IDENT, 1))){
+			JOptionPane.showMessageDialog(null, "Identificativo Obbligatorio");
+			return false;			
+		}
+		
+		if (Controllo.verificaRigaVuota((String) presenza.getValueAt(R_DESCR, 1))){
+			JOptionPane.showMessageDialog(null, "Inserire una descrizione della Presenza inserita");
+			return false;			
+		}
+		
+		if (!(Controllo.verificaOraInserita((String) presenza.getValueAt(R_INIZIO, 1)))) {
+			JOptionPane.showMessageDialog(null, "Ora di Inizio Servizio non conforme");
+			return false;
+		}
+		if (!(Controllo.verificaOraInserita((String) presenza.getValueAt(R_FINE, 1)))){
+			JOptionPane.showMessageDialog(null, "Ora di Termine Servizio non conforme");
+			return false;
+		}
+		if (!(Controllo.verificaOraInserita((String) presenza.getValueAt(R_PAUSA, 1)))){
+			JOptionPane.showMessageDialog(null, "Orario di Pausa non conforme");
+			return false;		
+		}
+		
+		return true;
+	}
+	
+	public static LocalTime stringtoLocalTime(String orario){
+		
+		String[] splitter = orario.split(":");
+		
+		int ore = Integer.parseInt(splitter[0]),
+				minuti = Integer.parseInt(splitter[1]);
+		
+		return LocalTime.of(ore, minuti);
+	}
+	
+	class InserisciPresenza implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Presenza pres;
+			if (verificaCampi()) {
+				pres = new PresenzaLavorativa(i, 
+						(String) presenza.getValueAt(R_IDENT, 1),
+						(String) presenza.getValueAt(R_DESCR, 1), 
+						stringtoLocalTime((String) presenza.getValueAt(R_INIZIO, 1)),
+						stringtoLocalTime((String) presenza.getValueAt(R_FINE, 1)),
+						stringtoLocalTime((String) presenza.getValueAt(R_PAUSA, 1)));
+				if (ElencoPresenze.aggiungiPresenza(pres)){
+					GestionePresenze.aggiungiPresenzaAModel(pres);
+					setVisible(false);
+				}
+				else JOptionPane.showMessageDialog(null, "Presenza già esistente");
+			}
+		}
+		
+	}
+
+	class ModificaPresenza implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 	
 }	

@@ -14,14 +14,14 @@ public class mainLavoro {
  		ElencoPresenze.caricaLista(ElencoPresenze.getFileElencoPresenze());
 		
  		new Principale();
- 		
-		ElencoTelefonicoDipendenti.salvaLista(ElencoTelefonicoDipendenti.getFileElencoTel());
-		ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
-		ElencoPresenze.salvaLista(ElencoPresenze.getFileElencoPresenze());
+
 	}
 
 }
-
+ 		//Impianti.salvaLista(Impianti.getFileLista());
+ 		//ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
+		//ElencoTelefonicoDipendenti.salvaLista(ElencoTelefonicoDipendenti.getFileElencoTel());
+		//ElencoPresenze.salvaLista(ElencoPresenze.getFileElencoPresenze());
 		//ISTRUZIONI DI PROVA
 		//Dipendente a = new Dipendente("Fabio", "Morandi", "2940970");
 		//ListaDipendenti.addDipendente(a);

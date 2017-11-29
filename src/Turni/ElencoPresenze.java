@@ -10,8 +10,8 @@ import java.util.Iterator;
 
 public class ElencoPresenze implements Serializable{
 
-	private static final long serialVersionUID = 7274666461959091620L;
-	private static final String FILE_ELENCO_PRESENZE = "./SaveFiles/elencoPresenze.man";
+	private static final long serialVersionUID = -7274666461959091620L;
+	private static final String FILE_ELENCO_PRESENZE = "./SaveFiles/listaPresenze.man";
 	private static ArrayList<Presenza> elencoPresenze;
 
 	public static String getFileElencoPresenze() {
@@ -24,11 +24,11 @@ public class ElencoPresenze implements Serializable{
 	
 	//Salva i dati della nel file specificato
 	public static void salvaLista(String nomeFile){
-		ObjectOutputStream oss;
+		ObjectOutputStream oos;
 		try{
-			oss = new ObjectOutputStream(new FileOutputStream(nomeFile));
-			oss.writeObject(elencoPresenze);
-			oss.close();
+			oos = new ObjectOutputStream(new FileOutputStream(nomeFile));
+			oos.writeObject(elencoPresenze);
+			oos.close();
 		}
 		catch(Exception e){}
 	} 	
@@ -45,7 +45,7 @@ public class ElencoPresenze implements Serializable{
 		catch(Exception e){}
 	}		
 			
-	public static boolean addElemento(Presenza p){
+	public static boolean aggiungiPresenza(Presenza p){
 		Iterator<Presenza> iterator = elencoPresenze.iterator();
 		while(iterator.hasNext()){
 			Presenza temp = iterator.next();
@@ -55,6 +55,7 @@ public class ElencoPresenze implements Serializable{
 			}			
 		}
 		elencoPresenze.add(p);
+		ElencoPresenze.salvaLista(getFileElencoPresenze());
 		return true;
 	}
 			
