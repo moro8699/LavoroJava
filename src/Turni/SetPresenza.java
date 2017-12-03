@@ -31,6 +31,7 @@ public class SetPresenza extends JFrame {
 	private Impianto i = null;
 	private DefaultTableModel modelPresenza;
 	private JButton ok;
+	private int indiceLista;
 	
 	public SetPresenza(Impianto i) {
 		
@@ -39,9 +40,11 @@ public class SetPresenza extends JFrame {
 			
 	}
 	
-	public SetPresenza(Presenza p){
+	public SetPresenza(Presenza p, int indiceLista){
 		
 		this.p = p;
+		this.i = p.getImpianto();
+		this.indiceLista = indiceLista;
 		inizializzaForm();
 			
 	}
@@ -188,7 +191,7 @@ public class SetPresenza extends JFrame {
 	}
 	
 	class InserisciPresenza implements ActionListener {
-
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Presenza pres;
@@ -213,8 +216,19 @@ public class SetPresenza extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			
+			Presenza pres;
+			if (verificaCampi()) {
+				pres = new PresenzaLavorativa(i, 
+						(String) presenza.getValueAt(R_IDENT, 1),
+						(String) presenza.getValueAt(R_DESCR, 1), 
+						stringtoLocalTime((String) presenza.getValueAt(R_INIZIO, 1)),
+						stringtoLocalTime((String) presenza.getValueAt(R_FINE, 1)),
+						stringtoLocalTime((String) presenza.getValueAt(R_PAUSA, 1)));
+				if (ElencoPresenze.modificaPresenza(p, pres)){
+					GestionePresenze.ModificaPresenzaAModel(pres, indiceLista);
+					setVisible(false);
+				}
+			}
 		}
 		
 	}

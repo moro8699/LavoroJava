@@ -23,7 +23,7 @@ public class GestionePresenze extends JFrame {
 	private static final long serialVersionUID = -9102017953366760739L;
 	protected static Impianto i;
 	private JToolBar strumenti;
-	private JButton aggiungiPresenza;
+	private JButton aggiungiPresenza, modificaPresenza;
 	private JScrollPane scrollPane;
 	private JTable tabellaPresenze;
 	private static DefaultTableModel modelTabellaPresenze;
@@ -48,10 +48,21 @@ public class GestionePresenze extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new SetPresenza(i);
+				new SetPresenza(getImpianto());
 			}
 		});
 		strumenti.add(aggiungiPresenza);
+		
+		modificaPresenza = new JButton("Modifica");
+		modificaPresenza.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (tabellaPresenze.getSelectedRow()>=0)
+					new SetPresenza(vectorToPresenza(tabellaPresenze.getSelectedRow()), tabellaPresenze.getSelectedRow());
+			}
+		});
+		strumenti.add(modificaPresenza);
 		
 		inizializzaElenco();
 		modelTabellaPresenze = new DefaultTableModel(elencoPresenze, header);
@@ -100,6 +111,12 @@ public class GestionePresenze extends JFrame {
 		return temp;
 	}
 	
+	private Presenza vectorToPresenza (int indice){
+		Vector<String> temp = elencoPresenze.elementAt(indice);
+		Presenza presenzaTemp = new PresenzaLavorativa(i, temp.elementAt(0), "", null, null, null);	
+		return ElencoPresenze.restituisciPresenzaInElenco(presenzaTemp);
+	}
+	
 	private static Vector<Vector<String>> caricaElencoPresenze(){
 		Vector<Vector<String>> temp = new Vector<Vector<String>>();
 		Iterator<Presenza> iterator = ElencoPresenze.getElencoPresenze().iterator();
@@ -111,11 +128,11 @@ public class GestionePresenze extends JFrame {
 		return temp;
 	}
 	
-	private static Vector<String> aggiungiPresenza(String idetificativo, String descrizione, String oraInizio, String oraFine, String pausa,
+	private static Vector<String> aggiungiPresenza(String identificativo, String descrizione, String oraInizio, String oraFine, String pausa,
 			String impegno){
 		Vector<String> temp = new Vector<String>();
 		
-		temp.add(0, idetificativo);
+		temp.add(0, identificativo);
 		temp.add(1, descrizione);
 		temp.add(2, oraInizio);
 		temp.add(3, oraFine);
@@ -124,8 +141,19 @@ public class GestionePresenze extends JFrame {
 		
 		return temp;
 	}
+	
+	public static void ModificaPresenzaAModel(Presenza p, int indice){
+		
+		modelTabellaPresenze.setValueAt(p.getIdentificativo(), indice, 0);
+		modelTabellaPresenze.setValueAt(p.getDescrizione(), indice, 1);
+		modelTabellaPresenze.setValueAt(p.getInizio().toString(), indice, 2);
+		modelTabellaPresenze.setValueAt(p.getFine().toString(), indice, 3);
+		modelTabellaPresenze.setValueAt(p.getPausa().toString(), indice, 4);
+		modelTabellaPresenze.setValueAt(p.impegno().toString(), indice, 5);
+		
+	}
 
-	public Impianto getImpianto(){
+	public static Impianto getImpianto(){
 		return i;
 	}
 	

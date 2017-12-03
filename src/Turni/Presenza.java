@@ -8,17 +8,19 @@ import packageImpianti.Impianto;
 public abstract class Presenza implements Serializable {
 
 	private static final long serialVersionUID = -1765844892878514071L;
-	protected Impianto i = null;
-	protected String identificativo = "", descrizione = "";
-	protected LocalTime inizio = null, fine = null, pausa = null;
+	private Impianto i = null;
+	private String identificativo = "", descrizione = "";
+	private LocalTime inizio = null, fine = null, pausa = null;
 	
 	public Presenza (Impianto i, String identificativo, String descrizione, LocalTime inizio, LocalTime fine, LocalTime pausa) {	
-		this.i = i;
-		this.identificativo = identificativo;
-		this.inizio = inizio;
-		this.fine = fine;
-		this.pausa = pausa;
-		this.descrizione = descrizione;
+		
+		setImpianto(i);
+		setIdentificativo(identificativo);
+		setDescrizione(descrizione);
+		setInizio(inizio);
+		setFine(fine);
+		setPausa(pausa);
+		
 	}
 	
 	public Presenza (Impianto i, String identificativo, String annotazione, LocalTime inizio, LocalTime fine){
@@ -27,21 +29,39 @@ public abstract class Presenza implements Serializable {
 	
 	public Impianto getImpianto(){
 		return i;
-	}	
+	}
+	public void setImpianto(Impianto i){
+		this.i = i;
+	}
 	public String getIdentificativo(){
 		return identificativo;
+	}
+	public void setIdentificativo(String identificativo){
+		this.identificativo = identificativo;
 	}
 	public String getDescrizione(){
 		return descrizione;
 	}
+	public void setDescrizione(String descrizione){
+		this.descrizione = descrizione;
+	}
 	public LocalTime getInizio(){
 		return inizio;
+	}
+	public void setInizio(LocalTime inizio){
+		this.inizio = inizio;
 	}
 	public LocalTime getFine(){
 		return fine;
 	}
+	public void setFine(LocalTime fine) {
+		this.fine = fine;
+	}
 	public LocalTime getPausa(){
 		return pausa;
+	}
+	public void setPausa (LocalTime pausa){
+		this.pausa = pausa;
 	}
 	
 	public LocalTime impegno(){
@@ -88,7 +108,7 @@ public abstract class Presenza implements Serializable {
 		if (obj == null) return false;
 		if (!(obj instanceof Presenza)) return false;  
 		Presenza p = (Presenza) obj;		
-		return p.getIdentificativo().equals(this.getIdentificativo()) && 
-				p.getImpianto().equals(this.getImpianto());		
+		return (p.getIdentificativo().equals(this.getIdentificativo())) && 
+				(p.getImpianto().equals(this.getImpianto()));		
 	}
 }

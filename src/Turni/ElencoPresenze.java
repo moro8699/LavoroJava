@@ -44,19 +44,44 @@ public class ElencoPresenze implements Serializable{
 		}
 		catch(Exception e){}
 	}		
-			
+	
+	//Aggiunge una Presenza alla Lista
 	public static boolean aggiungiPresenza(Presenza p){
-		Iterator<Presenza> iterator = elencoPresenze.iterator();
-		while(iterator.hasNext()){
-			Presenza temp = iterator.next();
-			if(temp.equals(p)){
-				System.out.println("Elemento già esistente");
-				return false;
-			}			
-		}
+
+		if(restituisciPresenzaInElenco(p) != null){
+			System.out.println("Elemento già esistente");
+			return false;
+		}			
 		elencoPresenze.add(p);
 		ElencoPresenze.salvaLista(getFileElencoPresenze());
 		return true;
+	}
+	
+	//Se presente in elenco restituisce la Presenza selezionata
+	public static Presenza restituisciPresenzaInElenco (Presenza altraPresenza){
+		Iterator<Presenza> iterator = elencoPresenze.iterator();
+		while(iterator.hasNext()){
+			Presenza temp = iterator.next();
+			if (temp.equals(altraPresenza)) return temp;
+		}
+		return null;
+	}
+
+	public static boolean modificaPresenza(Presenza originale, Presenza modificata){
+		Presenza presenzaOriginale = restituisciPresenzaInElenco(originale),
+				presenzaModificata = restituisciPresenzaInElenco(modificata);
+		
+		if(presenzaModificata != null && modificata.getIdentificativo() != originale.getIdentificativo()){
+			System.out.println("Elemento già esistente");
+			return false;
+		}
+		presenzaOriginale.setIdentificativo(modificata.getIdentificativo());
+		presenzaOriginale.setDescrizione(modificata.getDescrizione());
+		presenzaOriginale.setInizio(modificata.getInizio());
+		presenzaOriginale.setFine(modificata.getFine());
+		presenzaOriginale.setPausa(modificata.getPausa());
+		return true;
+		
 	}
 			
 	public static boolean rimuoviElemento(Presenza p) {
