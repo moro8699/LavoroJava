@@ -36,6 +36,7 @@ public class SetPresenza extends JFrame {
 	public SetPresenza(Impianto i) {
 		
 		this.i = i;
+		InizializzaModelNuovaPresenza();
 		inizializzaForm();
 			
 	}
@@ -45,13 +46,12 @@ public class SetPresenza extends JFrame {
 		this.p = p;
 		this.i = p.getImpianto();
 		this.indiceLista = indiceLista;
+		InizializzaModelModificaPresenza();
 		inizializzaForm();
 			
 	}
 	
-	public void inizializzaForm(){
-		
-		getContentPane().setLayout(new BorderLayout());
+	public void InizializzaModelNuovaPresenza(){
 		
 		modelPresenza = new DefaultTableModel(){
 		private static final long serialVersionUID = -8087792651113476340L;
@@ -63,6 +63,30 @@ public class SetPresenza extends JFrame {
 		        return false;
 		    }		
 		};
+		
+	}
+	
+	public void InizializzaModelModificaPresenza(){
+		
+		modelPresenza = new DefaultTableModel(){
+		private static final long serialVersionUID = -8087792651113476340L;
+
+			@Override
+		    public boolean isCellEditable(int row, int column) {
+				if ((row == R_IMPIANTO && column == 1) ||
+						(row == R_IDENT && column ==1))return false;
+				if (column != 0) return true;
+		        return false;
+		    }		
+		};
+		
+	}
+	
+	public void inizializzaForm(){
+		
+		getContentPane().setLayout(new BorderLayout());
+		
+
 		
 		inizializzaHeader();
 			
@@ -110,7 +134,7 @@ public class SetPresenza extends JFrame {
 		
 		valorePresenza = new Vector<String>();		
 		
-		valorePresenza.add(R_IMPIANTO, i.toString());		
+		valorePresenza.add(R_IMPIANTO, i.toString());	
 		valorePresenza.add(R_IDENT, "");		
 		valorePresenza.add(R_DESCR, "");		
 		valorePresenza.add(R_INIZIO, "");

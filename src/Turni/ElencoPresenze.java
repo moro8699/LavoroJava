@@ -80,6 +80,7 @@ public class ElencoPresenze implements Serializable{
 		presenzaOriginale.setInizio(modificata.getInizio());
 		presenzaOriginale.setFine(modificata.getFine());
 		presenzaOriginale.setPausa(modificata.getPausa());
+		ElencoPresenze.salvaLista(FILE_ELENCO_PRESENZE);
 		return true;
 		
 	}

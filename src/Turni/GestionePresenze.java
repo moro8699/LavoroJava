@@ -65,7 +65,13 @@ public class GestionePresenze extends JFrame {
 		strumenti.add(modificaPresenza);
 		
 		inizializzaElenco();
-		modelTabellaPresenze = new DefaultTableModel(elencoPresenze, header);
+		modelTabellaPresenze = new DefaultTableModel(elencoPresenze, header){
+			private static final long serialVersionUID = 8359235299989940736L;		    
+			@Override
+			public boolean isCellEditable(int row, int column) {
+		        return false;
+		    }			
+		};
 		tabellaPresenze = new JTable(modelTabellaPresenze);
 		scrollPane = new JScrollPane(tabellaPresenze);
 		
