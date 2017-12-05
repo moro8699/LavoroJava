@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Iterator;
@@ -21,10 +23,13 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import com.michaelbaranov.microba.calendar.DatePicker;
+
 import Generici.Controllo;
 import main.Principale;
 import packageImpianti.Impianti;
 import packageImpianti.Impianto;
+
 
 public class SetDipendenteSW extends JFrame {
 	
@@ -38,6 +43,7 @@ public class SetDipendenteSW extends JFrame {
 	private Vector<String> nomeRiga, dipendente, header;
 	private Vector<Vector<String>> dati;
 	private DefaultTableModel modelloDatiDipendente;
+	final DatePicker picker;
 	
 	public SetDipendenteSW (Dipendente d){
 		
@@ -61,6 +67,7 @@ public class SetDipendenteSW extends JFrame {
 		modelloDatiDipendente.setDataVector(dati, header);
 		datiDipendente = new JTable(modelloDatiDipendente);
 		datiDipendente.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		datiDipendente.addMouseListener(new InserisciData());
 		JScrollPane scroll = new JScrollPane(datiDipendente);
 		
 		rowAttuale = Principale.posizioneAttualeTable();
@@ -86,6 +93,12 @@ public class SetDipendenteSW extends JFrame {
 		modRecapiti.addActionListener(new Recapiti());
 		assegnaImpianto = new JButton("Assegnazione Impianto");
 		assegnaImpianto.addActionListener(new ApriAssegnaImpianto());
+		
+		JFrame framePicker = new JFrame("");
+		JPanel panelPicker = new JPanel();
+		picker = new DatePicker();
+		panelPicker.add(picker);
+		framePicker.add(panelPicker);
 		
 		sud.add(ok);
 		sud.add(cancel);
@@ -280,6 +293,49 @@ public class SetDipendenteSW extends JFrame {
 		}
 		
 	}
+	
+	//Testing
+		class InserisciData implements MouseListener{
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				
+				if ((datiDipendente.getSelectedRow() == R_NASCITA) &&
+						(datiDipendente.getSelectedColumn() == 1)){
+										
+					datiDipendente.setValueAt(picker.getDate(), R_NASCITA, 1);	
+					
+				}
+
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		}
 	
 }
 
