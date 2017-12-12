@@ -1,5 +1,7 @@
 package Generici;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
@@ -32,5 +34,35 @@ public class Controllo {
 	public static boolean verificaRigaVuota (String stringa){
 		if(Pattern.matches("[0-9a-zA-Z]", stringa)) return true;
 		return false;
+	}
+	
+	//Converte un Dato di tipo Date in LocalDate
+	public static LocalDate DateToLocalDate (Date data){
+		if (data == null) return null;
+		
+		String[] splitter = data.toString().split(" ");
+		
+		return LocalDate.of(Integer.parseInt(splitter[5]), 
+				monthStringToInteger(splitter[1]), 
+				Integer.parseInt(splitter[2]));
+	}
+	
+	private static int monthStringToInteger(String month){
+		//Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+		switch (month){
+			case "Jan": return 1;
+			case "Feb": return 2;
+			case "Mar": return 3;
+			case "Apr": return 4;
+			case "May": return 5;
+			case "Jun": return 6;
+			case "Jul": return 7;
+			case "Aug": return 8;
+			case "Sep": return 9;
+			case "Oct": return 10;
+			case "Nov": return 11;
+			case "Dec": return 12; 
+		}
+		return 0;
 	}
 }

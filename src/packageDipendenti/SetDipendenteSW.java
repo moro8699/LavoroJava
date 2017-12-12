@@ -5,12 +5,11 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
-import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -21,9 +20,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
 
 import com.michaelbaranov.microba.calendar.DatePicker;
+import com.michaelbaranov.microba.calendar.DatePickerCellEditor;
 
 import Generici.Controllo;
 import main.Principale;
@@ -34,41 +35,26 @@ import packageImpianti.Impianto;
 public class SetDipendenteSW extends JFrame {
 	
 	private static final long serialVersionUID = -8722179695766788480L;
-	protected final static int R_NOME =0, R_COGNOME =1, R_IMPIANTO =2, R_NASCITA =3, R_ASSUNZ =4, R_RECAPITI =5;
+	protected final static int NOME =0, COGNOME =1, IMPIANTO =2, NASCITA =3, ASSUNZ =4, RECAPITI =5;
 	private int rowAttuale = 0;
 	protected static JLabel impianto;
 	protected JButton ok, cancel, assegnaImpianto, modRecapiti;
 	private static Dipendente d;
 	protected static JTable datiDipendente;
-	private Vector<String> nomeRiga, dipendente, header;
-	private Vector<Vector<String>> dati;
-	private DefaultTableModel modelloDatiDipendente;
-	final DatePicker picker;
+	private DatePicker picker;
+	private SetDipendenteTableModel model;
+	Date dataNascitaDate;
 	
 	public SetDipendenteSW (Dipendente d){
 		
 		SetDipendenteSW.d = d;
 		
-		inizializzaDatiDipendente();
-		
-		modelloDatiDipendente = new DefaultTableModel() {
-
-			private static final long serialVersionUID = 1798174918491824698L;
-
-			@Override
-		    public boolean isCellEditable(int row, int column) {
-				if (row == R_IMPIANTO && column == 1) return false;
-		        if (row == R_RECAPITI && column == 1) return false;		       
-				if (column != 0) return true;
-		        return false;
-		    }		
-		};
-		
-		modelloDatiDipendente.setDataVector(dati, header);
-		datiDipendente = new JTable(modelloDatiDipendente);
+		model = new SetDipendenteTableModel();
+		datiDipendente = new JTable(model);
 		datiDipendente.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		datiDipendente.addMouseListener(new InserisciData());
-		JScrollPane scroll = new JScrollPane(datiDipendente);
+		JScrollPane scroll = new JScrollPane(datiDipendente);		
+		dataNascitaDate = LocalDateToDate(d.getDataDiNascita()); 
+		setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(NASCITA), dataNascitaDate);		
 		
 		rowAttuale = Principale.posizioneAttualeTable();
 		
@@ -93,13 +79,7 @@ public class SetDipendenteSW extends JFrame {
 		modRecapiti.addActionListener(new Recapiti());
 		assegnaImpianto = new JButton("Assegnazione Impianto");
 		assegnaImpianto.addActionListener(new ApriAssegnaImpianto());
-		
-		JFrame framePicker = new JFrame("");
-		JPanel panelPicker = new JPanel();
-		picker = new DatePicker();
-		panelPicker.add(picker);
-		framePicker.add(panelPicker);
-		
+				
 		sud.add(ok);
 		sud.add(cancel);
 		sud.add(modRecapiti);
@@ -112,50 +92,33 @@ public class SetDipendenteSW extends JFrame {
 		
 	}
 	
-	public void inizializzaDatiDipendente() {
+	private void setDataPickerColumn(JTable tabella, TableColumn colonnaDaSettare, Date valoreIniziale){
 		
-		header = new Vector<String>();
-		nomeRiga = new Vector<String>();
-		dipendente = new Vector<String>();
-		dati = new Vector<>();
+		if (valoreIniziale == null) picker = new DatePicker();
+		else picker = new DatePicker(valoreIniziale);
+		colonnaDaSettare.setCellEditor(new DatePickerCellEditor(picker));
 		
-		header.addElement("Attributo");
-		header.addElement("Valore");
-		
-		nomeRiga.add(R_NOME, "Nome");
-		dipendente.add(R_NOME, d.getNome());
-		nomeRiga.add(R_COGNOME, "Cognome");
-		dipendente.add(R_COGNOME, d.getCognome());
-		nomeRiga.add(R_IMPIANTO, "Impianto");
-		dipendente.add(R_IMPIANTO, d.getImpiantoDiAppartenenza());
-		nomeRiga.add(R_NASCITA, "Data di Nascita");
-		dipendente.add(R_NASCITA, DataDiNascitaToString(d));
-		nomeRiga.add(R_ASSUNZ, "Assunzione");
-		dipendente.add(R_ASSUNZ, DataAssunzioneToString(d));
-		nomeRiga.add(R_RECAPITI, "Recapiti");
-		dipendente.add(R_RECAPITI, ElencoTelefonicoDipendenti.cercaTelefoni(d));
-		
-		for(int i =0; i<nomeRiga.size(); i++) {
-			Vector<String> temp = new Vector<>();
-			temp.addElement(nomeRiga.elementAt(i));
-			temp.addElement(dipendente.elementAt(i));
-			dati.addElement(temp);
-		}
-		
+		picker.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(picker.getDate());//print the current date
+                
+            }
+        });
 	}
 	
-	public String DataDiNascitaToString(Dipendente d) {
+	public String dataDiNascitaToString(Dipendente d) {
 		if (d.getDataDiNascita() == null) return "";
 		return d.getDataDiNascita().toString();
 	}
 	
-	public String DataAssunzioneToString(Dipendente d){
+	public String dataAssunzioneToString(Dipendente d){
 		if (d.getDataAssunzione() == null) return "";
 		return d.getDataAssunzione().toString();
 	}
 	
 	public static void aggiornaRecapiti(){
-		datiDipendente.setValueAt(ElencoTelefonicoDipendenti.cercaTelefoni(d), R_RECAPITI, 1);
+		datiDipendente.setValueAt(ElencoTelefonicoDipendenti.cercaTelefoni(d), 0, RECAPITI);
 	}
 	
 	public void inserisciDataAssunzione (Dipendente d, String data){
@@ -169,6 +132,15 @@ public class SetDipendenteSW extends JFrame {
 		}
 	}
 	
+	public void inserisciDataDiNascita (Dipendente d, Date data){
+		
+		try {
+			inserisciDataDiNascita(d, Controllo.DateToLocalDate(data).toString());
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.toString());
+		}	
+	}
+	
 	public void inserisciDataDiNascita (Dipendente d, String data){
 		if (Controllo.verificaDataInserita(data)){
 			String[] dataSplit = data.split("-");
@@ -177,10 +149,82 @@ public class SetDipendenteSW extends JFrame {
 			} catch (DateTimeException e) {
 				JOptionPane.showMessageDialog(null, e.toString());
 			}
+			ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
 		}
 		
-	}	
+	}
 	
+	private Date LocalDateToDate(LocalDate dataDiNascita) {
+		if(dataDiNascita == null) return null;
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, dataDiNascita.getYear());
+		cal.set(Calendar.MONTH, dataDiNascita.getMonthValue());
+		cal.set(Calendar.DAY_OF_MONTH, dataDiNascita.getDayOfMonth());
+		return cal.getTime();
+	}
+	
+	class SetDipendenteTableModel extends AbstractTableModel {
+       
+		private static final long serialVersionUID = -6720720544764467716L;
+		
+			
+		
+		private String[] columnNames = {"Nome",
+                                        "Cognome",
+                                        "Impianto",
+                                        "Data di Nascita",
+                                        "Assunzione", 
+                                        "recapiti"};
+		
+		private Object[][] data = {
+				{d.getNome(), 
+					d.getCognome(),
+					d.getImpiantoDiAppartenenza(), 
+					dataNascitaDate,
+					dataAssunzioneToString(d),
+					ElencoTelefonicoDipendenti.cercaTelefoni(d)}};
+ 
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+ 
+
+
+		public int getRowCount() {
+            return data.length;
+        }
+ 
+        public String getColumnName(int col) {
+            return columnNames[col];
+        }
+ 
+        public Object getValueAt(int row, int col) {
+            return data[row][col];
+        }
+        
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+		public Class getColumnClass(int c){
+        	try{
+        		return getValueAt(0, c).getClass();
+        	} catch (NullPointerException e){
+        		return Object.class;
+        	}
+			
+        }
+ 
+        public boolean isCellEditable(int row, int col) {
+
+			if (row == 0 && col == IMPIANTO) return false;
+	        if (row == 0 && col == RECAPITI) return false;
+	        return true;
+        }
+ 
+        public void setValueAt(Object value, int row, int col) {
+            data[row][col] = value;
+            fireTableCellUpdated(row, col);
+        }
+	}
+ 	
 	class ApriAssegnaImpianto implements ActionListener {
 
 		@Override
@@ -231,7 +275,7 @@ public class SetDipendenteSW extends JFrame {
 				Impianto impiantoAttuale = d.getImpiantoDiAppartenenza()!= "" ? Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza()) : null;
 				if (impiantoAttuale != null) impiantoAttuale.rimuoviDipendente(d);
 				nuovoImpianto.assegnaDipendente(d);
-				modelloDatiDipendente.setValueAt(nuovoImpianto.getNomeImpianto(), R_IMPIANTO, 1);
+				model.setValueAt(nuovoImpianto.getNomeImpianto(), 0, IMPIANTO);
 				ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
 				Impianti.salvaLista(Impianti.getFileLista());
 				
@@ -243,16 +287,19 @@ public class SetDipendenteSW extends JFrame {
 	class Ok implements ActionListener{
 		
 		Dipendente dipendente;
+		
 		public Ok(Dipendente dip) {
 			dipendente = dip;
 		}
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			String nome = (String) datiDipendente.getValueAt(R_NOME, 1),
-					cognome = (String) datiDipendente.getValueAt(R_COGNOME, 1),
-					dataAssunzione = (String) datiDipendente.getValueAt(R_ASSUNZ, 1),
-					dataNascita = (String) datiDipendente.getValueAt(R_NASCITA, 1);
+			String nome = (String) datiDipendente.getValueAt(0, NOME),
+					cognome = (String) datiDipendente.getValueAt(0, COGNOME),
+					dataAssunzione = (String) datiDipendente.getValueAt(0, ASSUNZ);
+					
+			Date dataNascita = (Date) datiDipendente.getValueAt(0, NASCITA);
 			
 			Dipendente d = new Dipendente(nome, cognome, dipendente.getMatricola());
 			Iterator<Dipendente> it = ListaDipendenti.getListaDipendenti().iterator();
@@ -262,7 +309,7 @@ public class SetDipendenteSW extends JFrame {
 					dip.setNome(nome);
 					dip.setCognome(cognome);
 					if (dataAssunzione!="") inserisciDataAssunzione(dip, dataAssunzione);
-					if (dataNascita != "") inserisciDataDiNascita(dip, dataNascita);
+					if (dataNascita.toString() != "") inserisciDataDiNascita(dip, dataNascita);
 					Principale.getModelloTable().setValueAt
 						(cognome + " " + nome , rowAttuale, Principale.COLONNA_COGNOME_NOME);
 					Principale.getModelloTable().setValueAt
@@ -294,27 +341,20 @@ public class SetDipendenteSW extends JFrame {
 		
 	}
 	
-	//Testing
+	/*Testing
 		class InserisciData implements MouseListener{
-
 			@Override
-			public void mouseClicked(MouseEvent e) {
-
-				
-				if ((datiDipendente.getSelectedRow() == R_NASCITA) &&
-						(datiDipendente.getSelectedColumn() == 1)){
-										
-					datiDipendente.setValueAt(picker.getDate(), R_NASCITA, 1);	
-					
-				}
-
-				
+			public void mouseClicked(MouseEvent e) {				
+				if ((datiDipendente.getSelectedRow() == 0) &&
+						(datiDipendente.getSelectedColumn() == NASCITA)){										
+					//datiDipendente.setValueAt(picker.getDate(), R_NASCITA, 1);	
+					framePicker.setSize(200,200);
+					framePicker.setVisible(true);
+				}				
 			}
-
 			@Override
 			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
+				// TODO Auto-generated method stub				
 			}
 
 			@Override
@@ -335,7 +375,7 @@ public class SetDipendenteSW extends JFrame {
 				
 			}
 			
-		}
+		}*/
 	
 }
 
