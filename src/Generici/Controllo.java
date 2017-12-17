@@ -1,6 +1,7 @@
 package Generici;
 
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -47,8 +48,18 @@ public class Controllo {
 				Integer.parseInt(splitter[2]));
 	}
 	
+	public static Date localDateToDate(LocalDate data) {
+		if(data == null) return null;
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, data.getYear());
+		cal.set(Calendar.MONTH, data.getMonthValue()-1);
+		cal.set(Calendar.DAY_OF_MONTH, data.getDayOfMonth());
+		return cal.getTime();
+	}
+	//Convert i Mesi Date in dato Intero 
+	//Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
 	private static int monthStringToInteger(String month){
-		//Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+
 		switch (month){
 			case "Jan": return 1;
 			case "Feb": return 2;

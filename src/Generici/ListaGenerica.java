@@ -7,20 +7,10 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public abstract class ListaGenerica<E> {
-
-	protected  ArrayList<E> lista = null;
-	
-	public ListaGenerica (ArrayList<E> lista) {
-		setLista(lista);
-	}
-	
-	public void setLista(ArrayList<E> l) {
-			lista = l;
-	}
+public abstract class ListaGenerica {
 	
 	//Salva i dati della nel file specificato
-	public  void salvaLista(String nomeFile){
+	public  static <E> void salvaLista(String nomeFile, ArrayList<E> lista){
 		ObjectOutputStream oss;
 		try{
 			oss = new ObjectOutputStream(new FileOutputStream(nomeFile));
@@ -32,40 +22,53 @@ public abstract class ListaGenerica<E> {
 			
 	//Carica i dati della rubrica dal file specificato
 	@SuppressWarnings("unchecked")
-	public void caricaLista(String nomeFile){
-		lista = new ArrayList<E>();
+	public static <E> ArrayList<E> caricaLista(String nomeFile){
+		ArrayList<E> lista = new ArrayList<E>();
 		ObjectInputStream ois;
 		try{
-			ois = new ObjectInputStream(new FileInputStream(nomeFile));
+			ois = new ObjectInputStream(new FileInputStream(nomeFile));		
 			lista = (ArrayList<E>) ois.readObject();
+			ois.close();
+			return lista;
 		}
-		catch(Exception e){}
+		catch(Exception e){return null;}
 	}		
-			
-	public boolean addElemento(E el){
-		Iterator<E> iterator = lista.iterator();
-		while(iterator.hasNext()){
-			E elemento = iterator.next();
-			if(elemento.equals(el)){
-				System.out.println("Elemento già esistente");
-				return false;
-			}			
+	
+	//Aggiunge un elemento alla Lista
+	public static <E> ArrayList<E> addElemento(E el, ArrayList<E> lista){
+		
+		if(!(verificaElemento(el, lista))) {
+			lista.add(el);
 		}
-		lista.add(el);
-		return true;
+		else System.out.println("Elemento già esistente");
+		
+		return lista;
 	}
-			
-	@SuppressWarnings("unchecked")
-	public boolean rimuoviElemento(Object obj) {
+	
+	//Test
+	public static <E> boolean rimuoviElemento(E el, ArrayList<E> lista ) {
 		Iterator<E> iterator = lista.iterator();
 		while (iterator.hasNext()){
-			if (iterator.next().equals((E) obj)){
+			if (iterator.next().equals(el)){
 				System.out.println("Elemento rimosso con successo");
 				iterator.remove();
 				return true;
 			}
 		}
 		System.out.println("Elemento non trovato");
+		return false;
+	}
+	
+	//Verifica se un elemento è già Presente
+	private static <E> boolean verificaElemento(E el, ArrayList<E> lista){
+		Iterator<E> iterator = lista.iterator();
+		while(iterator.hasNext()){
+			E elemento = iterator.next();
+			if(elemento.equals(el)){
+
+				return true;
+			}			
+		}
 		return false;
 	}
 	

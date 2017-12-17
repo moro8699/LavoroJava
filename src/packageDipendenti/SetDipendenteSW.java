@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -43,18 +42,19 @@ public class SetDipendenteSW extends JFrame {
 	protected static JTable datiDipendente;
 	private DatePicker picker;
 	private SetDipendenteTableModel model;
-	Date dataNascitaDate;
+	Date dataNascitaDate, dataAssunzioneDate;
 	
 	public SetDipendenteSW (Dipendente d){
 		
 		SetDipendenteSW.d = d;
-		
+		dataAssunzioneDate = Controllo.localDateToDate(d.getDataAssunzione());
+		dataNascitaDate = Controllo.localDateToDate(d.getDataDiNascita()); 
 		model = new SetDipendenteTableModel();
 		datiDipendente = new JTable(model);
+		setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(NASCITA), dataNascitaDate);
+		setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(ASSUNZ), dataAssunzioneDate);		
 		datiDipendente.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane scroll = new JScrollPane(datiDipendente);		
-		dataNascitaDate = LocalDateToDate(d.getDataDiNascita()); 
-		setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(NASCITA), dataNascitaDate);		
+		JScrollPane scroll = new JScrollPane(datiDipendente);						
 		
 		rowAttuale = Principale.posizioneAttualeTable();
 		
@@ -121,6 +121,15 @@ public class SetDipendenteSW extends JFrame {
 		datiDipendente.setValueAt(ElencoTelefonicoDipendenti.cercaTelefoni(d), 0, RECAPITI);
 	}
 	
+	public void inserisciDataAssunzione (Dipendente d, Date data){
+		
+		try {
+			inserisciDataAssunzione(d, Controllo.DateToLocalDate(data).toString());
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.toString());
+		}	
+	}
+	
 	public void inserisciDataAssunzione (Dipendente d, String data){
 		if (Controllo.verificaDataInserita(data)){
 			String[] dataSplit = data.split("-");
@@ -154,15 +163,6 @@ public class SetDipendenteSW extends JFrame {
 		
 	}
 	
-	private Date LocalDateToDate(LocalDate dataDiNascita) {
-		if(dataDiNascita == null) return null;
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, dataDiNascita.getYear());
-		cal.set(Calendar.MONTH, dataDiNascita.getMonthValue());
-		cal.set(Calendar.DAY_OF_MONTH, dataDiNascita.getDayOfMonth());
-		return cal.getTime();
-	}
-	
 	class SetDipendenteTableModel extends AbstractTableModel {
        
 		private static final long serialVersionUID = -6720720544764467716L;
@@ -181,7 +181,7 @@ public class SetDipendenteSW extends JFrame {
 					d.getCognome(),
 					d.getImpiantoDiAppartenenza(), 
 					dataNascitaDate,
-					dataAssunzioneToString(d),
+					dataAssunzioneDate,
 					ElencoTelefonicoDipendenti.cercaTelefoni(d)}};
  
         public int getColumnCount() {
@@ -296,10 +296,10 @@ public class SetDipendenteSW extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			
 			String nome = (String) datiDipendente.getValueAt(0, NOME),
-					cognome = (String) datiDipendente.getValueAt(0, COGNOME),
-					dataAssunzione = (String) datiDipendente.getValueAt(0, ASSUNZ);
+					cognome = (String) datiDipendente.getValueAt(0, COGNOME);
 					
-			Date dataNascita = (Date) datiDipendente.getValueAt(0, NASCITA);
+			Date dataNascita = (Date) datiDipendente.getValueAt(0, NASCITA),
+					dataAssunzione = (Date) datiDipendente.getValueAt(0, ASSUNZ);
 			
 			Dipendente d = new Dipendente(nome, cognome, dipendente.getMatricola());
 			Iterator<Dipendente> it = ListaDipendenti.getListaDipendenti().iterator();
@@ -308,8 +308,8 @@ public class SetDipendenteSW extends JFrame {
 				if (dip.equals(d)){
 					dip.setNome(nome);
 					dip.setCognome(cognome);
-					if (dataAssunzione!="") inserisciDataAssunzione(dip, dataAssunzione);
-					if (dataNascita.toString() != "") inserisciDataDiNascita(dip, dataNascita);
+					if (dataAssunzione.toString() !="") inserisciDataAssunzione(dip, dataAssunzione);
+					if (dataNascita.toString() !="") inserisciDataDiNascita(dip, dataNascita);
 					Principale.getModelloTable().setValueAt
 						(cognome + " " + nome , rowAttuale, Principale.COLONNA_COGNOME_NOME);
 					Principale.getModelloTable().setValueAt

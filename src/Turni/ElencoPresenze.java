@@ -1,14 +1,16 @@
 package Turni;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+//import java.io.FileInputStream;
+//import java.io.FileOutputStream;
+//import java.io.ObjectInputStream;
+//import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ElencoPresenze implements Serializable{
+import Generici.ListaGenerica;
+
+public class ElencoPresenze extends ListaGenerica implements Serializable{
 
 	private static final long serialVersionUID = -7274666461959091620L;
 	private static final String FILE_ELENCO_PRESENZE = "./SaveFiles/listaPresenze.man";
@@ -22,28 +24,9 @@ public class ElencoPresenze implements Serializable{
 		return elencoPresenze;
 	}
 	
-	//Salva i dati della nel file specificato
-	public static void salvaLista(String nomeFile){
-		ObjectOutputStream oos;
-		try{
-			oos = new ObjectOutputStream(new FileOutputStream(nomeFile));
-			oos.writeObject(elencoPresenze);
-			oos.close();
-		}
-		catch(Exception e){}
-	} 	
-			
-	//Carica i dati della rubrica dal file specificato
-	@SuppressWarnings("unchecked")
-	public static void caricaLista(String nomeFile){
-		elencoPresenze = new ArrayList<Presenza>();
-		ObjectInputStream ois;
-		try{
-			ois = new ObjectInputStream(new FileInputStream(nomeFile));
-			elencoPresenze = (ArrayList<Presenza>) ois.readObject();
-		}
-		catch(Exception e){}
-	}		
+	public static void caricaElenco(){
+		elencoPresenze = caricaLista(FILE_ELENCO_PRESENZE);
+	}
 	
 	//Aggiunge una Presenza alla Lista
 	public static boolean aggiungiPresenza(Presenza p){
@@ -53,7 +36,7 @@ public class ElencoPresenze implements Serializable{
 			return false;
 		}			
 		elencoPresenze.add(p);
-		ElencoPresenze.salvaLista(getFileElencoPresenze());
+		ElencoPresenze.salvaLista(getFileElencoPresenze(), elencoPresenze);
 		return true;
 	}
 	
@@ -80,7 +63,7 @@ public class ElencoPresenze implements Serializable{
 		presenzaOriginale.setInizio(modificata.getInizio());
 		presenzaOriginale.setFine(modificata.getFine());
 		presenzaOriginale.setPausa(modificata.getPausa());
-		ElencoPresenze.salvaLista(FILE_ELENCO_PRESENZE);
+		ElencoPresenze.salvaLista(FILE_ELENCO_PRESENZE, elencoPresenze);
 		return true;
 		
 	}

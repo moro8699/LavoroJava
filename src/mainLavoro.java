@@ -11,7 +11,7 @@ public class mainLavoro {
 		Impianti.apriRub(Impianti.getFileLista());
  		ListaDipendenti.apriRub(ListaDipendenti.getFileLista());
  		ElencoTelefonicoDipendenti.apriRub(ElencoTelefonicoDipendenti.getFileElencoTel());
- 		ElencoPresenze.caricaLista(ElencoPresenze.getFileElencoPresenze());
+ 		ElencoPresenze.caricaElenco();
 		
  		new Principale();
 
