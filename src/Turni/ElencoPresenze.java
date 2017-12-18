@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import Eccezioni.ElementoGiaEsistente;
+import Eccezioni.ElementoNonTrovato;
 import Generici.ListaGenerica;
 
 public class ElencoPresenze extends ListaGenerica implements Serializable{
@@ -29,18 +31,12 @@ public class ElencoPresenze extends ListaGenerica implements Serializable{
 	}
 	
 	//Aggiunge una Presenza alla Lista
-	public static 
-	
-	/*public static boolean aggiungiPresenza(Presenza p){
+	public static void aggiungiPresenza(Presenza p) 
+			throws ElementoGiaEsistente{
+		
+		elencoPresenze = aggiungiElemento(p, elencoPresenze);
 
-		if(elencoPresenze.contains(p)){
-			System.out.println("Elemento già esistente");
-			return false;
-		}			
-		elencoPresenze.add(p);
-		ElencoPresenze.salvaLista(getFileElencoPresenze(), elencoPresenze);
-		return true;
-	}*/
+	}
 	
 	//Se presente in elenco restituisce la Presenza selezionata
 	public static Presenza restituisciPresenzaInElenco (Presenza altraPresenza){
@@ -70,16 +66,10 @@ public class ElencoPresenze extends ListaGenerica implements Serializable{
 		
 	}
 			
-	public static boolean rimuoviElemento(Presenza p) {
-		Iterator<Presenza> iterator = elencoPresenze.iterator();
-		while (iterator.hasNext()){
-			if (iterator.next().equals(p)){
-				System.out.println("Elemento rimosso con successo");
-				iterator.remove();
-				return true;
-			}
-		}
-		System.out.println("Elemento non trovato");
-		return false;
+	public static void rimuoviElemento(Presenza p) 
+			throws ElementoNonTrovato {
+
+			elencoPresenze = rimuoviElemento(p, elencoPresenze);
+
 	}
 }

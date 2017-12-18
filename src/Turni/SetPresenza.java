@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import Eccezioni.ElementoGiaEsistente;
 import Generici.Controllo;
 import packageImpianti.Impianto;
 
@@ -226,12 +227,16 @@ public class SetPresenza extends JFrame {
 						stringtoLocalTime((String) presenza.getValueAt(R_INIZIO, 1)),
 						stringtoLocalTime((String) presenza.getValueAt(R_FINE, 1)),
 						stringtoLocalTime((String) presenza.getValueAt(R_PAUSA, 1)));
-				if (ElencoPresenze.aggiungiPresenza(pres)){
+				try {
+					ElencoPresenze.aggiungiPresenza(pres);
 					GestionePresenze.aggiungiPresenzaAModel(pres);
-					setVisible(false);
+					setVisible(false);	
+				} catch (ElementoGiaEsistente exc){
+					JOptionPane.showMessageDialog(null, exc.toString());
 				}
-				else JOptionPane.showMessageDialog(null, "Presenza già esistente");
+				
 			}
+			
 		}
 		
 	}

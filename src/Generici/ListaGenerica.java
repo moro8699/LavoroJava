@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
+
+import Eccezioni.ElementoGiaEsistente;
+import Eccezioni.ElementoNonTrovato;
 
 public abstract class ListaGenerica {
 	
@@ -35,42 +37,28 @@ public abstract class ListaGenerica {
 	}		
 	
 	//Aggiunge un elemento alla Lista
-	public static <E> ArrayList<E> addElemento(E el, ArrayList<E> lista){
+	protected static <E> ArrayList<E> aggiungiElemento(E el, ArrayList<E> lista) 
+			throws ElementoGiaEsistente{
 		
-		if (!(lista.contains(el))) {
-			lista.add(el);
+		if (lista.contains(el)) {
+			throw new ElementoGiaEsistente();
 		}
-		else System.out.println("Elemento già esistente");
-		
+		lista.add(el);
 		return lista;
+
 	}
-	
-	//Test
-	public static <E> boolean rimuoviElemento(E el, ArrayList<E> lista ) {
-		Iterator<E> iterator = lista.iterator();
-		while (iterator.hasNext()){
-			if (iterator.next().equals(el)){
-				System.out.println("Elemento rimosso con successo");
-				iterator.remove();
-				return true;
-			}
+		
+	//Rimuove un elemento dalla lista
+	public static <E> ArrayList<E> rimuoviElemento(E el, ArrayList<E> lista ) 
+			throws ElementoNonTrovato {
+			
+		if(lista.contains(el)){
+			lista.remove(lista.indexOf(el));
+			System.out.println("Elemento rimosso con successo");
+			return lista;
 		}
 		System.out.println("Elemento non trovato");
-		return false;
-	}
-	
-	//Verifica se un elemento è già Presente
-	private static <E> boolean verificaElemento(E el, ArrayList<E> lista){
-		Iterator<E> iterator = lista.iterator();
-		while(iterator.hasNext()){
-			E elemento = iterator.next();
-			if(elemento.equals(el)){
-
-				return true;
-			}			
-		}
-		return false;
-	}
-	
+		throw new ElementoNonTrovato();
+	}	
 			
 }
