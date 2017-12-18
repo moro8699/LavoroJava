@@ -29,16 +29,18 @@ public class ElencoPresenze extends ListaGenerica implements Serializable{
 	}
 	
 	//Aggiunge una Presenza alla Lista
-	public static boolean aggiungiPresenza(Presenza p){
+	public static 
+	
+	/*public static boolean aggiungiPresenza(Presenza p){
 
-		if(restituisciPresenzaInElenco(p) != null){
+		if(elencoPresenze.contains(p)){
 			System.out.println("Elemento già esistente");
 			return false;
 		}			
 		elencoPresenze.add(p);
 		ElencoPresenze.salvaLista(getFileElencoPresenze(), elencoPresenze);
 		return true;
-	}
+	}*/
 	
 	//Se presente in elenco restituisce la Presenza selezionata
 	public static Presenza restituisciPresenzaInElenco (Presenza altraPresenza){

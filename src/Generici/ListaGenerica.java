@@ -37,7 +37,7 @@ public abstract class ListaGenerica {
 	//Aggiunge un elemento alla Lista
 	public static <E> ArrayList<E> addElemento(E el, ArrayList<E> lista){
 		
-		if(!(verificaElemento(el, lista))) {
+		if (!(lista.contains(el))) {
 			lista.add(el);
 		}
 		else System.out.println("Elemento già esistente");
