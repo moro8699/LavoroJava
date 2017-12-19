@@ -108,7 +108,7 @@ public class ImpiantiSW extends JFrame {
 						}
 						Principale.aggiornaImpiantiModel();
 						Impianti.salvaLista(Impianti.getFileLista());
-						ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
+						ListaDipendenti.salvaElencoDipendenti();
 					}
 				}
 				pack();

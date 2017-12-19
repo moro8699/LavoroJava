@@ -26,6 +26,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import Eccezioni.ElementoGiaEsistente;
+import Generici.Controllo;
 import packageDipendenti.Dipendente;
 import packageDipendenti.ListaDipendenti;
 import packageDipendenti.SetDipendenteSW;
@@ -272,17 +274,27 @@ public class Principale extends JFrame {
 		class AddDipendente implements ActionListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {			
+				
 				Dipendente d = new Dipendente(txtNome.getText(), txtCognome.getText(), txtMatricola.getText());
-				if (!(ListaDipendenti.inserimentoCorretto(d))) {
-					JOptionPane.showMessageDialog(null, "Dati Non Corretti");
-					}
-				else if (ListaDipendenti.addDipendente(d)){
-					modelloTable.addRow(dipendenteToVector(d));
-					setVisible(false);	
-				}else {
-					JOptionPane.showMessageDialog(null, "Dipendente già Esistente nella Lista");
-				}
-			}			
+				
+				if ((inserimentoCorretto(d))) { 
+					try {
+						ListaDipendenti.aggiungiDipendente(d);
+						modelloTable.addRow(dipendenteToVector(d));
+						ListaDipendenti.salvaElencoDipendenti();
+						setVisible(false);
+					} catch (ElementoGiaEsistente exc) {
+						JOptionPane.showMessageDialog(null, exc.toString());
+					}		
+				} else JOptionPane.showMessageDialog(null, "Dati Non Corretti");		
+			}
+		}
+		
+		private boolean inserimentoCorretto(Dipendente d){
+			if (Controllo.verificaMatricolaDipendente(d.getMatricola()) 
+					&& d.getNome()!= ""
+					&& d.getCognome()!= "") return true;
+			return false;
 		}
 		
 		class Cancel implements ActionListener{

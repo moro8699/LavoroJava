@@ -1,27 +1,22 @@
 package packageDipendenti;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.regex.Pattern;
 
-import javax.swing.DefaultListModel;
-
+import Eccezioni.ElementoGiaEsistente;
+import Generici.Lista;
 import packageImpianti.Impianti;
 import packageImpianti.Impianto;
 
-public class ListaDipendenti implements Serializable{
+public class ListaDipendenti extends Lista implements Serializable{
 	
 	private static final long serialVersionUID = -2879347912650820933L;
-	private static final String FILE_SALVATAGGIO_LISTA_DIP = "./SaveFiles/listaDipendenti.man";
+	private static final String FILE_LISTA_DIP = "./SaveFiles/listaDipendenti.man";
 	private ListaDipendenti(){}
 	private static ArrayList<Dipendente> listaDipendenti;
 	
 	public static String getFileLista() {
-		return FILE_SALVATAGGIO_LISTA_DIP;
+		return FILE_LISTA_DIP;
 	}
 	
 	public static int listaDipendentiSize (){
@@ -35,38 +30,15 @@ public class ListaDipendenti implements Serializable{
 	public static  ArrayList<Dipendente> getListaDipendenti(){
 		return listaDipendenti;
 	}
-	
-	public static DefaultListModel<String> arrListaD(){
-		DefaultListModel<String> model = new DefaultListModel<String>();
-		Iterator<Dipendente> iterator = listaDipendenti.iterator();
-		while (iterator.hasNext()){
-			Dipendente d = (Dipendente) iterator.next();
-			model.addElement(d.toString()); 
-		}
-		return model; 
-	}
 
 	//Salva i dati della nel file specificato
-	public static void salvaLista(String nomeFile){
-		ObjectOutputStream oss;
-		try{
-			oss = new ObjectOutputStream(new FileOutputStream(nomeFile));
-			oss.writeObject(listaDipendenti);
-			oss.close();
-		}
-		catch(Exception e){}
+	public static void salvaElencoDipendenti(){
+		salvaLista(FILE_LISTA_DIP, listaDipendenti);
 	} 
 	
 	//Carica i dati della rubrica dal file specificato
-	@SuppressWarnings("unchecked")
-	public static void apriRub(String nomeFile){
-		listaDipendenti = new ArrayList<Dipendente>();
-		ObjectInputStream ois;
-		try{
-			ois = new ObjectInputStream(new FileInputStream(nomeFile));
-			listaDipendenti = (ArrayList<Dipendente>) ois.readObject();
-		}
-		catch(Exception e){}
+	public static void caricaElencoDipendenti() {
+		caricaLista(FILE_LISTA_DIP);
 	}
 	
 	public static Dipendente confronta (Dipendente d){
@@ -93,27 +65,11 @@ public class ListaDipendenti implements Serializable{
 		d.setImpiantoDiAppartenenza("");
 	}
 	
-	public static boolean addDipendente (Dipendente dipendente){
-		if(!(listaDipendenti.isEmpty())){
-			Iterator<Dipendente> i = listaDipendenti.iterator();
-			if (!(inserimentoCorretto(dipendente))) return false;
-			while (i.hasNext()){
-				if (((Dipendente) i.next()).equals(dipendente)){
-					System.out.println("Dipendente già inserito");
-					return false;
-				}
-			}
-		}
-		listaDipendenti.add(dipendente); 
-		ListaDipendenti.salvaLista(getFileLista());
-		return true;
-	}
-	
-	public static boolean inserimentoCorretto(Dipendente d){
-		if (Pattern.matches("[0-9]{7}",d.getMatricola()) 
-				&& d.getNome()!= ""
-				&& d.getCognome()!= "") return true;
-		return false;
+	public static void aggiungiDipendente (Dipendente dipendente) 
+			throws ElementoGiaEsistente {
+		
+		aggiungiElemento(dipendente, listaDipendenti);
+		
 	}
 	
 	public static boolean rimuoviDipendente (Dipendente d){
@@ -125,7 +81,7 @@ public class ListaDipendenti implements Serializable{
 				if(impiantoDiAppartenenza != null) impiantoDiAppartenenza.rimuoviDipendente(di);
 				ElencoTelefonicoDipendenti.rimuoviNumeriDipendente(di);
 				i.remove();
-				ListaDipendenti.salvaLista(getFileLista());
+				salvaElencoDipendenti();
 				return true;
 			}
 		}

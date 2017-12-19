@@ -10,12 +10,14 @@ import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
+import Eccezioni.ElementoNonTrovato;
 import packageImpianti.Impianto;
 
 public class GestionePresenze extends JFrame {
@@ -23,11 +25,11 @@ public class GestionePresenze extends JFrame {
 	private static final long serialVersionUID = -9102017953366760739L;
 	protected static Impianto i;
 	private JToolBar strumenti;
-	private JButton aggiungiPresenza, modificaPresenza;
+	private JButton aggiungiPresenza, modificaPresenza, eliminaPresenza;
 	private JScrollPane scrollPane;
 	private JTable tabellaPresenze;
 	private static DefaultTableModel modelTabellaPresenze;
-	private static Vector<Vector<String>> elencoPresenze;
+	private static Vector<Vector<String>> presenze;
 	private static Vector<String> header;
 	
 	public GestionePresenze(Impianto i){
@@ -62,10 +64,14 @@ public class GestionePresenze extends JFrame {
 					new SetPresenza(vectorToPresenza(tabellaPresenze.getSelectedRow()), tabellaPresenze.getSelectedRow());
 			}
 		});
-		strumenti.add(modificaPresenza);
+		strumenti.add(modificaPresenza);	
+		
+		eliminaPresenza = new JButton("Elimina Presenza");
+		eliminaPresenza.addActionListener(new EliminaPresenza());
+		strumenti.add(eliminaPresenza);
 		
 		inizializzaElenco();
-		modelTabellaPresenze = new DefaultTableModel(elencoPresenze, header){
+		modelTabellaPresenze = new DefaultTableModel(presenze, header){
 			private static final long serialVersionUID = 8359235299989940736L;		    
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -97,7 +103,7 @@ public class GestionePresenze extends JFrame {
 		header.addElement("Pausa");
 		header.addElement("Impegno");
 		
-		elencoPresenze = caricaElencoPresenze();
+		presenze = caricaElencoPresenze();
 	}
 	
 	public static void aggiungiPresenzaAModel(Presenza p){
@@ -118,7 +124,7 @@ public class GestionePresenze extends JFrame {
 	}
 	
 	private Presenza vectorToPresenza (int indice){
-		Vector<String> temp = elencoPresenze.elementAt(indice);
+		Vector<String> temp = presenze.elementAt(indice);
 		Presenza presenzaTemp = new PresenzaLavorativa(i, temp.elementAt(0), "", null, null, null);	
 		return ElencoPresenze.restituisciPresenzaInElenco(presenzaTemp);
 	}
@@ -161,6 +167,27 @@ public class GestionePresenze extends JFrame {
 
 	public static Impianto getImpianto(){
 		return i;
+	}
+	
+	class EliminaPresenza implements ActionListener {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (tabellaPresenze.getSelectedRow()>=0){
+				Presenza p = vectorToPresenza(tabellaPresenze.getSelectedRow());
+				int conferma = JOptionPane.showConfirmDialog(null, "Sei Sicuro?", "Attesa Conferma", JOptionPane.YES_NO_OPTION);
+				if (conferma== JOptionPane.YES_OPTION){
+					try {
+						ElencoPresenze.rimuoviPresenza(p);
+						modelTabellaPresenze.removeRow(tabellaPresenze.getSelectedRow());
+						ElencoPresenze.salvaElenco();
+					} catch (ElementoNonTrovato exc) {
+						JOptionPane.showMessageDialog(null, exc.toString());
+					}	
+				}
+			}
+		}
+		
 	}
 	
 }

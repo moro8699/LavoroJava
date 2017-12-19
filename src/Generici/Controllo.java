@@ -11,6 +11,12 @@ public class Controllo {
 	
 	private Controllo(){}
 	
+	//Controllo inserimento matricola Dipendente
+	public static boolean verificaMatricolaDipendente(String matricola){
+		if (Pattern.matches("[0-9]{7}", matricola)) return true;
+		return false;
+	}
+	
 	//Controllo inserimento data nel tipo aaaa-mm-gg
 	public static boolean verificaDataInserita (String data){
 		
@@ -26,7 +32,17 @@ public class Controllo {
 	//Controllo inserimento orario nel tipo oo:mm
 	public static boolean verificaOraInserita (String ora){
 		
-		if(Pattern.matches("(0[0-9]|1[0-9]|2[123])[\\:]([0-5][0-9]|60)", ora)) return true;
+		if(Pattern.matches("(0[0-9]|1[0-9]|2[0123])[\\:]([0-5][0-9]|60)", ora)) return true;
+		return false;
+		
+	}
+	
+	//Controllo Inserimento Numeri di Telefono
+	public static boolean verificaRecapitoTelefonico (String recapito){
+		
+		if (Pattern.matches("[0-9]{5,}", recapito )) return true;
+		
+		System.out.println("Telefono non valido"); 
 		return false;
 		
 	}

@@ -1,18 +1,15 @@
 package Turni;
 
-//import java.io.FileInputStream;
-//import java.io.FileOutputStream;
-//import java.io.ObjectInputStream;
-//import java.io.ObjectOutputStream;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import Eccezioni.ElementoGiaEsistente;
 import Eccezioni.ElementoNonTrovato;
-import Generici.ListaGenerica;
+import Generici.Lista;
 
-public class ElencoPresenze extends ListaGenerica implements Serializable{
+public class ElencoPresenze extends Lista implements Serializable{
 
 	private static final long serialVersionUID = -7274666461959091620L;
 	private static final String FILE_ELENCO_PRESENZE = "./SaveFiles/listaPresenze.man";
@@ -26,6 +23,10 @@ public class ElencoPresenze extends ListaGenerica implements Serializable{
 		return elencoPresenze;
 	}
 	
+	public static void salvaElenco(){
+		salvaLista(FILE_ELENCO_PRESENZE, elencoPresenze);
+	}
+	
 	public static void caricaElenco(){
 		elencoPresenze = caricaLista(FILE_ELENCO_PRESENZE);
 	}
@@ -37,6 +38,13 @@ public class ElencoPresenze extends ListaGenerica implements Serializable{
 		elencoPresenze = aggiungiElemento(p, elencoPresenze);
 
 	}
+	
+	public static void rimuoviPresenza(Presenza p) 
+			throws ElementoNonTrovato {
+
+			elencoPresenze = rimuoviElemento(p, elencoPresenze);
+
+	}	
 	
 	//Se presente in elenco restituisce la Presenza selezionata
 	public static Presenza restituisciPresenzaInElenco (Presenza altraPresenza){
@@ -66,10 +74,5 @@ public class ElencoPresenze extends ListaGenerica implements Serializable{
 		
 	}
 			
-	public static void rimuoviElemento(Presenza p) 
-			throws ElementoNonTrovato {
 
-			elencoPresenze = rimuoviElemento(p, elencoPresenze);
-
-	}
 }

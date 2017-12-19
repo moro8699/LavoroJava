@@ -18,6 +18,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import Eccezioni.ElementoGiaEsistente;
+import Eccezioni.ElementoNonTrovato;
+
 public class GestioneRecapiti extends JFrame {
 
 	private static final long serialVersionUID = 7513352362957475301L;
@@ -61,9 +64,13 @@ public class GestioneRecapiti extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if (listaRecapiti.getSelectedValue()!= null){
 					Telefono t = modelToTelefono(listaRecapiti.getSelectedValue(), d);
-					ElencoTelefonicoDipendenti.rimuoviNumero(t);
-					SetDipendenteSW.aggiornaRecapiti();
-					model.remove(listaRecapiti.getSelectedIndex());
+					try {
+						ElencoTelefonicoDipendenti.rimuoviNumeroTelefonico(t);
+						SetDipendenteSW.aggiornaRecapiti();
+						model.remove(listaRecapiti.getSelectedIndex());
+					} catch (ElementoNonTrovato e) {
+						JOptionPane.showMessageDialog(null, e.toString());
+					}
 				}
 			}
 		});
@@ -122,20 +129,25 @@ public class GestioneRecapiti extends JFrame {
 			tipoDiRecapito.add(identificativo);
 			centro.add(tipoDiRecapito);
 			
+			JPanel sud = new JPanel();
 			ok = new JButton("OK");
 			ok.addActionListener(new ActionListener() {
+				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if(!(ElencoTelefonicoDipendenti.aggiungiNumeroTelefonico(new Telefono(d, numero.getText(), identificativo.getText()))))
-						JOptionPane.showMessageDialog(null, "Recapito già Esistente");
-					else {
-						ElencoTelefonicoDipendenti.salvaLista(ElencoTelefonicoDipendenti.getFileElencoTel());
+					
+					try {
+						ElencoTelefonicoDipendenti.aggiungiNumeroTelefonico(new Telefono(d, numero.getText(), identificativo.getText()));
+						ElencoTelefonicoDipendenti.salvaElenco();
 						SetDipendenteSW.aggiornaRecapiti();
-						setVisible(false);
+						setVisible(false);					
+					} catch (ElementoGiaEsistente exc) {
+						
+						JOptionPane.showMessageDialog(null, exc.toString());
 					}
 				}
-			});
-			JPanel sud = new JPanel();
+				
+			});			
 			sud.add(ok);
 			
 			getContentPane().add(nord, BorderLayout.NORTH);

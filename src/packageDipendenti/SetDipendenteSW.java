@@ -158,7 +158,7 @@ public class SetDipendenteSW extends JFrame {
 			} catch (DateTimeException e) {
 				JOptionPane.showMessageDialog(null, e.toString());
 			}
-			ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
+			ListaDipendenti.salvaElencoDipendenti();
 		}
 		
 	}
@@ -276,7 +276,7 @@ public class SetDipendenteSW extends JFrame {
 				if (impiantoAttuale != null) impiantoAttuale.rimuoviDipendente(d);
 				nuovoImpianto.assegnaDipendente(d);
 				model.setValueAt(nuovoImpianto.getNomeImpianto(), 0, IMPIANTO);
-				ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
+				ListaDipendenti.salvaElencoDipendenti();
 				Impianti.salvaLista(Impianti.getFileLista());
 				
 				setVisible(false);
@@ -316,7 +316,7 @@ public class SetDipendenteSW extends JFrame {
 						(dip.getImpiantoDiAppartenenza() , rowAttuale, Principale.COLONNA_IMPIANTO);
 				}
 			}
-			ListaDipendenti.salvaLista(ListaDipendenti.getFileLista());
+			ListaDipendenti.salvaElencoDipendenti();
 			setVisible(false);
 		}
 		
@@ -340,42 +340,6 @@ public class SetDipendenteSW extends JFrame {
 		}
 		
 	}
-	
-	/*Testing
-		class InserisciData implements MouseListener{
-			@Override
-			public void mouseClicked(MouseEvent e) {				
-				if ((datiDipendente.getSelectedRow() == 0) &&
-						(datiDipendente.getSelectedColumn() == NASCITA)){										
-					//datiDipendente.setValueAt(picker.getDate(), R_NASCITA, 1);	
-					framePicker.setSize(200,200);
-					framePicker.setVisible(true);
-				}				
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub				
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		}*/
 	
 }
 
