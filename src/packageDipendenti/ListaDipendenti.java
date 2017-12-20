@@ -1,9 +1,10 @@
 package packageDipendenti;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import Eccezioni.ElementoGiaEsistente;
+import Eccezioni.ElementoNonTrovato;
 import Generici.Lista;
 import packageImpianti.Impianti;
 import packageImpianti.Impianto;
@@ -38,26 +39,18 @@ public class ListaDipendenti extends Lista implements Serializable{
 	
 	//Carica i dati della rubrica dal file specificato
 	public static void caricaElencoDipendenti() {
-		caricaLista(FILE_LISTA_DIP);
+		listaDipendenti = caricaLista(FILE_LISTA_DIP);
 	}
 	
-	public static Dipendente confronta (Dipendente d){
-		Iterator<Dipendente> i = listaDipendenti.iterator();
-		while(i.hasNext()){
-			Dipendente temp = i.next();
-			if (temp.equals(d)) return temp;
-		}
-		return null;
-	}
-	
+	//Restituisce un istanza Dipendente con in input la matricola
 	public static Dipendente cercaDipendente(String matricola) {
+		
 		Dipendente daCercare = new Dipendente("", "", matricola);
-		Iterator<Dipendente> i = listaDipendenti.iterator();
-		while(i.hasNext()) {
-			Dipendente d = i.next();
-			if (d.equals(daCercare)) return d;
-		}
+		if (listaDipendenti.contains(daCercare)) 
+			return listaDipendenti.get(listaDipendenti.indexOf(daCercare));  
+		
 		return null;
+		
 	}
 	
 	//Dissocia un dipendente da un Impianto
@@ -72,20 +65,16 @@ public class ListaDipendenti extends Lista implements Serializable{
 		
 	}
 	
-	public static boolean rimuoviDipendente (Dipendente d){
-		Iterator<Dipendente> i = listaDipendenti.iterator();
-		while (i.hasNext()) {
-			Dipendente di = (Dipendente) i.next();
-			if (di.equals(d)){
-				Impianto impiantoDiAppartenenza = Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza());
-				if(impiantoDiAppartenenza != null) impiantoDiAppartenenza.rimuoviDipendente(di);
-				ElencoTelefonicoDipendenti.rimuoviNumeriDipendente(di);
-				i.remove();
-				salvaElencoDipendenti();
-				return true;
-			}
+	public static void rimuoviDipendente (Dipendente d) 
+			throws ElementoNonTrovato{
+		
+		if (listaDipendenti.contains(d)){
+			Impianto impiantoDiAppartenenza = Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza());
+			if(impiantoDiAppartenenza != null) impiantoDiAppartenenza.rimuoviDipendente(d);
+			ElencoTelefonicoDipendenti.rimuoviNumeriDipendente(d);
+			rimuoviElemento(d, listaDipendenti);
+			salvaElencoDipendenti();
 		}
-		return false;
 	}
 	
 	

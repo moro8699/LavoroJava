@@ -27,6 +27,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import Eccezioni.ElementoGiaEsistente;
+import Eccezioni.ElementoNonTrovato;
 import Generici.Controllo;
 import packageDipendenti.Dipendente;
 import packageDipendenti.ListaDipendenti;
@@ -185,8 +186,11 @@ public class Principale extends JFrame {
 	
 	// rimuove un dipendente dalla Lista
 	public void rimuoviDipendente(String matricola) {
-		if (ListaDipendenti.rimuoviDipendente(new Dipendente("","", matricola))) {
+		try{
+			ListaDipendenti.rimuoviDipendente(new Dipendente("","", matricola));
 			modelloTable.removeRow(tabellaPersonale.getSelectedRow());
+		} catch (ElementoNonTrovato e) {
+			JOptionPane.showMessageDialog(null, e.toString());
 		}
 	}
 		
@@ -229,8 +233,7 @@ public class Principale extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (tabellaPersonale.getSelectedRow() >= 0) {
 				Vector<String> dip = listaPersonale.elementAt(tabellaPersonale.getSelectedRow());
-				Dipendente d = new Dipendente("","",dip.elementAt(0));
-				new SetDipendenteSW(ListaDipendenti.confronta(d));
+				new SetDipendenteSW(ListaDipendenti.cercaDipendente(dip.elementAt(0)));
 			}
 		}
 		

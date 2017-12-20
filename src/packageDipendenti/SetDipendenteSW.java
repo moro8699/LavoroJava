@@ -137,6 +137,8 @@ public class SetDipendenteSW extends JFrame {
 				d.setDataAssunzione(LocalDate.of(Integer.parseInt(dataSplit[0]), Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[2])));
 			} catch (DateTimeException e) {
 				JOptionPane.showMessageDialog(null, e.toString());
+			} catch (NullPointerException e) {
+				d.setDataAssunzione(LocalDate.MIN);
 			}
 		}
 	}
@@ -308,8 +310,8 @@ public class SetDipendenteSW extends JFrame {
 				if (dip.equals(d)){
 					dip.setNome(nome);
 					dip.setCognome(cognome);
-					if (dataAssunzione.toString() !="") inserisciDataAssunzione(dip, dataAssunzione);
-					if (dataNascita.toString() !="") inserisciDataDiNascita(dip, dataNascita);
+					if (dataAssunzione != null) inserisciDataAssunzione(dip, dataAssunzione);
+					if (dataNascita != null) inserisciDataDiNascita(dip, dataNascita);
 					Principale.getModelloTable().setValueAt
 						(cognome + " " + nome , rowAttuale, Principale.COLONNA_COGNOME_NOME);
 					Principale.getModelloTable().setValueAt

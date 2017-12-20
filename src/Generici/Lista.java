@@ -53,8 +53,7 @@ public abstract class Lista {
 	protected static <E> ArrayList<E> rimuoviElemento(E el, ArrayList<E> lista ) 
 			throws ElementoNonTrovato {
 			
-		if(lista.contains(el)){
-			lista.remove(lista.indexOf(el));
+		if(lista.remove(el)){
 			System.out.println("Elemento rimosso con successo");
 			return lista;
 		}

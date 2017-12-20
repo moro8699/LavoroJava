@@ -1,7 +1,7 @@
 package packageImpianti;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import packageDipendenti.Dipendente;
 import packageDipendenti.ListaDipendenti;
@@ -50,37 +50,34 @@ public class Impianto implements Serializable {
 	}
 	
 	public boolean rimuoviDipendente(Dipendente d){
-		Iterator<Dipendente> iterator = impianto.iterator();
-		Dipendente dipendenteReale = ListaDipendenti.confronta(d);
-		while(iterator.hasNext()) {
-			Dipendente temp = iterator.next();
-			if (temp.equals(d)){
-				impianto.remove(temp);
-				System.out.println("Il dipendente " + temp.toString() +" rimosso dall'impianto di " + temp.getImpiantoDiAppartenenza());
-				dipendenteReale.setImpiantoDiAppartenenza("");
-				return true;
-			}
+		
+		Dipendente dipReale = ListaDipendenti.cercaDipendente(d.getMatricola());
+		if(impianto.remove(d)) {
+			System.out.println("Il dipendente " + dipReale.toString() +" rimosso dall'impianto di " 
+				+ dipReale.getImpiantoDiAppartenenza());
+			dipReale.setImpiantoDiAppartenenza("");
+			return true;
 		}
+		
 		System.out.println("Dipendente non trovato");
 		return false;
 	}
 	
 	public boolean assegnaDipendente(Dipendente d){
 		if (verificaDipendente(d)) return false;
-		Iterator<Dipendente> iterator = impianto.iterator();
-		while (iterator.hasNext()){
-			Dipendente temp = (Dipendente) iterator.next();
-			if (temp.equals(d)){
-				System.out.println("Dipendente già presente in questo Impianto");
-				return false;
-			}
+		if (impianto.contains(d)){
+			System.out.println("Dipendente già presente in questo Impianto");
+			return false;
 		}
 		impianto.add(d);
 		d.setImpiantoDiAppartenenza(nomeImpianto);
+		System.out.println("Dipendente " + d.toString() + " assegnato all'impianto di "
+				+ d.getImpiantoDiAppartenenza());
 		return true;
 	}
+	
 	//Verifica se un dipendente è già assegnato ad un Impianto
-	public boolean verificaDipendente(Dipendente d){
+	private boolean verificaDipendente(Dipendente d){
 		if (!(d.getImpiantoDiAppartenenza().isEmpty())) {
 			System.out.println("Dipendente assegnato all'impianto di: " +  d.getImpiantoDiAppartenenza());
 			return true;

@@ -12,7 +12,7 @@ public class mainLavoro {
  		ListaDipendenti.caricaElencoDipendenti();
  		ElencoTelefonicoDipendenti.caricaElenco();
  		ElencoPresenze.caricaElenco();
-		
+ 		
  		new Principale();
 	}
 }
