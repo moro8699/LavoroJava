@@ -5,11 +5,11 @@ import java.util.ArrayList;
 
 import Eccezioni.ElementoGiaEsistente;
 import Eccezioni.ElementoNonTrovato;
-import Generici.Lista;
+import Generici.Elenco;
 import packageImpianti.Impianti;
 import packageImpianti.Impianto;
 
-public class ListaDipendenti extends Lista implements Serializable{
+public class ListaDipendenti extends Elenco implements Serializable{
 	
 	private static final long serialVersionUID = -2879347912650820933L;
 	private static final String FILE_LISTA_DIP = "./SaveFiles/listaDipendenti.man";
@@ -53,10 +53,6 @@ public class ListaDipendenti extends Lista implements Serializable{
 		
 	}
 	
-	//Dissocia un dipendente da un Impianto
-	public static void dissociaImpianto (Dipendente d){
-		d.setImpiantoDiAppartenenza("");
-	}
 	
 	public static void aggiungiDipendente (Dipendente dipendente) 
 			throws ElementoGiaEsistente {

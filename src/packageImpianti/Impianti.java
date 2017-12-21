@@ -1,22 +1,20 @@
 package packageImpianti;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.DefaultListModel;
-
+import Eccezioni.ElementoGiaEsistente;
+import Eccezioni.ElementoNonTrovato;
+import Generici.Elenco;
 import packageDipendenti.Dipendente;
 import packageDipendenti.ListaDipendenti;
-public class Impianti implements Serializable {
+public class Impianti extends Elenco implements Serializable {
 	
 	private static final long serialVersionUID = 5944774531916148934L;
 	private static final String FILE_SALVATAGGIO_LISTA_IMP = "./SaveFiles/listaImpianti.man";
 	private static ArrayList<Impianto> listaImpianti;	
+	
 	private Impianti(){}
 	
 	public static ArrayList<Impianto> getListaImpianti() {
@@ -24,88 +22,33 @@ public class Impianti implements Serializable {
 	}	
 	
 	//Salva i dati della nel file specificato
-	public static void salvaLista(String nomeFile){
-		ObjectOutputStream oss;
-		try{
-			oss = new ObjectOutputStream(new FileOutputStream(nomeFile));
-			oss.writeObject(listaImpianti);
-			oss.close();
-		}
-		catch(Exception e){}
+	public static void salvaListaImpianti(){
+		salvaLista(FILE_SALVATAGGIO_LISTA_IMP, listaImpianti);
 	} 	
 	
 	//Carica i dati della rubrica dal file specificato
-	@SuppressWarnings("unchecked")
-	public static void apriRub(String nomeFile){
-		listaImpianti = new ArrayList<Impianto>();
-		ObjectInputStream ois;
-		try{
-			ois = new ObjectInputStream(new FileInputStream(nomeFile));
-			listaImpianti = (ArrayList<Impianto>) ois.readObject();
-		}
-		catch(Exception e){}
+	public static void caricaElencoImpianti(){
+		listaImpianti = caricaLista(FILE_SALVATAGGIO_LISTA_IMP);
 	}
 	
-	public static DefaultListModel<String> arrListaImp(){
-		DefaultListModel<String> model = new DefaultListModel<>();
-		Iterator<Impianto> i = listaImpianti.iterator();
-		while (i.hasNext()){
-			Impianto temp = i.next();
-			model.addElement(temp.getNomeImpianto());
-		}
-		return model;
+	public static int getSize() {
+		return listaImpianti.size();
+	}
+	
+	public static void aggiungiImpianto(Impianto i) 
+			throws ElementoGiaEsistente {
+	
+		listaImpianti = aggiungiElemento(i, listaImpianti);
+		salvaListaImpianti();
 		
 	}
 	
-	public static String[] modelLista() {
-		String[] lista = new String[listaImpianti.size()];
-		Iterator<Impianto> i = listaImpianti.iterator();
-		int c = 0;
-		while(i.hasNext()){
-			Impianto temp = i.next();
-			lista[c++] = temp.toString(); 
-		}
-		return lista;
-	}
-	
-	public static boolean aggiungiImpianto(Impianto i){
+	public static void rimuoviImpianto(Impianto i) 
+			throws ElementoNonTrovato{
 		
-		Iterator<Impianto> iterator = listaImpianti.iterator();
-		while(iterator.hasNext()){
-			Impianto temp = (Impianto) iterator.next();
-			if(temp.equals(i)){
-				System.out.println("Impianto già presente");
-				return false;
-			}
-		}
-		listaImpianti.add(i);
-		salvaLista(FILE_SALVATAGGIO_LISTA_IMP);
-		return true;
+		dissociaDipendenti(i);
+		listaImpianti = rimuoviElemento(i, listaImpianti);
 		
-	}
-	
-	public static void cancellaModel(String nomeImpianto){
-		for (int i=0; i<ImpiantiSW.getModelImpianti().size(); i++){
-			if (ImpiantiSW.getModelImpianti().getElementAt(i) == nomeImpianto) 
-				ImpiantiSW.getModelImpianti().remove(i);
-		}
-	}
-	
-	public static boolean rimuoviImpianto(Impianto i){
-		
-		Iterator<Impianto> iter = listaImpianti.iterator();
-		while (iter.hasNext()){
-			Impianto temp = iter.next();
-			if (i.equals(temp)) {
-				svuotaImpianto(temp);
-				cancellaModel(i.toString());
-				listaImpianti.remove(temp);
-				salvaLista(FILE_SALVATAGGIO_LISTA_IMP);
-				return true;
-			}	
-		}
-		System.out.println("Impianto non presente");
-		return false;
 	}
 	
 	public static Impianto getImpiantoSelezionato(String nomeImpianto) {
@@ -117,12 +60,17 @@ public class Impianti implements Serializable {
 		return null;
 	}
 	
-	public static void svuotaImpianto (Impianto i){
+	public static Impianto getImpiantoSelezionato(int indice) {
+		return listaImpianti.get(indice);
+	}
+	
+	public static void dissociaDipendenti (Impianto i){
 		Iterator<Dipendente> iterator = ListaDipendenti.getListaDipendenti().iterator();
 		while (iterator.hasNext()){
 			Dipendente temp = iterator.next();
-			if (i.equals(new Impianto (temp.getImpiantoDiAppartenenza())))
-				i.rimuoviDipendente(temp);
+			if (i.getNomeImpianto().equals(temp.getImpiantoDiAppartenenza())){
+				temp.dissociaDaImpianto();
+			}
 		}
 	}
 	
@@ -134,10 +82,5 @@ public class Impianti implements Serializable {
 		}
 		return null;		
 	}
-
-	public static String getFileLista() {
-		return FILE_SALVATAGGIO_LISTA_IMP;
-	}
-
 	
 }

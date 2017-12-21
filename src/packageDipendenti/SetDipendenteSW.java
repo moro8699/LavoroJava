@@ -245,7 +245,7 @@ public class SetDipendenteSW extends JFrame {
 		
 		public AssegnaImpianto(Dipendente d){
 			
-			listaImpianti = new JComboBox<String>(Impianti.modelLista());
+			listaImpianti = new JComboBox<String>(modelListaImpianti());
 			this.d = d;
 			JPanel nord = new JPanel();
 			nord.add(new JLabel("SELEZIONE IMPIANTO"));
@@ -269,6 +269,16 @@ public class SetDipendenteSW extends JFrame {
 			setVisible(true);
 		}
 		
+		private String[] modelListaImpianti() {
+			
+			String[] lista = new String[Impianti.getSize()];
+			for (int c = 0; c <Impianti.getSize(); c++) {
+				lista[c] = Impianti.getImpiantoSelezionato(c).toString();
+			}
+
+			return lista;
+		}
+		
 		class Assegna implements ActionListener {
 
 			@Override
@@ -279,12 +289,14 @@ public class SetDipendenteSW extends JFrame {
 				nuovoImpianto.assegnaDipendente(d);
 				model.setValueAt(nuovoImpianto.getNomeImpianto(), 0, IMPIANTO);
 				ListaDipendenti.salvaElencoDipendenti();
-				Impianti.salvaLista(Impianti.getFileLista());
+				Impianti.salvaListaImpianti();
 				
 				setVisible(false);
 			}
 		}
 	}
+	
+	
 	
 	class Ok implements ActionListener{
 		

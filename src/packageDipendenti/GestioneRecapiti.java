@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 
 import Eccezioni.ElementoGiaEsistente;
 import Eccezioni.ElementoNonTrovato;
+import Eccezioni.InserimentoNonCorretto;
 
 public class GestioneRecapiti extends JFrame {
 
@@ -141,8 +142,9 @@ public class GestioneRecapiti extends JFrame {
 						ElencoTelefonicoDipendenti.salvaElenco();
 						SetDipendenteSW.aggiornaRecapiti();
 						setVisible(false);					
-					} catch (ElementoGiaEsistente exc) {
-						
+					} catch (ElementoGiaEsistente exc) {						
+						JOptionPane.showMessageDialog(null, exc.toString());
+					} catch (InserimentoNonCorretto exc) {						
 						JOptionPane.showMessageDialog(null, exc.toString());
 					}
 				}

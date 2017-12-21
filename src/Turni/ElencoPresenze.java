@@ -7,9 +7,9 @@ import java.util.Iterator;
 
 import Eccezioni.ElementoGiaEsistente;
 import Eccezioni.ElementoNonTrovato;
-import Generici.Lista;
+import Generici.Elenco;
 
-public class ElencoPresenze extends Lista implements Serializable{
+public class ElencoPresenze extends Elenco implements Serializable{
 
 	private static final long serialVersionUID = -7274666461959091620L;
 	private static final String FILE_ELENCO_PRESENZE = "./SaveFiles/listaPresenze.man";

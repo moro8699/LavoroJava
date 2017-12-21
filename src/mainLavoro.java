@@ -8,9 +8,9 @@ public class mainLavoro {
 
 	public static void main(String[] args) {
 		
-		Impianti.apriRub(Impianti.getFileLista());
+		Impianti.caricaElencoImpianti();
  		ListaDipendenti.caricaElencoDipendenti();
- 		ElencoTelefonicoDipendenti.caricaElenco();
+ 		ElencoTelefonicoDipendenti.caricaElencoTelefonico();
  		ElencoPresenze.caricaElenco();
  		
  		new Principale();

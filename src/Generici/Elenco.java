@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import Eccezioni.ElementoGiaEsistente;
 import Eccezioni.ElementoNonTrovato;
 
-public abstract class Lista {
+public abstract class Elenco {
 	
 	//Salva i dati della nel file specificato
 	protected static <E> void salvaLista(String nomeFile, ArrayList<E> lista){

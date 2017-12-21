@@ -17,6 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import Eccezioni.ElementoGiaEsistente;
+import Eccezioni.ElementoNonTrovato;
 import main.Principale;
 import packageDipendenti.ListaDipendenti;
 
@@ -29,7 +31,7 @@ public class ImpiantiSW extends JFrame {
 
 	public ImpiantiSW(){
 		
-		modelImpianti = Impianti.arrListaImp();
+		modelImpianti = arrListaImp();
 		impianti = new JList<>(modelImpianti);
 		
 		JPanel nord = new JPanel();
@@ -77,6 +79,18 @@ public class ImpiantiSW extends JFrame {
 		return modelImpianti;
 	}
 	
+	public DefaultListModel<String> arrListaImp(){
+		
+		DefaultListModel<String> model = new DefaultListModel<>();
+		
+		for (int i=0; i<Impianti.getSize(); i++) {
+			model.addElement(Impianti.getImpiantoSelezionato(i).toString());
+		}
+		
+		return model;
+	
+	}
+	
 	class ApriGestioneImpianto implements ActionListener{
 
 		@Override
@@ -93,22 +107,26 @@ public class ImpiantiSW extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			
 			if (impianti.getSelectedValue() != ""){
 				Impianto imp = new Impianto(impianti.getSelectedValue());
 				int conferma = JOptionPane.showConfirmDialog(null, 
 						"Attenzione!! Tutti i Dipendenti Associati all'impianto selezionato saranno Dissociati.\nContinuare?",
 						"CONFERMA CANCELLAZIONE", JOptionPane.YES_NO_OPTION);
 				if (conferma == JOptionPane.YES_OPTION){
-					if(Impianti.rimuoviImpianto(imp)) {
-						for (int i= 0 ; i< modelImpianti.size(); i++){
-							if (imp.getNomeImpianto().equals(modelImpianti.getElementAt(i))){
-								modelImpianti.remove(impianti.getSelectedIndex());
-								break;
-							}
+					try {
+					Impianti.rimuoviImpianto(imp);
+					for (int i= 0 ; i< modelImpianti.size(); i++){
+						if (imp.getNomeImpianto().equals(modelImpianti.getElementAt(i))){
+							modelImpianti.remove(impianti.getSelectedIndex());
+							break;
 						}
-						Principale.aggiornaImpiantiModel();
-						Impianti.salvaLista(Impianti.getFileLista());
-						ListaDipendenti.salvaElencoDipendenti();
+					}
+					Principale.aggiornaImpiantiModel();
+					Impianti.salvaListaImpianti();
+					ListaDipendenti.salvaElencoDipendenti();
+					} catch (ElementoNonTrovato exc) {
+						JOptionPane.showMessageDialog(null, exc.toString());
 					}
 				}
 				pack();
@@ -166,15 +184,19 @@ public class ImpiantiSW extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Impianto i = new Impianto(nuovoImpianto.getText());
-				if ((i.getNomeImpianto().isEmpty())) { JOptionPane.showMessageDialog(null, "Il Campo non può essere Vuoto"); }
-				else if (Impianti.aggiungiImpianto(i)) {	
-						modelImpianti.addElement(nuovoImpianto.getText());
-						Impianti.salvaLista(Impianti.getFileLista());
-						setVisible(false);					
-				} else {JOptionPane.showMessageDialog(null, "Impianto già presente");}
+				if ((i.getNomeImpianto().isEmpty())) 
+					JOptionPane.showMessageDialog(null, "Il Campo non può essere Vuoto");
+				try {
+					Impianti.aggiungiImpianto(i);
+					modelImpianti.addElement(nuovoImpianto.getText());
+					Impianti.salvaListaImpianti();
+					setVisible(false);					
+				} catch (ElementoGiaEsistente exc) {
+					JOptionPane.showMessageDialog(null, exc.toString());
+				}
 			}
-			
 		}
+			
 		
 		class Cancel implements ActionListener {
 

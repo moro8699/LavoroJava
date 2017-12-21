@@ -48,6 +48,9 @@ public class Impianto implements Serializable {
 	public void setRisorseNecessarie(int risorseNecessarie) {
 		this.risorseNecessarie = risorseNecessarie;
 	}
+	public ArrayList<Dipendente> getRisorseImpiantoSelezionato() {
+		return impianto;
+	}
 	
 	public boolean rimuoviDipendente(Dipendente d){
 		
@@ -55,7 +58,7 @@ public class Impianto implements Serializable {
 		if(impianto.remove(d)) {
 			System.out.println("Il dipendente " + dipReale.toString() +" rimosso dall'impianto di " 
 				+ dipReale.getImpiantoDiAppartenenza());
-			dipReale.setImpiantoDiAppartenenza("");
+			dipReale.dissociaDaImpianto();
 			return true;
 		}
 		

@@ -6,10 +6,11 @@ import java.util.Iterator;
 
 import Eccezioni.ElementoGiaEsistente;
 import Eccezioni.ElementoNonTrovato;
+import Eccezioni.InserimentoNonCorretto;
 import Generici.Controllo;
-import Generici.Lista;
+import Generici.Elenco;
 
-public class ElencoTelefonicoDipendenti extends Lista implements Serializable {
+public class ElencoTelefonicoDipendenti extends Elenco implements Serializable {
 
 	private static final long serialVersionUID = -8134543161001092202L;
 	private static final String FILE_ELENCO_TEL = "./SaveFiles/elencoTelefonico.man";
@@ -32,15 +33,19 @@ public class ElencoTelefonicoDipendenti extends Lista implements Serializable {
 	} 	
 	
 	//Carica i dati della rubrica dal file specificato
-	public static void caricaElenco(){
+	public static void caricaElencoTelefonico(){
 		elencoTelefonico = caricaLista(FILE_ELENCO_TEL);
 	} 
 	
 	public static void aggiungiNumeroTelefonico (Telefono tel) 
-			throws ElementoGiaEsistente {
+			throws ElementoGiaEsistente, InserimentoNonCorretto {
 		
-			if(Controllo.verificaRecapitoTelefonico(tel.getTelefono())) aggiungiElemento(tel, elencoTelefonico);
-			
+		if(Controllo.verificaRecapitoTelefonico(tel.getTelefono())) {
+			aggiungiElemento(tel, elencoTelefonico);
+			salvaElenco();
+		}
+		throw new InserimentoNonCorretto();
+		
 	}
 	
 	public static void rimuoviNumeroTelefonico (Telefono t) 

@@ -79,6 +79,11 @@ public class Dipendente implements Serializable {
 		this.impiantoDiAppartenenza = impiantoDiAppartenenza;
 		
 	}
+	
+	//Dissocia un dipendente da un Impianto
+	public void dissociaDaImpianto (){
+		setImpiantoDiAppartenenza("");
+	}
 
 	@Override
 	public boolean equals(Object obj) {
