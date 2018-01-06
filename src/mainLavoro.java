@@ -11,7 +11,7 @@ public class mainLavoro {
 		Impianti.caricaElencoImpianti();
  		ListaDipendenti.caricaElencoDipendenti();
  		ElencoTelefonicoDipendenti.caricaElencoTelefonico();
- 		ElencoPresenze.caricaElenco();
+ 		ElencoPresenze.caricaElencoPresenze();
  		
  		new Principale();
 	}

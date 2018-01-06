@@ -27,7 +27,7 @@ public class ElencoPresenze extends Elenco implements Serializable{
 		salvaLista(FILE_ELENCO_PRESENZE, elencoPresenze);
 	}
 	
-	public static void caricaElenco(){
+	public static void caricaElencoPresenze(){
 		elencoPresenze = caricaLista(FILE_ELENCO_PRESENZE);
 	}
 	

@@ -70,7 +70,7 @@ public class GestionePresenze extends JFrame {
 		eliminaPresenza.addActionListener(new EliminaPresenza());
 		strumenti.add(eliminaPresenza);
 		
-		inizializzaElenco();
+		inizializzaElenco();		
 		modelTabellaPresenze = new DefaultTableModel(presenze, header){
 			private static final long serialVersionUID = 8359235299989940736L;		    
 			@Override
@@ -93,6 +93,7 @@ public class GestionePresenze extends JFrame {
 		setLocation ((int)(dim.getWidth()-this.getWidth())/2, (int)(dim.getHeight()-this.getHeight())/2);
 		setVisible(true);
 	}
+	
 	
 	private static void inizializzaElenco(){
 		header = new Vector<String>();

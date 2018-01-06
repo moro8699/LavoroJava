@@ -46,10 +46,9 @@ public class SetPresenza extends JFrame {
 		
 		this.p = p;
 		this.i = p.getImpianto();
-		this.indiceLista = indiceLista;
-		InizializzaModelModificaPresenza();
-		inizializzaForm();
-			
+		this.indiceLista = indiceLista;		
+        InizializzaModelModificaPresenza();
+        inizializzaForm();
 	}
 	
 	public void InizializzaModelNuovaPresenza(){
@@ -86,9 +85,7 @@ public class SetPresenza extends JFrame {
 	public void inizializzaForm(){
 		
 		getContentPane().setLayout(new BorderLayout());
-		
-
-		
+				
 		inizializzaHeader();
 			
 		if (p != null) modificaPresenza(p);
@@ -145,7 +142,7 @@ public class SetPresenza extends JFrame {
 		caricaDatiPresenza();
 		
 	}
-
+	
 	private void modificaPresenza(Presenza p) {
 		
 		valorePresenza = new Vector<String>();

@@ -44,7 +44,7 @@ public class ElencoTelefonicoDipendenti extends Elenco implements Serializable {
 			aggiungiElemento(tel, elencoTelefonico);
 			salvaElenco();
 		}
-		throw new InserimentoNonCorretto();
+		else throw new InserimentoNonCorretto();
 		
 	}
 	

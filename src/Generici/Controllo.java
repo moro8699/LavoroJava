@@ -59,11 +59,14 @@ public class Controllo {
 		
 		String[] splitter = data.toString().split(" ");
 		
-		return LocalDate.of(Integer.parseInt(splitter[5]), 
+		return LocalDate.of(
+				Integer.parseInt(splitter[5]), 
 				monthStringToInteger(splitter[1]), 
-				Integer.parseInt(splitter[2]));
+				Integer.parseInt(splitter[2])
+				);
 	}
 	
+	//Converte un Dato di tipo LocalDate in Date
 	public static Date localDateToDate(LocalDate data) {
 		if(data == null) return null;
 		Calendar cal = Calendar.getInstance();
@@ -72,8 +75,8 @@ public class Controllo {
 		cal.set(Calendar.DAY_OF_MONTH, data.getDayOfMonth());
 		return cal.getTime();
 	}
+	
 	//Convert i Mesi Date in dato Intero 
-	//Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
 	private static int monthStringToInteger(String month){
 
 		switch (month){
