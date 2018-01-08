@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 import Eccezioni.ElementoNonTrovato;
@@ -79,6 +80,7 @@ public class GestionePresenze extends JFrame {
 		    }			
 		};
 		tabellaPresenze = new JTable(modelTabellaPresenze);
+		tabellaPresenze.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane = new JScrollPane(tabellaPresenze);
 		
 		JPanel center = new JPanel();
