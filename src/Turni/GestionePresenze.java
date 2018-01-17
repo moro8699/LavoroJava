@@ -62,7 +62,7 @@ public class GestionePresenze extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (tabellaPresenze.getSelectedRow()>=0)
-					new SetPresenza(vectorToPresenza(tabellaPresenze.getSelectedRow()), tabellaPresenze.getSelectedRow());
+					new SetPresenza((PresenzaLavorativa) vectorToPresenza(tabellaPresenze.getSelectedRow()), tabellaPresenze.getSelectedRow());
 			}
 		});
 		strumenti.add(modificaPresenza);	
@@ -136,9 +136,13 @@ public class GestionePresenze extends JFrame {
 		Vector<Vector<String>> temp = new Vector<Vector<String>>();
 		Iterator<Presenza> iterator = ElencoPresenze.getElencoPresenze().iterator();
 		while (iterator.hasNext()){
-			Presenza p = iterator.next();
-			if (p.getImpianto().equals(i)) temp.add(aggiungiPresenza(p.getIdentificativo(), p.getDescrizione(), 
-					p.getInizio().toString(), p.getFine().toString(), p.getPausa().toString(), p.impegno().toString()));
+			Presenza presenza = iterator.next();
+			if (presenza instanceof PresenzaLavorativa) {
+				
+				PresenzaLavorativa p = (PresenzaLavorativa) presenza;
+				if (p.getImpianto().equals(i)) temp.add(aggiungiPresenza(p.getIdentificativo(), p.getDescrizione(), 
+						p.getInizio().toString(), p.getFine().toString(), p.getPausa().toString(), p.impegno().toString()));
+			}
 		}
 		return temp;
 	}

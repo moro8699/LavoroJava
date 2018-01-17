@@ -3,18 +3,14 @@ package Turni;
 import java.io.Serializable;
 import java.time.LocalTime;
 
-import packageImpianti.Impianto;
-
 public abstract class Presenza implements Serializable {
 
 	private static final long serialVersionUID = -1765844892878514071L;
-	private Impianto i = null;
 	private String identificativo = "", descrizione = "";
 	private LocalTime inizio = null, fine = null, pausa = null;
 	
-	public Presenza (Impianto i, String identificativo, String descrizione, LocalTime inizio, LocalTime fine, LocalTime pausa) {	
+	public Presenza (String identificativo, String descrizione, LocalTime inizio, LocalTime fine, LocalTime pausa) {	
 		
-		setImpianto(i);
 		setIdentificativo(identificativo);
 		setDescrizione(descrizione);
 		setInizio(inizio);
@@ -22,17 +18,10 @@ public abstract class Presenza implements Serializable {
 		setPausa(pausa);
 		
 	}
-	
-	public Presenza (Impianto i, String identificativo, String annotazione, LocalTime inizio, LocalTime fine){
-		this(i, identificativo, annotazione, inizio, fine, LocalTime.MIN);
+	public Presenza (String identificativo, String annotazione, LocalTime inizio, LocalTime fine){
+		this(identificativo, annotazione, inizio, fine, LocalTime.MIN);
 	}
 	
-	public Impianto getImpianto(){
-		return i;
-	}
-	public void setImpianto(Impianto i){
-		this.i = i;
-	}
 	public String getIdentificativo(){
 		return identificativo;
 	}
@@ -108,7 +97,6 @@ public abstract class Presenza implements Serializable {
 		if (obj == null) return false;
 		if (!(obj instanceof Presenza)) return false;  
 		Presenza p = (Presenza) obj;		
-		return (p.getIdentificativo().equals(this.getIdentificativo())) && 
-				(p.getImpianto().equals(this.getImpianto()));		
+		return (p.getIdentificativo().equals(this.getIdentificativo())) ;
 	}
 }

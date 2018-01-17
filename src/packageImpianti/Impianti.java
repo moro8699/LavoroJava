@@ -7,6 +7,7 @@ import java.util.Iterator;
 import Eccezioni.ElementoGiaEsistente;
 import Eccezioni.ElementoNonTrovato;
 import Generici.Elenco;
+import Turni.ElencoPresenze;
 import packageDipendenti.Dipendente;
 import packageDipendenti.ListaDipendenti;
 public class Impianti extends Elenco implements Serializable {
@@ -47,6 +48,7 @@ public class Impianti extends Elenco implements Serializable {
 			throws ElementoNonTrovato{
 		
 		dissociaDipendenti(i);
+		ElencoPresenze.rimuoviPresenzeImpianto(i);
 		listaImpianti = rimuoviElemento(i, listaImpianti);
 		
 	}

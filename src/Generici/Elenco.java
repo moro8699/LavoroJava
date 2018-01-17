@@ -9,9 +9,22 @@ import java.util.ArrayList;
 import Eccezioni.ElementoGiaEsistente;
 import Eccezioni.ElementoNonTrovato;
 
+/**
+ * Astrae il Concetto di Lista Generica dove vengono aggiunti e rimossi elementi
+ * La lista può essere salvata e caricata da un file.
+ * L
+ * 
+ * @author Fabio Morandi
+ *
+ */
 public abstract class Elenco {
 	
-	//Salva i dati della nel file specificato
+	/**Salva i dati di una Lista in un file specificato
+	 * 
+	 * @param nomeFile Il Percorso del file dove verranno salvati i dati dell'ArrayList
+	 * @param lista L'Array da salvare
+	 * 
+	 */
 	protected static <E> void salvaLista(String nomeFile, ArrayList<E> lista){
 		ObjectOutputStream oss;
 		try{
@@ -22,7 +35,12 @@ public abstract class Elenco {
 		catch(Exception e){}
 	} 	
 			
-	//Carica i dati della rubrica dal file specificato
+	/** Carica i dati della rubrica dal file specificato in un ArrayList
+	 * 
+	 * @param nomeFile Il Percorso dove si trova il file da caricare nell'array
+	 * @return Un ArrayList caricato con i dati presenti nel file in input
+	 */
+	
 	@SuppressWarnings("unchecked")
 	protected static <E> ArrayList<E> caricaLista(String nomeFile){
 		ArrayList<E> lista = new ArrayList<E>();
@@ -31,12 +49,21 @@ public abstract class Elenco {
 			ois = new ObjectInputStream(new FileInputStream(nomeFile));		
 			lista = (ArrayList<E>) ois.readObject();
 			ois.close();
-			return lista;
+			
 		}
-		catch(Exception e){return null;}
-	}		
-	
-	//Aggiunge un elemento alla Lista
+		catch(Exception e){
+			lista = new ArrayList<E>();
+		}
+		return lista;
+
+	}			
+	/**Aggiunge un elemento alla Lista
+	 * 
+	 * @param el Elemento che verrà aggiunto alla lista
+	 * @param lista la lista dove verrà aggiunto l'elemento
+	 * @return L'ArrayList con aggiunto l'elemento se non già Presente
+	 * @throws ElementoGiaEsistente Se l'elemento è gia presente nella Lista, questo non verrà aggiunto
+	 */
 	protected static <E> ArrayList<E> aggiungiElemento(E el, ArrayList<E> lista) 
 			throws ElementoGiaEsistente{
 		

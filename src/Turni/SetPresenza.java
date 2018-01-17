@@ -28,7 +28,7 @@ public class SetPresenza extends JFrame {
 	private Vector<String> header, nomeRiga, valorePresenza;
 	private JTable presenza;
 	private JScrollPane scrollpane;
-	private Presenza p = null;
+	private PresenzaLavorativa p = null;
 	private Impianto i = null;
 	private DefaultTableModel modelPresenza;
 	private JButton ok;
@@ -42,7 +42,7 @@ public class SetPresenza extends JFrame {
 			
 	}
 	
-	public SetPresenza(Presenza p, int indiceLista){
+	public SetPresenza(PresenzaLavorativa p, int indiceLista){
 		
 		this.p = p;
 		this.i = p.getImpianto();
@@ -143,7 +143,7 @@ public class SetPresenza extends JFrame {
 		
 	}
 	
-	private void modificaPresenza(Presenza p) {
+	private void modificaPresenza(PresenzaLavorativa p) {
 		
 		valorePresenza = new Vector<String>();
 		
@@ -227,9 +227,10 @@ public class SetPresenza extends JFrame {
 				try {
 					ElencoPresenze.aggiungiPresenza(pres);
 					GestionePresenze.aggiungiPresenzaAModel(pres);
+					ElencoPresenze.salvaElenco();
 					setVisible(false);	
 				} catch (ElementoGiaEsistente exc){
-					JOptionPane.showMessageDialog(null, exc.toString());
+					JOptionPane.showMessageDialog(null, "Esiste già una Presenza con l'identificativo" + pres.getIdentificativo());
 				}
 				
 			}
@@ -252,6 +253,7 @@ public class SetPresenza extends JFrame {
 						stringtoLocalTime((String) presenza.getValueAt(R_PAUSA, 1)));
 				if (ElencoPresenze.modificaPresenza(p, pres)){
 					GestionePresenze.ModificaPresenzaAModel(pres, indiceLista);
+					ElencoPresenze.salvaElenco();
 					setVisible(false);
 				}
 			}

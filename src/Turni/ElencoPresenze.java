@@ -8,6 +8,7 @@ import java.util.Iterator;
 import Eccezioni.ElementoGiaEsistente;
 import Eccezioni.ElementoNonTrovato;
 import Generici.Elenco;
+import packageImpianti.Impianto;
 
 public class ElencoPresenze extends Elenco implements Serializable{
 
@@ -44,7 +45,21 @@ public class ElencoPresenze extends Elenco implements Serializable{
 
 			elencoPresenze = rimuoviElemento(p, elencoPresenze);
 
-	}	
+	}
+	
+	public static void rimuoviPresenzeImpianto(Impianto i) throws ElementoNonTrovato{
+
+		for (int k =0; k< elencoPresenze.size(); k++){
+			Presenza presenza = elencoPresenze.get(k);
+			if(presenza instanceof PresenzaLavorativa){
+				PresenzaLavorativa p = (PresenzaLavorativa) presenza;
+				if (p.getImpianto().equals(i)) {
+					rimuoviPresenza(presenza);
+					salvaElenco();
+				}
+			}
+		}
+	}
 	
 	//Se presente in elenco restituisce la Presenza selezionata
 	public static Presenza restituisciPresenzaInElenco (Presenza altraPresenza){

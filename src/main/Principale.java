@@ -32,7 +32,10 @@ import Generici.Controllo;
 import packageDipendenti.Dipendente;
 import packageDipendenti.ListaDipendenti;
 import packageDipendenti.SetDipendenteSW;
+import packageImpianti.GestioneImpianto;
+import packageImpianti.Impianti;
 import packageImpianti.ImpiantiSW;
+import packageImpianti.Impianto;
 
 public class Principale extends JFrame {
 
@@ -44,12 +47,12 @@ public class Principale extends JFrame {
 	public static final byte COLONNA_DATA_ASSUNZIONE = 3;
 	public static final byte COLONNA_STATO_FISICO = 4;
 
-	
-	private JMenuBar barradeiMenu;
+	private static JMenuBar barradeiMenu;
 	private JToolBar toolbarDip;
-	private JMenu file, modifica, impianti;
-	private JMenuItem aggiungiImpianto;
-	private JButton addDipendente, remDipendente, setDipendente, Impianti;
+	private JMenu file, modifica;
+	private static JMenu impianti;
+	private static JMenuItem gestisciImpianto;
+	private JButton addDipendente, remDipendente, setDipendente;
 	private TitledBorder titleLista;
 	private static JTable tabellaPersonale;
 	private static DefaultTableModel modelloTable;
@@ -64,11 +67,11 @@ public class Principale extends JFrame {
 		file = new JMenu("File");
 		modifica = new JMenu("Modifica");
 		impianti = new JMenu("Impianti");
-		aggiungiImpianto = new JMenuItem("Aggiungi Impianto");
+		inizializzaJMenuImpianti();
 		barradeiMenu.add(file);
 		barradeiMenu.add(modifica);
 		barradeiMenu.add(impianti);
-		impianti.add(aggiungiImpianto);
+		
 		setJMenuBar(barradeiMenu);
 
 		getContentPane().setLayout(new BorderLayout());
@@ -87,17 +90,13 @@ public class Principale extends JFrame {
 		remDipendente.setIcon(new ImageIcon("./Icons/remUser.png"));
 		setDipendente = new JButton();
 		setDipendente.setIcon(new ImageIcon("./Icons/setUser.png"));
-		Impianti = new JButton();
-		Impianti.setIcon(new ImageIcon("./Icons/setImpianto.png"));
 		addDipendente.addActionListener(new AddDipendente());
 		remDipendente.addActionListener(new RemDipendente());
 		setDipendente.addActionListener(new SetDipendente());
-		Impianti.addActionListener(new GestImpianti());
 		toolbarDip.add(addDipendente);
 		toolbarDip.add(remDipendente);
 		toolbarDip.add(setDipendente);
-		toolbarDip.add(Impianti);
-
+		
 		JPanel pnlCentro = new JPanel();
 		getContentPane().add(pnlCentro, BorderLayout.CENTER);		
 		pnlCentro.setLayout(new GridLayout(2, 0));
@@ -113,6 +112,7 @@ public class Principale extends JFrame {
 		        return false;
 		    }			
 		};
+		
 		inizializzaTableModel();
 		modelloTable.setDataVector(listaPersonale, header);
 		tabellaPersonale = new JTable(modelloTable);
@@ -126,8 +126,7 @@ public class Principale extends JFrame {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation ((int)(dim.getWidth()-this.getWidth())/2, (int)(dim.getHeight()-this.getHeight())/2);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setVisible(true);
-		
+		setVisible(true);	
 	}
 	
 	public static DefaultTableModel getModelloTable () {
@@ -138,6 +137,40 @@ public class Principale extends JFrame {
 	}
 	public static int posizioneAttualeTable() {
 		return tabellaPersonale.getSelectedRow();
+	}
+	
+	private static void inizializzaJMenuImpianti(){	
+		
+		gestisciImpianto = new JMenuItem("Gestione Impianti");
+		impianti.add(gestisciImpianto);
+		gestisciImpianto.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new ImpiantiSW();	
+			}
+		});
+		
+		impianti.addSeparator();
+		
+		for(int i =0; i < Impianti.getSize(); i++){
+			Impianto impianto = Impianti.getImpiantoSelezionato(i);
+			JMenuItem item = new JMenuItem(impianto.getNomeImpianto());
+			impianti.add(item);
+			item.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					new GestioneImpianto(impianto);	
+				}
+			});
+		}
+		
+	}
+	
+	public static void updateJMenuImpianti(){
+		impianti.removeAll();
+		inizializzaJMenuImpianti();
 	}
 	
 	private void inizializzaTableModel() {

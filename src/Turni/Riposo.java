@@ -10,7 +10,7 @@ public class Riposo extends Presenza {
 
 	public Riposo(Impianto i, String identificativo, String annotazione) {
 		
-		super(i, identificativo, annotazione, LocalTime.MIN, LocalTime.MAX, LocalTime.MIN);
+		super(identificativo, annotazione, LocalTime.MIN, LocalTime.MAX, LocalTime.MIN);
 		
 	}
 	
@@ -25,8 +25,7 @@ public class Riposo extends Presenza {
 		if (obj == null) return false;
 		if (!(obj instanceof Riposo)) return false;  
 		Riposo r = (Riposo) obj;		
-		return (r.getImpianto().equals(this.getImpianto()) && 
-				(r.getIdentificativo().equals(this.getIdentificativo())));
+		return r.getIdentificativo().equals(this.getIdentificativo());
 	}
 	
 }

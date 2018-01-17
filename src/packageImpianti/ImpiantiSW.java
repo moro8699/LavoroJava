@@ -54,13 +54,11 @@ public class ImpiantiSW extends JFrame {
 		rimuoviImpianto.addActionListener(new RimuoviImpianto());		
 		aggiungiRimuovi.add(rimuoviImpianto);			
 		centroEst.add(aggiungiRimuovi);
-		//aggiungiRimuovi.setAlignmentX(Component.CENTER_ALIGNMENT);
 		apriImpianto = new JButton("Apri Gestione Impianto");
 		apriImpianto.addActionListener(new ApriGestioneImpianto());
 		JPanel jPApriImpianto = new JPanel();
 		jPApriImpianto.add(apriImpianto);
 		centroEst.add(jPApriImpianto);
-		//jPApriImpianto.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		centro.add(centroEst);		
 		
@@ -111,11 +109,11 @@ public class ImpiantiSW extends JFrame {
 			if (impianti.getSelectedValue() != ""){
 				Impianto imp = new Impianto(impianti.getSelectedValue());
 				int conferma = JOptionPane.showConfirmDialog(null, 
-						"Attenzione!! Tutti i Dipendenti Associati all'impianto selezionato saranno Dissociati.\nContinuare?",
+						"Attenzione!! Tutti gli Elementi Associati all'impianto selezionato saranno Rimossi.\nContinuare?",
 						"CONFERMA CANCELLAZIONE", JOptionPane.YES_NO_OPTION);
 				if (conferma == JOptionPane.YES_OPTION){
 					try {
-					Impianti.rimuoviImpianto(imp);
+						Impianti.rimuoviImpianto(imp);
 					for (int i= 0 ; i< modelImpianti.size(); i++){
 						if (imp.getNomeImpianto().equals(modelImpianti.getElementAt(i))){
 							modelImpianti.remove(impianti.getSelectedIndex());
@@ -123,6 +121,7 @@ public class ImpiantiSW extends JFrame {
 						}
 					}
 					Principale.aggiornaImpiantiModel();
+					Principale.updateJMenuImpianti();
 					Impianti.salvaListaImpianti();
 					ListaDipendenti.salvaElencoDipendenti();
 					} catch (ElementoNonTrovato exc) {
@@ -190,6 +189,7 @@ public class ImpiantiSW extends JFrame {
 					Impianti.aggiungiImpianto(i);
 					modelImpianti.addElement(nuovoImpianto.getText());
 					Impianti.salvaListaImpianti();
+					Principale.updateJMenuImpianti();
 					setVisible(false);					
 				} catch (ElementoGiaEsistente exc) {
 					JOptionPane.showMessageDialog(null, exc.toString());
