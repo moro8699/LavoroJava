@@ -17,9 +17,9 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
-import Turni.GestioneTurni;
 import packageDipendenti.Dipendente;
 import packageDipendenti.ListaDipendenti;
+import turni.GestioneTurni;
 
 public class GestioneImpianto extends JFrame {
 

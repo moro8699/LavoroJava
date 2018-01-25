@@ -18,9 +18,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Eccezioni.ElementoGiaEsistente;
-import Eccezioni.ElementoNonTrovato;
-import Eccezioni.InserimentoNonCorretto;
+import eccezioni.ElementoGiaEsistente;
+import eccezioni.ElementoNonTrovato;
+import eccezioni.InserimentoNonCorretto;
 
 public class GestioneRecapiti extends JFrame {
 

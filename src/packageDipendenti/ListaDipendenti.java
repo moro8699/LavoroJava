@@ -3,9 +3,9 @@ package packageDipendenti;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import Eccezioni.ElementoGiaEsistente;
-import Eccezioni.ElementoNonTrovato;
-import Generici.Elenco;
+import eccezioni.ElementoGiaEsistente;
+import eccezioni.ElementoNonTrovato;
+import generici.Elenco;
 import packageImpianti.Impianti;
 import packageImpianti.Impianto;
 

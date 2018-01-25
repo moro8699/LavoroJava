@@ -1,4 +1,4 @@
-package Turni;
+package turni;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -16,14 +16,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import Eccezioni.ElementoGiaEsistente;
-import Generici.Controllo;
+import eccezioni.ElementoGiaEsistente;
+import generici.Controllo;
 import packageImpianti.Impianto;
 
 public class SetPresenza extends JFrame {
 
 	private static final long serialVersionUID = 2147285437901518775L;
-	private final static int R_IMPIANTO =0, R_IDENT =1, R_DESCR =2, R_INIZIO =3, R_FINE =4, R_PAUSA =5;
+	private final static int R_IMPIANTO = 0, R_IDENT = 1, R_DESCR = 2, R_INIZIO = 3, R_FINE = 4, R_PAUSA = 5;
 	private Vector<Vector<String>> datiPresenza;
 	private Vector<String> header, nomeRiga, valorePresenza;
 	private JTable presenza;
@@ -33,92 +33,99 @@ public class SetPresenza extends JFrame {
 	private DefaultTableModel modelPresenza;
 	private JButton ok;
 	private int indiceLista;
-	
+
 	public SetPresenza(Impianto i) {
-		
+
 		this.i = i;
 		InizializzaModelNuovaPresenza();
 		inizializzaForm();
-			
+
 	}
-	
-	public SetPresenza(PresenzaLavorativa p, int indiceLista){
-		
+
+	public SetPresenza(PresenzaLavorativa p, int indiceLista) {
+
 		this.p = p;
 		this.i = p.getImpianto();
-		this.indiceLista = indiceLista;		
-        InizializzaModelModificaPresenza();
-        inizializzaForm();
+		this.indiceLista = indiceLista;
+		InizializzaModelModificaPresenza();
+		inizializzaForm();
 	}
-	
-	public void InizializzaModelNuovaPresenza(){
-		
-		modelPresenza = new DefaultTableModel(){
-		private static final long serialVersionUID = -8087792651113476340L;
+
+	public void InizializzaModelNuovaPresenza() {
+
+		modelPresenza = new DefaultTableModel() {
+			private static final long serialVersionUID = -8087792651113476340L;
 
 			@Override
-		    public boolean isCellEditable(int row, int column) {
-				if (row == R_IMPIANTO && column == 1) return false;
-				if (column != 0) return true;
-		        return false;
-		    }		
+			public boolean isCellEditable(int row, int column) {
+				if (row == R_IMPIANTO && column == 1)
+					return false;
+				if (column != 0)
+					return true;
+				return false;
+			}
 		};
-		
+
 	}
-	
-	public void InizializzaModelModificaPresenza(){
-		
-		modelPresenza = new DefaultTableModel(){
-		private static final long serialVersionUID = -8087792651113476340L;
+
+	public void InizializzaModelModificaPresenza() {
+
+		modelPresenza = new DefaultTableModel() {
+			private static final long serialVersionUID = -8087792651113476340L;
 
 			@Override
-		    public boolean isCellEditable(int row, int column) {
-				if ((row == R_IMPIANTO && column == 1) ||
-						(row == R_IDENT && column ==1))return false;
-				if (column != 0) return true;
-		        return false;
-		    }		
+			public boolean isCellEditable(int row, int column) {
+				if ((row == R_IMPIANTO && column == 1) || (row == R_IDENT && column == 1))
+					return false;
+				if (column != 0)
+					return true;
+				return false;
+			}
 		};
-		
+
 	}
-	
-	public void inizializzaForm(){
-		
+
+	public void inizializzaForm() {
+
 		getContentPane().setLayout(new BorderLayout());
-				
+
 		inizializzaHeader();
-			
-		if (p != null) modificaPresenza(p);
-		else nuovaPresenza(i);
-		
-		modelPresenza.setDataVector(datiPresenza, header);		
+
+		if (p != null)
+			modificaPresenza(p);
+		else
+			nuovaPresenza(i);
+
+		modelPresenza.setDataVector(datiPresenza, header);
 		presenza = new JTable(modelPresenza);
 		scrollpane = new JScrollPane(presenza);
-		
+
 		getContentPane().add(scrollpane, BorderLayout.CENTER);
-		
+
 		JPanel sud = new JPanel();
 		ok = new JButton("OK");
-		if (p != null) ok.addActionListener(new ModificaPresenza());
-		else ok.addActionListener(new InserisciPresenza());
+		if (p != null)
+			ok.addActionListener(new ModificaPresenza());
+		else
+			ok.addActionListener(new InserisciPresenza());
 		sud.add(ok);
 		getContentPane().add(sud, BorderLayout.SOUTH);
-		
-		setSize(500,250);		
+
+		setSize(500, 250);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation ((int)(dim.getWidth()-this.getWidth())/2, (int)(dim.getHeight()-this.getHeight())/2);
+		setLocation((int) (dim.getWidth() - this.getWidth()) / 2, (int) (dim.getHeight() - this.getHeight()) / 2);
 		setVisible(true);
-		
+
 	}
-	
-	private void inizializzaHeader(){
-		 
-		//Header Orizzontale
+
+	private void inizializzaHeader() {
+
+		// Header Orizzontale
 		header = new Vector<String>();
 		header.addElement("Attributo");
 		header.addElement("Valore");
-		 
-		//Header Verticale
+
+		// Header Verticale
 		nomeRiga = new Vector<String>();
 		nomeRiga.add(R_IMPIANTO, "Impianto");
 		nomeRiga.add(R_IDENT, "Identificativo");
@@ -127,100 +134,98 @@ public class SetPresenza extends JFrame {
 		nomeRiga.add(R_FINE, "Ora Fine");
 		nomeRiga.add(R_PAUSA, "Pausa");
 	}
-	
+
 	private void nuovaPresenza(Impianto i) {
-		
-		valorePresenza = new Vector<String>();		
-		
-		valorePresenza.add(R_IMPIANTO, i.toString());	
-		valorePresenza.add(R_IDENT, "");		
-		valorePresenza.add(R_DESCR, "");		
+
+		valorePresenza = new Vector<String>();
+
+		valorePresenza.add(R_IMPIANTO, i.toString());
+		valorePresenza.add(R_IDENT, "");
+		valorePresenza.add(R_DESCR, "");
 		valorePresenza.add(R_INIZIO, "");
 		valorePresenza.add(R_FINE, "");
 		valorePresenza.add(R_PAUSA, "");
-		
+
 		caricaDatiPresenza();
-		
+
 	}
-	
+
 	private void modificaPresenza(PresenzaLavorativa p) {
-		
+
 		valorePresenza = new Vector<String>();
-		
+
 		valorePresenza.add(R_IMPIANTO, p.getImpianto().toString());
 		valorePresenza.add(R_IDENT, p.getIdentificativo());
 		valorePresenza.add(R_DESCR, p.getDescrizione());
 		valorePresenza.add(R_INIZIO, p.getInizio().toString());
 		valorePresenza.add(R_FINE, p.getFine().toString());
 		valorePresenza.add(R_PAUSA, p.getPausa().toString());
-		
+
 		caricaDatiPresenza();
 	}
-	 
-	private void caricaDatiPresenza(){
-		
+
+	private void caricaDatiPresenza() {
+
 		datiPresenza = new Vector<Vector<String>>();
-		
-		for(int i=0; i<nomeRiga.size(); i++){
-			
+
+		for (int i = 0; i < nomeRiga.size(); i++) {
+
 			Vector<String> temp = new Vector<String>();
 
 			temp.addElement(nomeRiga.elementAt(i));
 			temp.addElement(valorePresenza.elementAt(i));
-			
+
 			datiPresenza.add(temp);
-			
+
 		}
-		 
+
 	}
-	
-	public boolean verificaCampi (){		
-		
-		if (Controllo.verificaRigaVuota((String) presenza.getValueAt(R_IDENT, 1))){
+
+	public boolean verificaCampi() {
+
+		if (Controllo.verificaRigaVuota((String) presenza.getValueAt(R_IDENT, 1))) {
 			JOptionPane.showMessageDialog(null, "Identificativo Obbligatorio");
-			return false;			
+			return false;
 		}
-		
-		if (Controllo.verificaRigaVuota((String) presenza.getValueAt(R_DESCR, 1))){
+
+		if (Controllo.verificaRigaVuota((String) presenza.getValueAt(R_DESCR, 1))) {
 			JOptionPane.showMessageDialog(null, "Inserire una descrizione della Presenza inserita");
-			return false;			
+			return false;
 		}
-		
+
 		if (!(Controllo.verificaOraInserita((String) presenza.getValueAt(R_INIZIO, 1)))) {
 			JOptionPane.showMessageDialog(null, "Ora di Inizio Servizio non conforme");
 			return false;
 		}
-		if (!(Controllo.verificaOraInserita((String) presenza.getValueAt(R_FINE, 1)))){
+		if (!(Controllo.verificaOraInserita((String) presenza.getValueAt(R_FINE, 1)))) {
 			JOptionPane.showMessageDialog(null, "Ora di Termine Servizio non conforme");
 			return false;
 		}
-		if (!(Controllo.verificaOraInserita((String) presenza.getValueAt(R_PAUSA, 1)))){
+		if (!(Controllo.verificaOraInserita((String) presenza.getValueAt(R_PAUSA, 1)))) {
 			JOptionPane.showMessageDialog(null, "Orario di Pausa non conforme");
-			return false;		
+			return false;
 		}
-		
+
 		return true;
 	}
-	
-	public static LocalTime stringtoLocalTime(String orario){
-		
+
+	public static LocalTime stringtoLocalTime(String orario) {
+
 		String[] splitter = orario.split(":");
-		
-		int ore = Integer.parseInt(splitter[0]),
-				minuti = Integer.parseInt(splitter[1]);
-		
+
+		int ore = Integer.parseInt(splitter[0]), minuti = Integer.parseInt(splitter[1]);
+
 		return LocalTime.of(ore, minuti);
 	}
-	
+
 	class InserisciPresenza implements ActionListener {
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Presenza pres;
 			if (verificaCampi()) {
-				pres = new PresenzaLavorativa(i, 
-						(String) presenza.getValueAt(R_IDENT, 1),
-						(String) presenza.getValueAt(R_DESCR, 1), 
+				pres = new PresenzaLavorativa(i, (String) presenza.getValueAt(R_IDENT, 1),
+						(String) presenza.getValueAt(R_DESCR, 1),
 						stringtoLocalTime((String) presenza.getValueAt(R_INIZIO, 1)),
 						stringtoLocalTime((String) presenza.getValueAt(R_FINE, 1)),
 						stringtoLocalTime((String) presenza.getValueAt(R_PAUSA, 1)));
@@ -228,15 +233,16 @@ public class SetPresenza extends JFrame {
 					ElencoPresenze.aggiungiPresenza(pres);
 					GestionePresenze.aggiungiPresenzaAModel(pres);
 					ElencoPresenze.salvaElenco();
-					setVisible(false);	
-				} catch (ElementoGiaEsistente exc){
-					JOptionPane.showMessageDialog(null, "Esiste già una Presenza con l'identificativo" + pres.getIdentificativo());
+					setVisible(false);
+				} catch (ElementoGiaEsistente exc) {
+					JOptionPane.showMessageDialog(null,
+							"Esiste già una Presenza con l'identificativo" + pres.getIdentificativo());
 				}
-				
+
 			}
-			
+
 		}
-		
+
 	}
 
 	class ModificaPresenza implements ActionListener {
@@ -245,20 +251,19 @@ public class SetPresenza extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			Presenza pres;
 			if (verificaCampi()) {
-				pres = new PresenzaLavorativa(i, 
-						(String) presenza.getValueAt(R_IDENT, 1),
-						(String) presenza.getValueAt(R_DESCR, 1), 
+				pres = new PresenzaLavorativa(i, (String) presenza.getValueAt(R_IDENT, 1),
+						(String) presenza.getValueAt(R_DESCR, 1),
 						stringtoLocalTime((String) presenza.getValueAt(R_INIZIO, 1)),
 						stringtoLocalTime((String) presenza.getValueAt(R_FINE, 1)),
 						stringtoLocalTime((String) presenza.getValueAt(R_PAUSA, 1)));
-				if (ElencoPresenze.modificaPresenza(p, pres)){
+				if (ElencoPresenze.modificaPresenza(p, pres)) {
 					GestionePresenze.ModificaPresenzaAModel(pres, indiceLista);
 					ElencoPresenze.salvaElenco();
 					setVisible(false);
 				}
 			}
 		}
-		
+
 	}
-	
-}	
+
+}

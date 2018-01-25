@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import Eccezioni.ElementoGiaEsistente;
-import Eccezioni.ElementoNonTrovato;
-import Eccezioni.InserimentoNonCorretto;
-import Generici.Controllo;
-import Generici.Elenco;
+import eccezioni.ElementoGiaEsistente;
+import eccezioni.ElementoNonTrovato;
+import eccezioni.InserimentoNonCorretto;
+import generici.Controllo;
+import generici.Elenco;
 
 public class ElencoTelefonicoDipendenti extends Elenco implements Serializable {
 

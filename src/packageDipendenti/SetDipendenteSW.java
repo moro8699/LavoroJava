@@ -25,7 +25,7 @@ import javax.swing.table.TableColumn;
 import com.michaelbaranov.microba.calendar.DatePicker;
 import com.michaelbaranov.microba.calendar.DatePickerCellEditor;
 
-import Generici.Controllo;
+import generici.Controllo;
 import main.Principale;
 import packageImpianti.Impianti;
 import packageImpianti.Impianto;

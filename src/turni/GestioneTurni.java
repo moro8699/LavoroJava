@@ -1,4 +1,4 @@
-package Turni;
+package turni;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,29 +18,29 @@ public class GestioneTurni extends JFrame {
 	private JToolBar toolbar;
 	private JButton gestionePresenze;
 
-	public GestioneTurni(Impianto i){
-		
-		super ("Gestione Turni Impianto di " + i.toString());
-		
+	public GestioneTurni(Impianto i) {
+
+		super("Gestione Turni Impianto di " + i.toString());
+
 		getContentPane().setLayout(new BorderLayout());
-		
+
 		toolbar = new JToolBar();
 		toolbar.setFloatable(false);
 		gestionePresenze = new JButton("Gest. Presenze");
 		gestionePresenze.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new GestionePresenze(i);
 			}
 		});
 		toolbar.add(gestionePresenze);
-		
+
 		getContentPane().add(toolbar, BorderLayout.NORTH);
-		
+
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setSize(1024, 768);
-		setLocation ((int)(dim.getWidth()-this.getWidth())/2, (int)(dim.getHeight()-this.getHeight())/2);
+		setLocation((int) (dim.getWidth() - this.getWidth()) / 2, (int) (dim.getHeight() - this.getHeight()) / 2);
 		setVisible(true);
 	}
 }

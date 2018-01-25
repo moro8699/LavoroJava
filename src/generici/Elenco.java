@@ -1,4 +1,4 @@
-package Generici;
+package generici;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -6,13 +6,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import Eccezioni.ElementoGiaEsistente;
-import Eccezioni.ElementoNonTrovato;
+import eccezioni.ElementoGiaEsistente;
+import eccezioni.ElementoNonTrovato;
 
 /**
- * Astrae il Concetto di Lista Generica dove vengono aggiunti e rimossi elementi
- * La lista può essere salvata e caricata da un file.
- * L
+ * Astrae il Concetto di Lista Generica dove è possibile aggiungere/rimuovere elementi, 
+ * salvare e caricare la lista da un file.
+ * 
  * 
  * @author Fabio Morandi
  *

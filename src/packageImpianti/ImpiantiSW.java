@@ -17,15 +17,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Eccezioni.ElementoGiaEsistente;
-import Eccezioni.ElementoNonTrovato;
+import eccezioni.ElementoGiaEsistente;
+import eccezioni.ElementoNonTrovato;
 import main.Principale;
 import packageDipendenti.ListaDipendenti;
 
 public class ImpiantiSW extends JFrame {
 
 	private static final long serialVersionUID = 1982155242792968974L;
-	protected JButton aggiungiImpianto, rimuoviImpianto, apriImpianto;
+	protected JButton aggiungiImpianto, rimuoviImpianto;
 	protected JList<String> impianti;
 	private static DefaultListModel<String> modelImpianti;
 
@@ -54,10 +54,7 @@ public class ImpiantiSW extends JFrame {
 		rimuoviImpianto.addActionListener(new RimuoviImpianto());		
 		aggiungiRimuovi.add(rimuoviImpianto);			
 		centroEst.add(aggiungiRimuovi);
-		apriImpianto = new JButton("Apri Gestione Impianto");
-		apriImpianto.addActionListener(new ApriGestioneImpianto());
 		JPanel jPApriImpianto = new JPanel();
-		jPApriImpianto.add(apriImpianto);
 		centroEst.add(jPApriImpianto);
 		
 		centro.add(centroEst);		

@@ -1,41 +1,47 @@
-package Turni;
+package turni;
 
 import java.io.Serializable;
 import java.time.LocalTime;
 
 public class Assenza implements Serializable {
-	
+
 	private static final long serialVersionUID = -200309008393607238L;
 	private String identificativo = "";
 	private final LocalTime INIZIO = LocalTime.MIDNIGHT, FINE = LocalTime.MAX;
-	
+
 	public Assenza(String identificativo) {
-		this.identificativo = identificativo;	
+		this.identificativo = identificativo;
 	}
-	
-	public void setIdentifiicativo(String i){
+
+	public void setIdentifiicativo(String i) {
 		identificativo = i;
 	}
-	
-	public String getIdentificativo(){
+
+	public String getIdentificativo() {
 		return identificativo;
 	}
-	
+
 	public LocalTime getINIZIO() {
 		return INIZIO;
 	}
 
 	public LocalTime getFINE() {
 		return FINE;
-	}	
-	@Override
-	public boolean equals (Object obj){
-		if (obj == null) return false;
-		if (!(obj instanceof Assenza)) return false;  
-		Assenza a = (Assenza) obj;		
-		return (a.getIdentificativo().equals(this.identificativo));		
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Assenza))
+			return false;
+		Assenza a = (Assenza) obj;
+		return (a.getIdentificativo().equals(this.identificativo));
+	}
 
+	@Override
+	public String toString() {
+		return getIdentificativo();
+	}
 
 }

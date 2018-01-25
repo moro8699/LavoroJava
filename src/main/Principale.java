@@ -26,9 +26,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
-import Eccezioni.ElementoGiaEsistente;
-import Eccezioni.ElementoNonTrovato;
-import Generici.Controllo;
+import eccezioni.ElementoGiaEsistente;
+import eccezioni.ElementoNonTrovato;
+import generici.Controllo;
 import packageDipendenti.Dipendente;
 import packageDipendenti.ListaDipendenti;
 import packageDipendenti.SetDipendenteSW;
