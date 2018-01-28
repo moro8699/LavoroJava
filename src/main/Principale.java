@@ -211,23 +211,6 @@ public class Principale extends JFrame {
 			listaPersonale.addElement(dipendenteToVector(d));
 		}
 	}
-	/*
-	//Visualizza i Dati del Dipendente selezionato dalla Lista
-	class ViewDatiDipendente implements ListSelectionListener {
-
-	     @Override   
-		 public void valueChanged(ListSelectionEvent e) { 
-			 if ((modelDip.size() >0) && (listaD.getSelectedValue() != null)) {
-				 Dipendente d = modelToDipendente(listaD.getSelectedValue());
-				 Dipendente real = ListaDipendenti.confronta(d);
-				 nome.setText(real.getNome());
-				 cognome.setText(real.getCognome());
-				 matricola.setText(real.getMatricola());
-				 impianto.setText(real.labelImpianto());
-				 telefoni.setText(ElencoTelefonicoDipendenti.cercaTelefoni(real));
-			}
-	    }
-	}*/
 	
 	// rimuove un dipendente dalla Lista
 	public void rimuoviDipendente(String matricola) {
@@ -244,7 +227,7 @@ public class Principale extends JFrame {
 		dipendenteVector.addElement(d.getMatricola());
 		dipendenteVector.addElement(d.getCognome() + " " + d.getNome());
 		dipendenteVector.addElement(d.getImpiantoDiAppartenenza());
-		dipendenteVector.addElement("" + d.StatoDiSaluteToString());
+		dipendenteVector.addElement("" + d.getStatoDiSalute());
 		
 		return dipendenteVector;
 	}

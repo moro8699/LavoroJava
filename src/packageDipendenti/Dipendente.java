@@ -3,6 +3,8 @@ package packageDipendenti;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import Sanitario.Salute;
+
 /**
  *  Astrae il concetto di Dipendente 
  *  
@@ -10,16 +12,17 @@ import java.time.LocalDate;
 public class Dipendente implements Serializable {
 
 	private static final long serialVersionUID = -7500270499673162065L;
-	public static final short IDONEO = 0, IDONEO_PARZIALE = 1, INIDONEO = 2;
 	
 	private LocalDate dataCreazioneIstanza = null, dataAssunzione = null, dataDiNascita = null;
 	private String nome ="", cognome ="", matricola="", impiantoDiAppartenenza="";
-	private int statoDisalute = IDONEO;
+	
+	Salute statoDiSalute;
 	
 	public Dipendente(String nome, String cognome, String matricola){
 		setNome(nome);
 		setCognome(cognome);
 		this.matricola = matricola;
+		statoDiSalute = new Salute(this);
 		dataCreazioneIstanza = LocalDate.now();	
 	}
 	
@@ -50,18 +53,7 @@ public class Dipendente implements Serializable {
 	public LocalDate getDataCreazioneIstanza() {
 		return dataCreazioneIstanza;
 	}
-	public int getStatoDiSalute() {
-		return statoDisalute;
-	}
-	public void setDipendenteIdoneo() {
-		statoDisalute = IDONEO;
-	}
-	public void setDipendenteIdoneoParziale() {
-		statoDisalute = IDONEO_PARZIALE;
-	}
-	public void setDipendenteInidoneo() {
-		statoDisalute = INIDONEO;
-	}
+	
 	public LocalDate getDataDiNascita() {
 		return dataDiNascita;
 	}
@@ -69,12 +61,10 @@ public class Dipendente implements Serializable {
 		this.dataDiNascita = dataDiNascita;
 	}
 	
-	public String StatoDiSaluteToString () {
-		if (statoDisalute == IDONEO) return "Idoneo";
-		if (statoDisalute == IDONEO_PARZIALE) return "Idoneo Parziale";
-		if (statoDisalute == INIDONEO) return "Inidoneo";
-		return "";
+	public String getStatoDiSalute(){
+		return statoDiSalute.toString();
 	}
+	
 	public void setImpiantoDiAppartenenza(String impiantoDiAppartenenza) {
 		this.impiantoDiAppartenenza = impiantoDiAppartenenza;
 		
