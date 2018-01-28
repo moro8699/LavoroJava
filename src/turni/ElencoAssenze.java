@@ -3,6 +3,7 @@ package turni;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import eccezioni.ElementoGiaEsistente;
 import generici.Elenco;
 
 public class ElencoAssenze extends Elenco implements Serializable {
@@ -22,9 +23,24 @@ public class ElencoAssenze extends Elenco implements Serializable {
 	public static void caricaElencoAssenze() {
 		elencoAssenze = caricaLista(FILE_ELENCO_ASSENZE);
 	}
+	
+	public static Assenza getElementoA(int posizione){
+		return elencoAssenze.get(posizione);
+	}
+	
+	public static Assenza ricercaAssenzaDaIndentificativo (String identificativo){
+		for (int i =0; i< elencoAssenze.size(); i++){
+			if (getElementoA(i).equals(new Assenza(identificativo, ""))) return getElementoA(i);
+		}
+		return null;
+	}
 
 	public static void salvaElencoAssenze() {
 		salvaLista(FILE_ELENCO_ASSENZE, elencoAssenze);
+	}
+	
+	public static void aggiungiAssenza(Assenza a) throws ElementoGiaEsistente{
+		elencoAssenze = aggiungiElemento(a, elencoAssenze);
 	}
 
 	public static int getSize() {

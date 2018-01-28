@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalTime;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -18,12 +17,11 @@ import javax.swing.table.DefaultTableModel;
 
 import eccezioni.ElementoGiaEsistente;
 import generici.Controllo;
-import packageImpianti.Impianto;
 
 public class SetAssenza extends JFrame {
 
 	private static final long serialVersionUID = -6930394002674393457L;
-	private final static int R_IDENT = 1, R_DESCR = 2;
+	private final static int R_IDENT = 0, R_DESCR = 1;
 	private Vector<Vector<String>> dati;
 	private Vector<String> header, nomeRiga, valore;
 	private JTable assenza;
@@ -92,22 +90,22 @@ public class SetAssenza extends JFrame {
 		nomeRiga.add(R_IDENT, "Identificativo");
 		nomeRiga.add(R_DESCR, "Descizione");
 
-		nuovoRiposo();
+		nuovaAssenza();
 
 	}
 
-	private void nuovoRiposo() {
+	private void nuovaAssenza() {
 
 		valore = new Vector<String>();
 
 		valore.add(R_IDENT, "");
 		valore.add(R_DESCR, "");
 
-		caricaDatiPresenza();
+		caricaDati();
 
 	}
 
-	private void caricaDatiPresenza() {
+	private void caricaDati() {
 
 		dati = new Vector<Vector<String>>();
 
@@ -143,17 +141,17 @@ public class SetAssenza extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Riposo r;
+			Assenza a;
 			if (verificaCampi()) {
-				r = new Riposo((String) assenza.getValueAt(R_IDENT, 1), (String) assenza.getValueAt(R_DESCR, 1));
+				a = new Assenza((String) assenza.getValueAt(R_IDENT, 1), (String) assenza.getValueAt(R_DESCR, 1));
 				try {
-					ElencoPresenze.aggiungiPresenza(r);
-					GestioneRiposiAssenze.aggiungiRiposoAModel(r);
-					ElencoPresenze.salvaElenco();
+					ElencoAssenze.aggiungiAssenza(a);
+					GestioneAssenze.aggiungiAssenzaAModel(a);
+					ElencoAssenze.salvaElencoAssenze();
 					setVisible(false);
 				} catch (ElementoGiaEsistente exc) {
 					JOptionPane.showMessageDialog(null,
-							"Esiste già un elemento con l'identificativo" + r.getIdentificativo());
+							"Esiste già un elemento con l'identificativo " + a.toString());
 				}
 
 			}

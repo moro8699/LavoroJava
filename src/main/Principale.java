@@ -36,6 +36,7 @@ import packageImpianti.GestioneImpianto;
 import packageImpianti.Impianti;
 import packageImpianti.ImpiantiSW;
 import packageImpianti.Impianto;
+import turni.GestioneAssenze;
 
 public class Principale extends JFrame {
 
@@ -49,9 +50,9 @@ public class Principale extends JFrame {
 
 	private static JMenuBar barradeiMenu;
 	private JToolBar toolbarDip;
-	private JMenu file, modifica;
+	private JMenu file, inserimenti;
 	private static JMenu impianti;
-	private static JMenuItem gestisciImpianto;
+	private static JMenuItem gestioneImpianti, gestioneAssenze;
 	private JButton addDipendente, remDipendente, setDipendente;
 	private TitledBorder titleLista;
 	private static JTable tabellaPersonale;
@@ -65,12 +66,23 @@ public class Principale extends JFrame {
 		
 		barradeiMenu = new JMenuBar();
 		file = new JMenu("File");
-		modifica = new JMenu("Modifica");
+		inserimenti = new JMenu("Inserimenti");
 		impianti = new JMenu("Impianti");
 		inizializzaJMenuImpianti();
 		barradeiMenu.add(file);
-		barradeiMenu.add(modifica);
+		barradeiMenu.add(inserimenti);
 		barradeiMenu.add(impianti);
+		gestioneAssenze = new JMenuItem("Assenze dal Servizio");
+		inserimenti.add(gestioneAssenze);
+		
+		gestioneAssenze.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new GestioneAssenze();
+				
+			}
+		});
 		
 		setJMenuBar(barradeiMenu);
 
@@ -141,9 +153,9 @@ public class Principale extends JFrame {
 	
 	private static void inizializzaJMenuImpianti(){	
 		
-		gestisciImpianto = new JMenuItem("Gestione Impianti");
-		impianti.add(gestisciImpianto);
-		gestisciImpianto.addActionListener(new ActionListener() {
+		gestioneImpianti = new JMenuItem("Gestione Impianti");
+		impianti.add(gestioneImpianti);
+		gestioneImpianti.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {

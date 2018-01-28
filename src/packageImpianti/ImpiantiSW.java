@@ -74,7 +74,7 @@ public class ImpiantiSW extends JFrame {
 		return modelImpianti;
 	}
 	
-	public DefaultListModel<String> arrListaImp(){
+	private DefaultListModel<String> arrListaImp(){
 		
 		DefaultListModel<String> model = new DefaultListModel<>();
 		

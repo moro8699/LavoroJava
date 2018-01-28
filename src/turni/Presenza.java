@@ -3,7 +3,7 @@ package turni;
 import java.io.Serializable;
 import java.time.LocalTime;
 
-public abstract class Presenza implements Serializable {
+public abstract class Presenza extends Inserimento implements Serializable {
 
 	private static final long serialVersionUID = -1765844892878514071L;
 	private String identificativo = "", descrizione = "";
