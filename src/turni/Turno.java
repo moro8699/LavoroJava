@@ -13,19 +13,11 @@ public class Turno implements Serializable {
 	private int giornate = 0;
 	private ArrayList<Presenza> turno = null;
 
-	public Turno(String identificativo, Impianto impiantoDiAppartenenza, int giornate) {
+	public Turno (String identificativo, Impianto impiantoDiAppartenenza, int giornate) {
 
 		this.identificativo = identificativo;
 		this.impiantoDiAppartenenza = impiantoDiAppartenenza;
 		setGiornate(giornate);
-		turno = new ArrayList<Presenza>();
-
-	}
-
-	public Turno(String identificativo, Impianto impiantoDiAppartenenza) {
-
-		this.identificativo = identificativo;
-		this.impiantoDiAppartenenza = impiantoDiAppartenenza;
 		turno = new ArrayList<Presenza>();
 
 	}

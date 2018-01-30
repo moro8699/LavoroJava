@@ -3,7 +3,7 @@ package packageDipendenti;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-import Sanitario.Salute;
+import sanitario.Salute;
 
 /**
  *  Astrae il concetto di Dipendente 

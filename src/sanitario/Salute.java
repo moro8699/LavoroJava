@@ -1,4 +1,4 @@
-package Sanitario;
+package sanitario;
 
 import java.io.Serializable;
 
