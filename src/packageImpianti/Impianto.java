@@ -48,6 +48,7 @@ public class Impianto implements Serializable {
 	public void setRisorseNecessarie(int risorseNecessarie) {
 		this.risorseNecessarie = risorseNecessarie;
 	}
+	
 	public ArrayList<Dipendente> getRisorseImpiantoSelezionato() {
 		return impianto;
 	}

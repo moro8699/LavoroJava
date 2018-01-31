@@ -46,5 +46,18 @@ public class Trasferimento {
 	public void setAl(LocalDate al) {
 		this.al = al;
 	}
+	
+	public boolean equals(Object obj){
+		
+		if (obj == null) return false;
+		if (!(obj instanceof Trasferimento)) return false;  
+		Trasferimento t = (Trasferimento) obj;		
+		return 
+				t.getDipendente().equals(dipendente) &&
+				t.getImpianto().equals(destinazione) &&
+				t.getDal().equals(dal) &&
+				t.getAl().equals(al);
+		
+	}
 
 }

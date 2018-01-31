@@ -8,31 +8,31 @@ public class Salute implements Serializable{
 
 	private static final long serialVersionUID = -3435363010760330514L;
 	public final short IDONEO = 0, IDONEO_PARZIALE = 1, INIDONEO = 2;
-	private int statoDisalute;
+	private int statoDiSalute;
 	Dipendente d;
 	
 	public Salute(Dipendente d) {
 		this.d = d;
-		statoDisalute = IDONEO;	
+		statoDiSalute = IDONEO;	
 	}
 	
 	public int getStatoDiSalute() {
-		return statoDisalute;
+		return statoDiSalute;
 	}
 	public void setDipendenteIdoneo() {
-		statoDisalute = IDONEO;
+		statoDiSalute = IDONEO;
 	}
 	public void setDipendenteIdoneoParziale() {
-		statoDisalute = IDONEO_PARZIALE;
+		statoDiSalute = IDONEO_PARZIALE;
 	}
 	public void setDipendenteInidoneo() {
-		statoDisalute = INIDONEO;
+		statoDiSalute = INIDONEO;
 	}
 	
 	public String toString () {
-		if (statoDisalute == IDONEO) return "Idoneo";
-		if (statoDisalute == IDONEO_PARZIALE) return "Idoneo Parziale";
-		if (statoDisalute == INIDONEO) return "Inidoneo";
+		if (statoDiSalute == IDONEO) return "Idoneo";
+		if (statoDiSalute == IDONEO_PARZIALE) return "Idoneo Parziale";
+		if (statoDiSalute == INIDONEO) return "Inidoneo";
 		return "";
 	}
 

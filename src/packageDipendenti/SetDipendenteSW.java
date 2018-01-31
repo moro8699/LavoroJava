@@ -10,7 +10,9 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
@@ -238,21 +241,33 @@ public class SetDipendenteSW extends JFrame {
 	
 	class AssegnaImpianto extends JFrame {
 		
-		protected JComboBox<String> listaImpianti;
-		protected JButton ok;
-		protected Dipendente d;
+		
+		private JComboBox<String> listaImpianti;
+		private JButton ok;
+		private Dipendente d;
+		private DatePicker dal, al;
+		private JCheckBox chKAl;
 		private static final long serialVersionUID = -2149893864315749372L;
 		
 		public AssegnaImpianto(Dipendente d){
 			
 			listaImpianti = new JComboBox<String>(modelListaImpianti());
 			this.d = d;
+			
 			JPanel nord = new JPanel();
 			nord.add(new JLabel("SELEZIONE IMPIANTO"));
 			
-			JPanel centro = new JPanel();
-			centro.add(listaImpianti);
+			JPanel centro = new JPanel(), 
+					centroNord = new JPanel(), 
+					centroCentro = new JPanel();
+			centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
+			centroNord.add(listaImpianti);
+			dal = new DatePicker();
+			centroCentro.add(new JLabel("Dal:   "));
+			centroCentro.add(dal);
 			
+			centro.add(centroNord);
+			centro.add(centroCentro);
 			JPanel sud = new JPanel();
 			ok = new JButton("OK");
 			ok.addActionListener(new Assegna());
@@ -285,8 +300,10 @@ public class SetDipendenteSW extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				Impianto nuovoImpianto = Impianti.getImpiantoSelezionato(listaImpianti.getItemAt(listaImpianti.getSelectedIndex()));		
 				Impianto impiantoAttuale = d.getImpiantoDiAppartenenza()!= "" ? Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza()) : null;
+				
 				if (impiantoAttuale != null) impiantoAttuale.rimuoviDipendente(d);
 				nuovoImpianto.assegnaDipendente(d);
+				
 				model.setValueAt(nuovoImpianto.getNomeImpianto(), 0, IMPIANTO);
 				ListaDipendenti.salvaElencoDipendenti();
 				Impianti.salvaListaImpianti();
