@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
+import packageDipendenti.Trasferimento;
+
 public class Controllo {
 	
 	private Controllo(){}
@@ -64,6 +66,16 @@ public class Controllo {
 				monthStringToInteger(splitter[1]), 
 				Integer.parseInt(splitter[2])
 				);
+	}
+	
+	public static LocalDate DateToLocalDate(int year, int month, int dayOfMonth) {
+		return LocalDate.of(year, month, dayOfMonth);
+	}
+	
+	public static boolean verificaTrasferimento(Trasferimento t) {
+		if (t.getAl()== null) return true; 
+		if (t.getAl().isAfter(t.getDal())) return true;
+		return false;
 	}
 	
 	//Converte un Dato di tipo LocalDate in Date

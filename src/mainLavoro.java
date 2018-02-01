@@ -1,5 +1,6 @@
 import main.Principale;
 import packageDipendenti.ElencoTelefonicoDipendenti;
+import packageDipendenti.ElencoTrasferimenti;
 import packageDipendenti.ListaDipendenti;
 import packageImpianti.*;
 import turni.ElencoAssenze;
@@ -14,6 +15,7 @@ public class mainLavoro {
  		ElencoTelefonicoDipendenti.caricaElencoTelefonico();
  		ElencoPresenze.caricaElencoPresenze();
  		ElencoAssenze.caricaElencoAssenze();
+ 		ElencoTrasferimenti.caricaElencoTrasferimenti();
  		
  		new Principale();
 	}

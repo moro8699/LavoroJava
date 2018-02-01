@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -17,8 +18,8 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
-import packageDipendenti.Dipendente;
-import packageDipendenti.ListaDipendenti;
+import packageDipendenti.ElencoTrasferimenti;
+import packageDipendenti.Trasferimento;
 import turni.GestioneTurni;
 
 public class GestioneImpianto extends JFrame {
@@ -45,7 +46,6 @@ public class GestioneImpianto extends JFrame {
 		
 		impianto = i;
 		getContentPane().setLayout(new BorderLayout());
-		//getContentPane().setLayout(new GridLayout(2, 0));
 		
 		inizializzaTabellaPersonale();
 		
@@ -105,7 +105,30 @@ public class GestioneImpianto extends JFrame {
 	
 	public void inizializzaListaPersonale() {
 		
+		Iterator<Trasferimento>i = ElencoTrasferimenti.getElencoTrasferimenti().iterator();
+		
 		listaPersonale = new Vector<Vector<String>>();
+		
+		while(i.hasNext()) {
+			Trasferimento t = i.next();
+			if(t.getImpianto().equals(impianto)) {
+				if(t.getAl() == null || 
+						t.getAl().isAfter(LocalDate.now()) || 
+						t.getAl().isEqual(LocalDate.now())) {
+					
+					personale = new Vector<String>();
+					
+					personale.addElement(t.getDipendente().getMatricola());
+					personale.addElement(t.getDipendente().getCognome());
+					personale.addElement(t.getDipendente().getNome());
+					
+					listaPersonale.add(personale);
+					
+					personale = null;
+				}
+			}
+		}
+		/*listaPersonale = new Vector<Vector<String>>();
 		
 		Iterator<Dipendente> i = ListaDipendenti.getListaDipendenti().iterator();
 		while (i.hasNext()) {
@@ -123,7 +146,7 @@ public class GestioneImpianto extends JFrame {
 				personale = null;
 			}
 			
-		}
+		}*/
 		
 		
 	}

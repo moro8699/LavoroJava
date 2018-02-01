@@ -19,8 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
@@ -28,6 +28,8 @@ import javax.swing.table.TableColumn;
 import com.michaelbaranov.microba.calendar.DatePicker;
 import com.michaelbaranov.microba.calendar.DatePickerCellEditor;
 
+import eccezioni.ElementoGiaEsistente;
+import eccezioni.InserimentoNonCorretto;
 import generici.Controllo;
 import main.Principale;
 import packageImpianti.Impianti;
@@ -43,50 +45,22 @@ public class SetDipendenteSW extends JFrame {
 	protected JButton ok, cancel, assegnaImpianto, modRecapiti;
 	private static Dipendente d;
 	protected static JTable datiDipendente;
-	private DatePicker picker;
-	private SetDipendenteTableModel model;
-	Date dataNascitaDate, dataAssunzioneDate;
+	protected DatePicker picker;
+	protected SetDipendenteTableModel model;
+	private JTabbedPane tabbedPane;
+	protected Date dataNascitaDate, dataAssunzioneDate;
 	
 	public SetDipendenteSW (Dipendente d){
-		
+
 		SetDipendenteSW.d = d;
 		dataAssunzioneDate = Controllo.localDateToDate(d.getDataAssunzione());
 		dataNascitaDate = Controllo.localDateToDate(d.getDataDiNascita()); 
-		model = new SetDipendenteTableModel();
-		datiDipendente = new JTable(model);
-		setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(NASCITA), dataNascitaDate);
-		setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(ASSUNZ), dataAssunzioneDate);		
-		datiDipendente.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane scroll = new JScrollPane(datiDipendente);						
-		
 		rowAttuale = Principale.posizioneAttualeTable();
 		
-		JPanel centro = new JPanel();
-		JPanel nord = new JPanel();
-		JPanel sud = new JPanel();
-		
-		getContentPane().setLayout(new BorderLayout());
-		getContentPane().add(nord, BorderLayout.NORTH);
-		getContentPane().add(centro, BorderLayout.CENTER);
-		getContentPane().add(sud, BorderLayout.SOUTH);
-		
-		nord.add(new JLabel("DATI DIPENDENTE " + d.getMatricola()));
-		centro.setLayout(new BorderLayout());
-		centro.add(scroll, BorderLayout.CENTER);
-		
-		ok = new JButton("OK");
-		ok.addActionListener(new Ok(d));
-		cancel = new JButton("Cancel");
-		cancel.addActionListener(new Cancel());
-		modRecapiti = new JButton("Gestione Recapiti");
-		modRecapiti.addActionListener(new Recapiti());
-		assegnaImpianto = new JButton("Assegnazione Impianto");
-		assegnaImpianto.addActionListener(new ApriAssegnaImpianto());
-				
-		sud.add(ok);
-		sud.add(cancel);
-		sud.add(modRecapiti);
-		sud.add(assegnaImpianto);
+		tabbedPane = new JTabbedPane();		
+		tabbedPane.addTab("Dati Dipendente", new DatiDipendente());
+		tabbedPane.addTab("Trasferimenti", new DatiTrasferimenti());
+		add(tabbedPane);
 		
 		setSize(500,350);		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -154,7 +128,7 @@ public class SetDipendenteSW extends JFrame {
 			JOptionPane.showMessageDialog(null, e.toString());
 		}	
 	}
-	
+
 	public void inserisciDataDiNascita (Dipendente d, String data){
 		if (Controllo.verificaDataInserita(data)){
 			String[] dataSplit = data.split("-");
@@ -164,6 +138,60 @@ public class SetDipendenteSW extends JFrame {
 				JOptionPane.showMessageDialog(null, e.toString());
 			}
 			ListaDipendenti.salvaElencoDipendenti();
+		}
+		
+	}
+	
+	class DatiDipendente extends JPanel{
+
+		private static final long serialVersionUID = 1L;
+
+		public DatiDipendente() {
+			
+			model = new SetDipendenteTableModel();
+			datiDipendente = new JTable(model);
+			setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(NASCITA), dataNascitaDate);
+			setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(ASSUNZ), dataAssunzioneDate);		
+			datiDipendente.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			
+			JPanel centro = new JPanel();
+			JPanel nord = new JPanel();
+			JPanel sud = new JPanel();	
+			
+			setLayout(new BorderLayout());
+			add(nord, BorderLayout.NORTH);
+			add(centro, BorderLayout.CENTER);
+			add(sud, BorderLayout.SOUTH);
+			
+			nord.add(new JLabel("DATI DIPENDENTE " + d.getMatricola()));
+			
+			JScrollPane scroll = new JScrollPane(datiDipendente);	
+			centro.setLayout(new BorderLayout());
+			centro.add(scroll, BorderLayout.CENTER);
+			
+			ok = new JButton("OK");
+			ok.addActionListener(new Ok(d));
+			cancel = new JButton("Cancel");
+			cancel.addActionListener(new Cancel());
+			modRecapiti = new JButton("Gestione Recapiti");
+			modRecapiti.addActionListener(new Recapiti());
+			assegnaImpianto = new JButton("Assegnazione Impianto");
+			assegnaImpianto.addActionListener(new ApriAssegnaImpianto());
+					
+			sud.add(ok);
+			sud.add(cancel);
+			sud.add(modRecapiti);
+			sud.add(assegnaImpianto);
+			
+		}
+	}
+	
+	class DatiTrasferimenti extends JPanel{
+		
+		private static final long serialVersionUID = 1L;
+
+		public DatiTrasferimenti(){
+			
 		}
 		
 	}
@@ -253,21 +281,42 @@ public class SetDipendenteSW extends JFrame {
 			
 			listaImpianti = new JComboBox<String>(modelListaImpianti());
 			this.d = d;
+			chKAl = new JCheckBox(" Al ");
+			chKAl.setSelected(false);
 			
 			JPanel nord = new JPanel();
 			nord.add(new JLabel("SELEZIONE IMPIANTO"));
 			
 			JPanel centro = new JPanel(), 
 					centroNord = new JPanel(), 
-					centroCentro = new JPanel();
+					centroCentro = new JPanel(),
+					centroSud = new JPanel();
+			
 			centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
+			
 			centroNord.add(listaImpianti);
+			
 			dal = new DatePicker();
 			centroCentro.add(new JLabel("Dal:   "));
 			centroCentro.add(dal);
 			
+			al = new DatePicker();
+			al.setEnabled(false);
+			chKAl.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (chKAl.isSelected())al.setEnabled(true);
+					else al.setEnabled(false);
+				}
+			});
+			
+			centroSud.add(chKAl);
+			centroSud.add(al);
+			
 			centro.add(centroNord);
 			centro.add(centroCentro);
+			centro.add(centroSud);
 			JPanel sud = new JPanel();
 			ok = new JButton("OK");
 			ok.addActionListener(new Assegna());
@@ -295,11 +344,25 @@ public class SetDipendenteSW extends JFrame {
 		}
 		
 		class Assegna implements ActionListener {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				Trasferimento t = new Trasferimento(
+						d, 
+						Impianti.getImpiantoSelezionato(listaImpianti.getItemAt(listaImpianti.getSelectedIndex())), 
+						Controllo.DateToLocalDate(dal.getDate()));
+				
 				Impianto nuovoImpianto = Impianti.getImpiantoSelezionato(listaImpianti.getItemAt(listaImpianti.getSelectedIndex()));		
 				Impianto impiantoAttuale = d.getImpiantoDiAppartenenza()!= "" ? Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza()) : null;
+				
+				try {
+					ElencoTrasferimenti.AggiungiTrasferimento(t);
+				} catch (ElementoGiaEsistente exc) {
+					JOptionPane.showMessageDialog(null, exc.toString());
+				} catch (InserimentoNonCorretto exc) {
+					JOptionPane.showMessageDialog(null, "La data di Inizio deve inferiore a quella di fine");
+				}				
 				
 				if (impiantoAttuale != null) impiantoAttuale.rimuoviDipendente(d);
 				nuovoImpianto.assegnaDipendente(d);
@@ -312,9 +375,7 @@ public class SetDipendenteSW extends JFrame {
 			}
 		}
 	}
-	
-	
-	
+		
 	class Ok implements ActionListener{
 		
 		Dipendente dipendente;

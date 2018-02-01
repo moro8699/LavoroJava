@@ -1,11 +1,13 @@
 package packageDipendenti;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import packageImpianti.Impianto;
 
-public class Trasferimento {
+public class Trasferimento implements Serializable{
 	
+	private static final long serialVersionUID = -4136133844889882316L;
 	private Dipendente dipendente;
 	private Impianto destinazione;
 	private LocalDate dal, al;
