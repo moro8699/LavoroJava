@@ -23,7 +23,6 @@ public class Trasferimento implements Serializable{
 		this(dipendente, destinazione, dal, null);
 	}
 	
-	
 	public Dipendente getDipendente() {
 		return dipendente;
 	}

@@ -7,6 +7,9 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
+import packageDipendenti.Dipendente;
+import packageDipendenti.ElencoTrasferimenti;
+import packageDipendenti.ListaDipendenti;
 import packageDipendenti.Trasferimento;
 
 public class Controllo {
@@ -17,6 +20,23 @@ public class Controllo {
 	public static boolean verificaMatricolaDipendente(String matricola){
 		if (Pattern.matches("[0-9]{7}", matricola)) return true;
 		return false;
+	}
+	
+	public static void verificaImpiantoDiAppartenenza(){
+		for(int i =0; i< ListaDipendenti.listaDipendentiSize(); i++){
+			Dipendente d = ListaDipendenti.getDipendente(i);
+			
+		}
+	}
+	
+	private String cercaImpiantoDiAppartenenza(Dipendente d){
+		String impiantoDiAppartenenza ="";
+		for(int k =0; k< ElencoTrasferimenti.getSizeElenco(); k++){
+				Trasferimento t = ElencoTrasferimenti.getElemento(k);
+				if (t.getDipendente().equals(d))
+					if (t.getDal().isAfter(LocalDate.now())) continue;
+					if (t.getAl().isAfter(LocalDate.now()) || t.getAl() == null)
+			}
 	}
 	
 	//Controllo inserimento data nel tipo aaaa-mm-gg

@@ -9,6 +9,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -44,14 +45,16 @@ public class SetDipendenteSW extends JFrame {
 	protected static JLabel impianto;
 	protected JButton ok, cancel, assegnaImpianto, modRecapiti;
 	private static Dipendente d;
-	protected static JTable datiDipendente;
+	protected static JTable datiDipendente, datiTrasferimenti;
 	protected DatePicker picker;
-	protected SetDipendenteTableModel model;
+	protected DatiDipendenteTableModel model;
 	private JTabbedPane tabbedPane;
 	protected Date dataNascitaDate, dataAssunzioneDate;
 	
 	public SetDipendenteSW (Dipendente d){
-
+		
+		super("DATI DIPENDENTE " + d.getMatricola());
+		
 		SetDipendenteSW.d = d;
 		dataAssunzioneDate = Controllo.localDateToDate(d.getDataAssunzione());
 		dataNascitaDate = Controllo.localDateToDate(d.getDataDiNascita()); 
@@ -148,23 +151,19 @@ public class SetDipendenteSW extends JFrame {
 
 		public DatiDipendente() {
 			
-			model = new SetDipendenteTableModel();
+			model = new DatiDipendenteTableModel();
 			datiDipendente = new JTable(model);
 			setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(NASCITA), dataNascitaDate);
 			setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(ASSUNZ), dataAssunzioneDate);		
 			datiDipendente.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			
 			JPanel centro = new JPanel();
-			JPanel nord = new JPanel();
 			JPanel sud = new JPanel();	
 			
 			setLayout(new BorderLayout());
-			add(nord, BorderLayout.NORTH);
 			add(centro, BorderLayout.CENTER);
 			add(sud, BorderLayout.SOUTH);
-			
-			nord.add(new JLabel("DATI DIPENDENTE " + d.getMatricola()));
-			
+						
 			JScrollPane scroll = new JScrollPane(datiDipendente);	
 			centro.setLayout(new BorderLayout());
 			centro.add(scroll, BorderLayout.CENTER);
@@ -175,13 +174,10 @@ public class SetDipendenteSW extends JFrame {
 			cancel.addActionListener(new Cancel());
 			modRecapiti = new JButton("Gestione Recapiti");
 			modRecapiti.addActionListener(new Recapiti());
-			assegnaImpianto = new JButton("Assegnazione Impianto");
-			assegnaImpianto.addActionListener(new ApriAssegnaImpianto());
 					
 			sud.add(ok);
 			sud.add(cancel);
 			sud.add(modRecapiti);
-			sud.add(assegnaImpianto);
 			
 		}
 	}
@@ -192,11 +188,84 @@ public class SetDipendenteSW extends JFrame {
 
 		public DatiTrasferimenti(){
 			
+			datiTrasferimenti = new JTable(new DatiTrasferimentiTableModel());
+			JScrollPane scrollpane = new JScrollPane(datiTrasferimenti);
+			
+			setLayout(new BorderLayout());
+			
+			JPanel sud = new JPanel();
+			assegnaImpianto = new JButton("Assegnazione/Trasferimento Impianto ");
+			assegnaImpianto.addActionListener(new ApriAssegnaImpianto());
+			sud.add(assegnaImpianto);
+			
+			add(scrollpane, BorderLayout.CENTER);
+			add(sud, BorderLayout.SOUTH);
+
 		}
 		
 	}
 	
-	class SetDipendenteTableModel extends AbstractTableModel {
+	class DatiTrasferimentiTableModel extends AbstractTableModel{
+
+		private static final long serialVersionUID = 1L;
+
+		private Vector<String> header = caricaHeader();
+		private Vector<Vector<String>> datiTrasferimenti = caricaDatiTrasferimenti();
+		
+		@Override
+		public int getRowCount() {
+			return datiTrasferimenti.size();
+		}
+
+		@Override
+		public int getColumnCount() {
+			return header.size();
+		}
+		
+		@Override
+        public String getColumnName(int col) {
+            return header.elementAt(col);
+        }
+
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {			
+			return datiTrasferimenti.elementAt(rowIndex).elementAt(columnIndex);
+		}
+		
+		@Override
+        public boolean isCellEditable(int row, int col) {
+	        return false;
+        }
+		
+		private Vector<String> caricaHeader (){
+			Vector<String> header = new Vector<>();
+			header.addElement("Impinato");
+			header.addElement("Dal");
+			header.addElement("Al");
+			
+			return header;
+		}
+		private Vector<Vector<String>> caricaDatiTrasferimenti(){
+			Vector<Vector<String>> trasferimentiDipendente = new Vector<>();
+			Vector<String> trasferimento;
+			for(int i=0; i<ElencoTrasferimenti.getSizeElenco(); i++){
+				Trasferimento t = ElencoTrasferimenti.getElemento(i);
+				if(t.getDipendente().equals(d)){
+					trasferimento = new Vector<>();
+					trasferimento.addElement(t.getImpianto().toString());
+					trasferimento.addElement(t.getDal().toString());
+					if (t.getAl()!= null) trasferimento.addElement(t.getAl().toString()); else trasferimento.addElement("");
+					trasferimentiDipendente.add(trasferimento);
+				}
+
+			}
+			
+			return trasferimentiDipendente;
+		}
+		
+	}
+	
+	class DatiDipendenteTableModel extends AbstractTableModel {
        
 		private static final long serialVersionUID = -6720720544764467716L;
 		
@@ -361,7 +430,7 @@ public class SetDipendenteSW extends JFrame {
 				} catch (ElementoGiaEsistente exc) {
 					JOptionPane.showMessageDialog(null, exc.toString());
 				} catch (InserimentoNonCorretto exc) {
-					JOptionPane.showMessageDialog(null, "La data di Inizio deve inferiore a quella di fine");
+					JOptionPane.showMessageDialog(null, "La data di Inizio deve essere precedente a quella di fine");
 				}				
 				
 				if (impiantoAttuale != null) impiantoAttuale.rimuoviDipendente(d);

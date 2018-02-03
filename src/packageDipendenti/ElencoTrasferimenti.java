@@ -29,6 +29,14 @@ public class ElencoTrasferimenti extends Elenco implements Serializable {
 		salvaLista(FILE_ELENCO_TRASFERIMENTI, elencoTrasferimenti);
 	}
 	
+	public static int getSizeElenco(){
+		return elencoTrasferimenti.size();
+	}
+	
+	public static Trasferimento getElemento(int indice){
+		return elencoTrasferimenti.get(indice);
+	}
+	
 	private static void terminaTrasferimentoAttuale(Dipendente d, LocalDate termine) 
 			throws InserimentoNonCorretto{
 		
