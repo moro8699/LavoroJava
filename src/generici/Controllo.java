@@ -22,21 +22,21 @@ public class Controllo {
 		return false;
 	}
 	
-	public static void verificaImpiantoDiAppartenenza(){
+	public static void verificaImpiantiDiAppartenenza(){
 		for(int i =0; i< ListaDipendenti.listaDipendentiSize(); i++){
 			Dipendente d = ListaDipendenti.getDipendente(i);
-			
+			d.setImpiantoDiAppartenenza(cercaImpiantoDiAppartenenza(d));
 		}
 	}
 	
-	private String cercaImpiantoDiAppartenenza(Dipendente d){
-		String impiantoDiAppartenenza ="";
+	private static String cercaImpiantoDiAppartenenza(Dipendente d){
 		for(int k =0; k< ElencoTrasferimenti.getSizeElenco(); k++){
 				Trasferimento t = ElencoTrasferimenti.getElemento(k);
 				if (t.getDipendente().equals(d))
 					if (t.getDal().isAfter(LocalDate.now())) continue;
-					if (t.getAl().isAfter(LocalDate.now()) || t.getAl() == null)
+					if (t.getAl() == null || t.getAl().isAfter(LocalDate.now())) return t.getImpianto().toString();
 			}
+		return "";
 	}
 	
 	//Controllo inserimento data nel tipo aaaa-mm-gg

@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Vector;
@@ -24,6 +25,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import com.michaelbaranov.microba.calendar.DatePicker;
@@ -47,7 +49,8 @@ public class SetDipendenteSW extends JFrame {
 	private static Dipendente d;
 	protected static JTable datiDipendente, datiTrasferimenti;
 	protected DatePicker picker;
-	protected DatiDipendenteTableModel model;
+	protected DatiDipendenteTableModel modelDatiDipendente;
+	protected DatiTrasferimentiTableModel modelTrasferimenti;
 	private JTabbedPane tabbedPane;
 	protected Date dataNascitaDate, dataAssunzioneDate;
 	
@@ -151,8 +154,8 @@ public class SetDipendenteSW extends JFrame {
 
 		public DatiDipendente() {
 			
-			model = new DatiDipendenteTableModel();
-			datiDipendente = new JTable(model);
+			modelDatiDipendente = new DatiDipendenteTableModel();
+			datiDipendente = new JTable(modelDatiDipendente);
 			setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(NASCITA), dataNascitaDate);
 			setDataPickerColumn(datiDipendente, datiDipendente.getColumnModel().getColumn(ASSUNZ), dataAssunzioneDate);		
 			datiDipendente.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -205,31 +208,16 @@ public class SetDipendenteSW extends JFrame {
 		
 	}
 	
-	class DatiTrasferimentiTableModel extends AbstractTableModel{
+	class DatiTrasferimentiTableModel extends DefaultTableModel{
 
 		private static final long serialVersionUID = 1L;
+		
 
 		private Vector<String> header = caricaHeader();
 		private Vector<Vector<String>> datiTrasferimenti = caricaDatiTrasferimenti();
 		
-		@Override
-		public int getRowCount() {
-			return datiTrasferimenti.size();
-		}
-
-		@Override
-		public int getColumnCount() {
-			return header.size();
-		}
-		
-		@Override
-        public String getColumnName(int col) {
-            return header.elementAt(col);
-        }
-
-		@Override
-		public Object getValueAt(int rowIndex, int columnIndex) {			
-			return datiTrasferimenti.elementAt(rowIndex).elementAt(columnIndex);
+		public DatiTrasferimentiTableModel() {
+			super.setDataVector(datiTrasferimenti, header);
 		}
 		
 		@Override
@@ -289,8 +277,6 @@ public class SetDipendenteSW extends JFrame {
         public int getColumnCount() {
             return columnNames.length;
         }
- 
-
 
 		public int getRowCount() {
             return data.length;
@@ -436,13 +422,19 @@ public class SetDipendenteSW extends JFrame {
 				if (impiantoAttuale != null) impiantoAttuale.rimuoviDipendente(d);
 				nuovoImpianto.assegnaDipendente(d);
 				
-				model.setValueAt(nuovoImpianto.getNomeImpianto(), 0, IMPIANTO);
+				modelTrasferimenti.addRow(rowData);
+				modelDatiDipendente.setValueAt(nuovoImpianto.getNomeImpianto(), 0, IMPIANTO);
 				ListaDipendenti.salvaElencoDipendenti();
 				Impianti.salvaListaImpianti();
 				
 				setVisible(false);
 			}
 		}
+	}
+	
+	public ArrayList<String> TrasferimentoToVector (Trasferimento t){
+		ArrayList<String> trasferimento = new ArrayList<String>();
+		
 	}
 		
 	class Ok implements ActionListener{

@@ -1,3 +1,4 @@
+import generici.Controllo;
 import main.Principale;
 import packageDipendenti.ElencoTelefonicoDipendenti;
 import packageDipendenti.ElencoTrasferimenti;
@@ -16,6 +17,7 @@ public class mainLavoro {
  		ElencoPresenze.caricaElencoPresenze();
  		ElencoAssenze.caricaElencoAssenze();
  		ElencoTrasferimenti.caricaElencoTrasferimenti();
+ 		Controllo.verificaImpiantiDiAppartenenza();
  		
  		new Principale();
 	}
