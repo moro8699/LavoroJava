@@ -43,11 +43,11 @@ public class ElencoTrasferimenti extends Elenco implements Serializable {
 		LocalDate oggi = LocalDate.now();
 		for(int i=0; i< elencoTrasferimenti.size(); i++){
 			Trasferimento t = elencoTrasferimenti.get(i);
-			if(t.getDipendente().equals(d))
+			if(t.getDipendente().equals(d)){
 				if(t.getAl() == null || t.getAl().isEqual(oggi) || t.getAl().isAfter(oggi)) 
 					if(t.getDal().isAfter(termine)) throw new InserimentoNonCorretto();
 					t.setAl(termine);
-					
+			}
 		}
 	}
 	
@@ -60,5 +60,14 @@ public class ElencoTrasferimenti extends Elenco implements Serializable {
 			salvaLista(FILE_ELENCO_TRASFERIMENTI, elencoTrasferimenti);
 		}
 		else throw new InserimentoNonCorretto();
+	}
+	
+	public static void eliminaTrasferimentiDipendente (Dipendente d){
+		for(int i =0; i< elencoTrasferimenti.size(); i++){
+			Trasferimento t = elencoTrasferimenti.get(i);
+			if (t.getDipendente().equals(d)){
+				elencoTrasferimenti.remove(i);
+			}
+		}
 	}
 }

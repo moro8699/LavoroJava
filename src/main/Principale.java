@@ -199,7 +199,7 @@ public class Principale extends JFrame {
 		int inizio =0, fine = getModelloTable().getRowCount();
 		for(int i = inizio; i<fine; i++) {
 			Dipendente d = ListaDipendenti.cercaDipendente((String) getModelloTable().getValueAt(i, COLONNA_MATRICOLA));
-			getModelloTable().setValueAt(d.getImpiantoDiAppartenenza(), i, COLONNA_IMPIANTO);
+			getModelloTable().setValueAt(Controllo.cercaImpiantoDiAppartenenza(d), i, COLONNA_IMPIANTO);
 		}
 	}
 	

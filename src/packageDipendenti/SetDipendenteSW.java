@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Vector;
@@ -37,7 +36,6 @@ import generici.Controllo;
 import main.Principale;
 import packageImpianti.Impianti;
 import packageImpianti.Impianto;
-
 
 public class SetDipendenteSW extends JFrame {
 	
@@ -191,7 +189,8 @@ public class SetDipendenteSW extends JFrame {
 
 		public DatiTrasferimenti(){
 			
-			datiTrasferimenti = new JTable(new DatiTrasferimentiTableModel());
+			modelTrasferimenti = new DatiTrasferimentiTableModel();
+			datiTrasferimenti = new JTable(modelTrasferimenti);
 			JScrollPane scrollpane = new JScrollPane(datiTrasferimenti);
 			
 			setLayout(new BorderLayout());
@@ -269,7 +268,7 @@ public class SetDipendenteSW extends JFrame {
 		private Object[][] data = {
 				{d.getNome(), 
 					d.getCognome(),
-					d.getImpiantoDiAppartenenza(), 
+					Controllo.cercaImpiantoDiAppartenenza(d), 
 					dataNascitaDate,
 					dataAssunzioneDate,
 					ElencoTelefonicoDipendenti.cercaTelefoni(d)}};
@@ -331,14 +330,12 @@ public class SetDipendenteSW extends JFrame {
 		private DatePicker dal, al;
 		private JCheckBox chKAl;
 		private static final long serialVersionUID = -2149893864315749372L;
-		
+
 		public AssegnaImpianto(Dipendente d){
-			
 			listaImpianti = new JComboBox<String>(modelListaImpianti());
 			this.d = d;
 			chKAl = new JCheckBox(" Al ");
-			chKAl.setSelected(false);
-			
+
 			JPanel nord = new JPanel();
 			nord.add(new JLabel("SELEZIONE IMPIANTO"));
 			
@@ -355,14 +352,17 @@ public class SetDipendenteSW extends JFrame {
 			centroCentro.add(new JLabel("Dal:   "));
 			centroCentro.add(dal);
 			
+			chKAl.setSelected(false);
 			al = new DatePicker();
 			al.setEnabled(false);
-			chKAl.addActionListener(new ActionListener() {
-				
+			chKAl.addActionListener(new ActionListener() {	
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (chKAl.isSelected())al.setEnabled(true);
-					else al.setEnabled(false);
+					if (chKAl.isSelected()){
+						al.setEnabled(true);
+					} else {
+						al.setEnabled(false);
+					}
 				}
 			});
 			
@@ -373,8 +373,18 @@ public class SetDipendenteSW extends JFrame {
 			centro.add(centroCentro);
 			centro.add(centroSud);
 			JPanel sud = new JPanel();
-			ok = new JButton("OK");
-			ok.addActionListener(new Assegna());
+			
+			ok = new JButton("OK");			
+			ok.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					new Assegna(
+							Impianti.getImpiantoSelezionato(listaImpianti.getItemAt(listaImpianti.getSelectedIndex())),
+							Controllo.DateToLocalDate(dal.getDate()),
+							getAl());	
+				}
+			});
 			sud.add(ok);
 			
 			getContentPane().setLayout(new BorderLayout());
@@ -388,6 +398,11 @@ public class SetDipendenteSW extends JFrame {
 			setVisible(true);
 		}
 		
+		private LocalDate getAl(){
+			if (chKAl.isSelected()) return Controllo.DateToLocalDate(al.getDate());
+			return null;
+		}
+		
 		private String[] modelListaImpianti() {
 			
 			String[] lista = new String[Impianti.getSize()];
@@ -398,18 +413,11 @@ public class SetDipendenteSW extends JFrame {
 			return lista;
 		}
 		
-		class Assegna implements ActionListener {
+		class Assegna {
 			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				Trasferimento t = new Trasferimento(
-						d, 
-						Impianti.getImpiantoSelezionato(listaImpianti.getItemAt(listaImpianti.getSelectedIndex())), 
-						Controllo.DateToLocalDate(dal.getDate()));
-				
-				Impianto nuovoImpianto = Impianti.getImpiantoSelezionato(listaImpianti.getItemAt(listaImpianti.getSelectedIndex()));		
-				Impianto impiantoAttuale = d.getImpiantoDiAppartenenza()!= "" ? Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza()) : null;
+			public Assegna(Impianto i, LocalDate dal, LocalDate al){
+
+				Trasferimento t = new Trasferimento(d, i, dal, al);	
 				
 				try {
 					ElencoTrasferimenti.AggiungiTrasferimento(t);
@@ -417,23 +425,26 @@ public class SetDipendenteSW extends JFrame {
 					JOptionPane.showMessageDialog(null, exc.toString());
 				} catch (InserimentoNonCorretto exc) {
 					JOptionPane.showMessageDialog(null, "La data di Inizio deve essere precedente a quella di fine");
-				}				
+				}	
 				
-				if (impiantoAttuale != null) impiantoAttuale.rimuoviDipendente(d);
-				nuovoImpianto.assegnaDipendente(d);
-				
-				modelTrasferimenti.addRow(rowData);
-				modelDatiDipendente.setValueAt(nuovoImpianto.getNomeImpianto(), 0, IMPIANTO);
+				modelTrasferimenti.addRow(TrasferimentoToVector(t));
+				modelDatiDipendente.setValueAt(Controllo.cercaImpiantoDiAppartenenza(d) , 0, IMPIANTO);
 				ListaDipendenti.salvaElencoDipendenti();
-				Impianti.salvaListaImpianti();
-				
+				Principale.aggiornaImpiantiModel();
 				setVisible(false);
 			}
+	
 		}
 	}
 	
-	public ArrayList<String> TrasferimentoToVector (Trasferimento t){
-		ArrayList<String> trasferimento = new ArrayList<String>();
+	public Vector<String> TrasferimentoToVector (Trasferimento t){
+		Vector<String> trasf = new Vector<String>();
+		String al = t.getAl()==null ? "" : t.getAl().toString();
+		trasf.add(t.getImpianto().toString());
+		trasf.add(t.getDal().toString());
+		trasf.add(al);
+		
+		return trasf;
 		
 	}
 		
@@ -465,8 +476,6 @@ public class SetDipendenteSW extends JFrame {
 					if (dataNascita != null) inserisciDataDiNascita(dip, dataNascita);
 					Principale.getModelloTable().setValueAt
 						(cognome + " " + nome , rowAttuale, Principale.COLONNA_COGNOME_NOME);
-					Principale.getModelloTable().setValueAt
-						(dip.getImpiantoDiAppartenenza() , rowAttuale, Principale.COLONNA_IMPIANTO);
 				}
 			}
 			ListaDipendenti.salvaElencoDipendenti();

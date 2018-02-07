@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import eccezioni.ElementoGiaEsistente;
 import eccezioni.ElementoNonTrovato;
 import generici.Elenco;
-import packageImpianti.Impianti;
-import packageImpianti.Impianto;
 
 public class ListaDipendenti extends Elenco implements Serializable{
 	
@@ -65,8 +63,9 @@ public class ListaDipendenti extends Elenco implements Serializable{
 			throws ElementoNonTrovato{
 		
 		if (listaDipendenti.contains(d)){
-			Impianto impiantoDiAppartenenza = Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza());
-			if(impiantoDiAppartenenza != null) impiantoDiAppartenenza.rimuoviDipendente(d);
+			//Impianto impiantoDiAppartenenza = Impianti.getImpiantoSelezionato(d.getImpiantoDiAppartenenza());
+			//if(impiantoDiAppartenenza != null) impiantoDiAppartenenza.rimuoviDipendente(d);
+			ElencoTrasferimenti.eliminaTrasferimentiDipendente(d);
 			ElencoTelefonicoDipendenti.rimuoviNumeriDipendente(d);
 			rimuoviElemento(d, listaDipendenti);
 			salvaElencoDipendenti();
