@@ -31,6 +31,7 @@ import com.michaelbaranov.microba.calendar.DatePicker;
 import com.michaelbaranov.microba.calendar.DatePickerCellEditor;
 
 import eccezioni.ElementoGiaEsistente;
+import eccezioni.ErroreTrasferimento;
 import eccezioni.InserimentoNonCorretto;
 import generici.Controllo;
 import main.Principale;
@@ -43,7 +44,7 @@ public class SetDipendenteSW extends JFrame {
 	protected final static int NOME =0, COGNOME =1, IMPIANTO =2, NASCITA =3, ASSUNZ =4, RECAPITI =5;
 	private int rowAttuale = 0;
 	protected static JLabel impianto;
-	protected JButton ok, cancel, assegnaImpianto, modRecapiti;
+	protected JButton ok, cancel, applica, assegnaImpianto, modRecapiti;
 	private static Dipendente d;
 	protected static JTable datiDipendente, datiTrasferimenti;
 	protected DatePicker picker;
@@ -82,8 +83,7 @@ public class SetDipendenteSW extends JFrame {
 		picker.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(picker.getDate());//print the current date
-                
+                System.out.println(picker.getDate());//print the current date   
             }
         });
 	}
@@ -170,14 +170,22 @@ public class SetDipendenteSW extends JFrame {
 			centro.add(scroll, BorderLayout.CENTER);
 			
 			ok = new JButton("OK");
-			ok.addActionListener(new Ok(d));
+			ok.addActionListener(new Salva(d, true));
 			cancel = new JButton("Cancel");
-			cancel.addActionListener(new Cancel());
+			cancel.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					setVisible(false);
+				}
+			});
+			applica = new JButton("Applica");
+			applica.addActionListener(new Salva(d, false));
 			modRecapiti = new JButton("Gestione Recapiti");
 			modRecapiti.addActionListener(new Recapiti());
 					
 			sud.add(ok);
 			sud.add(cancel);
+			sud.add(applica);
 			sud.add(modRecapiti);
 			
 		}
@@ -316,7 +324,12 @@ public class SetDipendenteSW extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			new AssegnaImpianto(d);
+			try {
+				Controllo.verificaDataAssunzione(d);
+				new AssegnaImpianto(d);
+			} catch(ErroreTrasferimento exc) {
+				JOptionPane.showMessageDialog(null, exc.toString());
+			}
 		}
 		
 	}
@@ -382,7 +395,7 @@ public class SetDipendenteSW extends JFrame {
 					new Assegna(
 							Impianti.getImpiantoSelezionato(listaImpianti.getItemAt(listaImpianti.getSelectedIndex())),
 							Controllo.DateToLocalDate(dal.getDate()),
-							getAl());	
+							getAl());
 				}
 			});
 			sud.add(ok);
@@ -418,22 +431,24 @@ public class SetDipendenteSW extends JFrame {
 			public Assegna(Impianto i, LocalDate dal, LocalDate al){
 
 				Trasferimento t = new Trasferimento(d, i, dal, al);	
-				
+							
 				try {
 					ElencoTrasferimenti.AggiungiTrasferimento(t);
+					modelTrasferimenti.addRow(TrasferimentoToVector(t));
+					modelDatiDipendente.setValueAt(Controllo.cercaImpiantoDiAppartenenza(d) , 0, IMPIANTO);
+					ListaDipendenti.salvaElencoDipendenti();
+					Principale.aggiornaImpiantiModel();
+					setVisible(false);							
 				} catch (ElementoGiaEsistente exc) {
 					JOptionPane.showMessageDialog(null, exc.toString());
 				} catch (InserimentoNonCorretto exc) {
 					JOptionPane.showMessageDialog(null, "La data di Inizio deve essere precedente a quella di fine");
-				}	
+				} catch (ErroreTrasferimento exc) {
+					JOptionPane.showMessageDialog(null, exc.toString());
+				} 
 				
-				modelTrasferimenti.addRow(TrasferimentoToVector(t));
-				modelDatiDipendente.setValueAt(Controllo.cercaImpiantoDiAppartenenza(d) , 0, IMPIANTO);
-				ListaDipendenti.salvaElencoDipendenti();
-				Principale.aggiornaImpiantiModel();
-				setVisible(false);
 			}
-	
+			
 		}
 	}
 	
@@ -448,12 +463,14 @@ public class SetDipendenteSW extends JFrame {
 		
 	}
 		
-	class Ok implements ActionListener{
+	class Salva implements ActionListener{
 		
 		Dipendente dipendente;
+		boolean chiudiFinestra;
 		
-		public Ok(Dipendente dip) {
+		public Salva (Dipendente dip, boolean chiudiFinestra) {
 			dipendente = dip;
+			this.chiudiFinestra = chiudiFinestra;
 		}
 		
 		@Override
@@ -479,16 +496,7 @@ public class SetDipendenteSW extends JFrame {
 				}
 			}
 			ListaDipendenti.salvaElencoDipendenti();
-			setVisible(false);
-		}
-		
-	}
-	
-	class Cancel implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			setVisible(false);
+			if (chiudiFinestra) setVisible(false);
 		}
 		
 	}

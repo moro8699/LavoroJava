@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import eccezioni.ElementoGiaEsistente;
+import eccezioni.ErroreTrasferimento;
 import eccezioni.InserimentoNonCorretto;
 import generici.Controllo;
 import generici.Elenco;
@@ -37,24 +38,33 @@ public class ElencoTrasferimenti extends Elenco implements Serializable {
 		return elencoTrasferimenti.get(indice);
 	}
 	
-	private static void terminaTrasferimentoAttuale(Dipendente d, LocalDate termine) 
-			throws InserimentoNonCorretto{
+	private static void cercaConflitti(Trasferimento t) 
+			throws ErroreTrasferimento{
 		
-		LocalDate oggi = LocalDate.now();
 		for(int i=0; i< elencoTrasferimenti.size(); i++){
-			Trasferimento t = elencoTrasferimenti.get(i);
-			if(t.getDipendente().equals(d)){
-				if(t.getAl() == null || t.getAl().isEqual(oggi) || t.getAl().isAfter(oggi)) 
-					if(t.getDal().isAfter(termine)) throw new InserimentoNonCorretto();
-					t.setAl(termine);
+			Trasferimento tras = elencoTrasferimenti.get(i);
+			ErroreTrasferimento exc = new ErroreTrasferimento() {
+				private static final long serialVersionUID = -7313944217323401375L;
+				public String toString() {
+					return"Rilevato Conflitto con altro Trasferimento";
+				}
+			};
+			if(tras.getDipendente().equals(t.getDipendente())){
+				if(tras.getAl() == null) throw exc; 
+				if(!( 
+						(tras.getDal().isAfter(t.getDal()) && tras.getDal().isAfter(t.getAl())) ||
+						(tras.getAl().isBefore(t.getDal())) && tras.getAl().isBefore(t.getAl())))
+					
+					throw exc;
 			}
 		}
 	}
 	
 	public static void AggiungiTrasferimento(Trasferimento t) 
-			throws ElementoGiaEsistente, InserimentoNonCorretto {
+			throws ElementoGiaEsistente, InserimentoNonCorretto, ErroreTrasferimento {
 		
-		terminaTrasferimentoAttuale(t.getDipendente(), t.getDal().minusDays(1));
+		//terminaTrasferimentoAttuale(t.getDipendente(), t.getDal().minusDays(1));
+		cercaConflitti(t);
 		if(Controllo.verificaTrasferimento(t)) {
 			aggiungiElemento(t, elencoTrasferimenti);
 			salvaLista(FILE_ELENCO_TRASFERIMENTI, elencoTrasferimenti);

@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
+import eccezioni.ErroreTrasferimento;
 import packageDipendenti.Dipendente;
 import packageDipendenti.ElencoTrasferimenti;
 import packageDipendenti.ListaDipendenti;
@@ -95,11 +96,30 @@ public class Controllo {
 		return LocalDate.of(year, month, dayOfMonth);
 	}
 	
-	public static boolean verificaTrasferimento(Trasferimento t) {
-		if (t.getAl()== null) return true; 
+	public static boolean verificaTrasferimento(Trasferimento t) throws ErroreTrasferimento {
+		Dipendente d = t.getDipendente();
+		verificaDataAssunzione(d);
+		if (d.getDataAssunzione().isAfter(t.getDal())) throw new ErroreTrasferimento() {
+			private static final long serialVersionUID = -8873351620679996912L;
+			public String toString() {
+				return "Data di Inizio Trasferimento Antecedente la Data di Assunzione";
+			}
+		};
+		
+		if (t.getAl() == null) return true; 
 		if (t.getAl().isAfter(t.getDal())) return true;
 		return false;
 	}
+	
+	public static void verificaDataAssunzione(Dipendente d) throws ErroreTrasferimento {
+		if (d.getDataAssunzione() == null) throw new ErroreTrasferimento() {
+			private static final long serialVersionUID = -8375245448289519649L;
+			public String toString() {
+				return("Inserire la Data di Assunzione");
+			}
+		};
+	}
+	
 	
 	//Converte un Dato di tipo LocalDate in Date
 	public static Date localDateToDate(LocalDate data) {
