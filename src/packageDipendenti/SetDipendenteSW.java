@@ -5,8 +5,10 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Vector;
@@ -31,6 +33,7 @@ import com.michaelbaranov.microba.calendar.DatePicker;
 import com.michaelbaranov.microba.calendar.DatePickerCellEditor;
 
 import eccezioni.ElementoGiaEsistente;
+import eccezioni.ElementoNonTrovato;
 import eccezioni.ErroreTrasferimento;
 import eccezioni.InserimentoNonCorretto;
 import generici.Controllo;
@@ -42,9 +45,10 @@ public class SetDipendenteSW extends JFrame {
 	
 	private static final long serialVersionUID = -8722179695766788480L;
 	protected final static int NOME =0, COGNOME =1, IMPIANTO =2, NASCITA =3, ASSUNZ =4, RECAPITI =5;
+	private final static int DESTINAZIONE =0, DAL =1, AL = 2;
 	private int rowAttuale = 0;
 	protected static JLabel impianto;
-	protected JButton ok, cancel, applica, assegnaImpianto, modRecapiti;
+	protected JButton ok, cancel, applica, assegnaImpianto, rimuoviTrasferimento, modificaTrasferimento, modRecapiti;
 	private static Dipendente d;
 	protected static JTable datiDipendente, datiTrasferimenti;
 	protected DatePicker picker;
@@ -74,6 +78,10 @@ public class SetDipendenteSW extends JFrame {
 		
 	}
 	
+	public static void aggiornaRecapiti(){
+		datiDipendente.setValueAt(ElencoTelefonicoDipendenti.cercaTelefoni(d), 0, RECAPITI);
+	}
+		
 	private void setDataPickerColumn(JTable tabella, TableColumn colonnaDaSettare, Date valoreIniziale){
 		
 		if (valoreIniziale == null) picker = new DatePicker();
@@ -87,22 +95,8 @@ public class SetDipendenteSW extends JFrame {
             }
         });
 	}
-	
-	public String dataDiNascitaToString(Dipendente d) {
-		if (d.getDataDiNascita() == null) return "";
-		return d.getDataDiNascita().toString();
-	}
-	
-	public String dataAssunzioneToString(Dipendente d){
-		if (d.getDataAssunzione() == null) return "";
-		return d.getDataAssunzione().toString();
-	}
-	
-	public static void aggiornaRecapiti(){
-		datiDipendente.setValueAt(ElencoTelefonicoDipendenti.cercaTelefoni(d), 0, RECAPITI);
-	}
-	
-	public void inserisciDataAssunzione (Dipendente d, Date data){
+
+	private void inserisciDataAssunzione (Dipendente d, Date data){
 		
 		try {
 			inserisciDataAssunzione(d, Controllo.DateToLocalDate(data).toString());
@@ -111,7 +105,7 @@ public class SetDipendenteSW extends JFrame {
 		}	
 	}
 	
-	public void inserisciDataAssunzione (Dipendente d, String data){
+	private void inserisciDataAssunzione (Dipendente d, String data){
 		if (Controllo.verificaDataInserita(data)){
 			String[] dataSplit = data.split("-");
 			try {
@@ -124,7 +118,7 @@ public class SetDipendenteSW extends JFrame {
 		}
 	}
 	
-	public void inserisciDataDiNascita (Dipendente d, Date data){
+	private void inserisciDataDiNascita (Dipendente d, Date data){
 		
 		try {
 			inserisciDataDiNascita(d, Controllo.DateToLocalDate(data).toString());
@@ -133,7 +127,7 @@ public class SetDipendenteSW extends JFrame {
 		}	
 	}
 
-	public void inserisciDataDiNascita (Dipendente d, String data){
+	private void inserisciDataDiNascita (Dipendente d, String data){
 		if (Controllo.verificaDataInserita(data)){
 			String[] dataSplit = data.split("-");
 			try {
@@ -143,6 +137,17 @@ public class SetDipendenteSW extends JFrame {
 			}
 			ListaDipendenti.salvaElencoDipendenti();
 		}
+		
+	}
+	
+	private Vector<String> TrasferimentoToVector (Trasferimento t){
+		Vector<String> trasf = new Vector<String>();
+		String al = t.getAl() == LocalDate.MAX ? "" : t.getAl().toString();
+		trasf.add(t.getImpianto().toString());
+		trasf.add(t.getDal().toString());
+		trasf.add(al);
+		
+		return trasf;
 		
 	}
 	
@@ -181,7 +186,10 @@ public class SetDipendenteSW extends JFrame {
 			applica = new JButton("Applica");
 			applica.addActionListener(new Salva(d, false));
 			modRecapiti = new JButton("Gestione Recapiti");
-			modRecapiti.addActionListener(new Recapiti());
+			modRecapiti.addActionListener(new ActionListener() {				
+				@Override
+				public void actionPerformed(ActionEvent e) {new GestioneRecapiti(d);}
+			});
 					
 			sud.add(ok);
 			sud.add(cancel);
@@ -205,9 +213,45 @@ public class SetDipendenteSW extends JFrame {
 			
 			JPanel sud = new JPanel();
 			assegnaImpianto = new JButton("Assegnazione/Trasferimento Impianto ");
-			assegnaImpianto.addActionListener(new ApriAssegnaImpianto());
-			sud.add(assegnaImpianto);
+			assegnaImpianto.addActionListener(new ActionListener() {	
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						Controllo.verificaDataAssunzione(d);
+						new GestioneTrasferimento(d);
+					} catch(ErroreTrasferimento exc) {JOptionPane.showMessageDialog(null, exc.toString());}					
+				}
+			});
+			modificaTrasferimento = new JButton("Chiudi Trasferimento");
 			
+			rimuoviTrasferimento = new JButton("Rimuovi");
+			rimuoviTrasferimento.addActionListener(new ActionListener() {	
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Trasferimento t;
+					try{
+						t = new Trasferimento(
+								d, 
+								Impianti.getImpiantoSelezionato((String) modelTrasferimenti.getValueAt(datiTrasferimenti.getSelectedRow(),DESTINAZIONE)), 
+								LocalDate.parse((String) modelTrasferimenti.getValueAt(datiTrasferimenti.getSelectedRow(),DAL)),
+								LocalDate.parse((String) modelTrasferimenti.getValueAt(datiTrasferimenti.getSelectedRow(),AL)));
+						
+					} catch(DateTimeParseException exc){
+						t = new Trasferimento(
+								d, 
+								Impianti.getImpiantoSelezionato((String) modelTrasferimenti.getValueAt(datiTrasferimenti.getSelectedRow(),DESTINAZIONE)), 
+								LocalDate.parse((String) modelTrasferimenti.getValueAt(datiTrasferimenti.getSelectedRow(),DAL)));	
+					} 
+					
+					try{
+						ElencoTrasferimenti.eliminaTrasferimento(t);
+						modelTrasferimenti.removeRow(datiTrasferimenti.getSelectedRow());
+						ElencoTrasferimenti.salvaElencoTrasferimenti();
+					}catch (ElementoNonTrovato exc) {JOptionPane.showMessageDialog(null, exc.toString());}
+				}
+			});
+			sud.add(assegnaImpianto);
+			sud.add(rimuoviTrasferimento);
 			add(scrollpane, BorderLayout.CENTER);
 			add(sud, BorderLayout.SOUTH);
 
@@ -249,7 +293,9 @@ public class SetDipendenteSW extends JFrame {
 					trasferimento = new Vector<>();
 					trasferimento.addElement(t.getImpianto().toString());
 					trasferimento.addElement(t.getDal().toString());
-					if (t.getAl()!= null) trasferimento.addElement(t.getAl().toString()); else trasferimento.addElement("");
+					if (t.getAl().isEqual(LocalDate.MAX)) 
+						trasferimento.addElement("");
+					else trasferimento.addElement(t.getAl().toString()); 
 					trasferimentiDipendente.add(trasferimento);
 				}
 
@@ -319,22 +365,8 @@ public class SetDipendenteSW extends JFrame {
             fireTableCellUpdated(row, col);
         }
 	}
- 	
-	class ApriAssegnaImpianto implements ActionListener {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			try {
-				Controllo.verificaDataAssunzione(d);
-				new AssegnaImpianto(d);
-			} catch(ErroreTrasferimento exc) {
-				JOptionPane.showMessageDialog(null, exc.toString());
-			}
-		}
-		
-	}
-	
-	class AssegnaImpianto extends JFrame {
+	class GestioneTrasferimento extends JFrame {
 		
 		
 		private JComboBox<String> listaImpianti;
@@ -344,7 +376,7 @@ public class SetDipendenteSW extends JFrame {
 		private JCheckBox chKAl;
 		private static final long serialVersionUID = -2149893864315749372L;
 
-		public AssegnaImpianto(Dipendente d){
+		public GestioneTrasferimento(Dipendente d){
 			listaImpianti = new JComboBox<String>(modelListaImpianti());
 			this.d = d;
 			chKAl = new JCheckBox(" Al ");
@@ -392,7 +424,7 @@ public class SetDipendenteSW extends JFrame {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					new Assegna(
+					new Inserisci(
 							Impianti.getImpiantoSelezionato(listaImpianti.getItemAt(listaImpianti.getSelectedIndex())),
 							Controllo.DateToLocalDate(dal.getDate()),
 							getAl());
@@ -426,11 +458,11 @@ public class SetDipendenteSW extends JFrame {
 			return lista;
 		}
 		
-		class Assegna {
+		class Inserisci {
 			
-			public Assegna(Impianto i, LocalDate dal, LocalDate al){
-
+			public Inserisci(Impianto i, LocalDate dal, LocalDate al){
 				Trasferimento t = new Trasferimento(d, i, dal, al);	
+				if (al == null) t= new Trasferimento(d, i, dal);
 							
 				try {
 					ElencoTrasferimenti.AggiungiTrasferimento(t);
@@ -450,17 +482,6 @@ public class SetDipendenteSW extends JFrame {
 			}
 			
 		}
-	}
-	
-	public Vector<String> TrasferimentoToVector (Trasferimento t){
-		Vector<String> trasf = new Vector<String>();
-		String al = t.getAl()==null ? "" : t.getAl().toString();
-		trasf.add(t.getImpianto().toString());
-		trasf.add(t.getDal().toString());
-		trasf.add(al);
-		
-		return trasf;
-		
 	}
 		
 	class Salva implements ActionListener{
@@ -497,16 +518,6 @@ public class SetDipendenteSW extends JFrame {
 			}
 			ListaDipendenti.salvaElencoDipendenti();
 			if (chiudiFinestra) setVisible(false);
-		}
-		
-	}
-
-	class Recapiti implements ActionListener{
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			new GestioneRecapiti(d);
-		
 		}
 		
 	}

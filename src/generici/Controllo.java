@@ -73,7 +73,7 @@ public class Controllo {
 		
 	}
 	
-	//Controllo riga vuota
+	//Verifica che il Campo sia compilato
 	public static boolean verificaRigaVuota (String stringa){
 		if(Pattern.matches("[0-9a-zA-Z]", stringa)) return true;
 		return false;
@@ -106,7 +106,7 @@ public class Controllo {
 			}
 		};
 		
-		if (t.getAl() == null) return true; 
+		if (t.getAl() == LocalDate.MAX) return true; 
 		if (t.getAl().isAfter(t.getDal())) return true;
 		return false;
 	}
@@ -118,8 +118,7 @@ public class Controllo {
 				return("Inserire la Data di Assunzione");
 			}
 		};
-	}
-	
+	}	
 	
 	//Converte un Dato di tipo LocalDate in Date
 	public static Date localDateToDate(LocalDate data) {

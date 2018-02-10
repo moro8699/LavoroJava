@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import eccezioni.ElementoGiaEsistente;
+import eccezioni.ElementoNonTrovato;
 import eccezioni.ErroreTrasferimento;
 import eccezioni.InserimentoNonCorretto;
 import generici.Controllo;
@@ -45,12 +46,10 @@ public class ElencoTrasferimenti extends Elenco implements Serializable {
 			Trasferimento tras = elencoTrasferimenti.get(i);
 			ErroreTrasferimento exc = new ErroreTrasferimento() {
 				private static final long serialVersionUID = -7313944217323401375L;
-				public String toString() {
-					return"Rilevato Conflitto con altro Trasferimento";
-				}
+				public String toString() {return"Rilevato Conflitto con il seguente Trasferimento: \n" + tras.toString();}
 			};
 			if(tras.getDipendente().equals(t.getDipendente())){
-				if(tras.getAl() == null) throw exc; 
+				if( tras.getDal().isBefore(t.getDal()) && tras.getAl() == LocalDate.MAX) throw exc; 
 				if(!( 
 						(tras.getDal().isAfter(t.getDal()) && tras.getDal().isAfter(t.getAl())) ||
 						(tras.getAl().isBefore(t.getDal())) && tras.getAl().isBefore(t.getAl())))
@@ -60,17 +59,33 @@ public class ElencoTrasferimenti extends Elenco implements Serializable {
 		}
 	}
 	
+	public static void eliminaTrasferimento(Trasferimento t) 
+			throws ElementoNonTrovato{
+		elencoTrasferimenti = rimuoviElemento(t, elencoTrasferimenti);
+	}
+	
+	public static void chiudiTrasferimento(Trasferimento t, LocalDate dataTermine) 
+			throws ErroreTrasferimento{
+		if (t.getAl() != LocalDate.MAX) throw new ErroreTrasferimento(){
+			private static final long serialVersionUID = -1314849661027194488L;
+			public String toString(){
+				return "Trasferimento già Chiuso";
+			}
+		};
+		cercaConflitti(new Trasferimento(t.getDipendente(), t.getImpianto(), t.getDal(), dataTermine));
+		t.setAl(dataTermine);
+	}
+	
 	public static void AggiungiTrasferimento(Trasferimento t) 
 			throws ElementoGiaEsistente, InserimentoNonCorretto, ErroreTrasferimento {
 		
-		//terminaTrasferimentoAttuale(t.getDipendente(), t.getDal().minusDays(1));
 		cercaConflitti(t);
 		if(Controllo.verificaTrasferimento(t)) {
 			aggiungiElemento(t, elencoTrasferimenti);
 			salvaLista(FILE_ELENCO_TRASFERIMENTI, elencoTrasferimenti);
 		}
 		else throw new InserimentoNonCorretto();
-	}
+	}	
 	
 	public static void eliminaTrasferimentiDipendente (Dipendente d){
 		for(int i =0; i< elencoTrasferimenti.size(); i++){

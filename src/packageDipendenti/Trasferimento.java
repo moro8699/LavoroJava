@@ -20,7 +20,7 @@ public class Trasferimento implements Serializable{
 	}
 	
 	public Trasferimento(Dipendente dipendente, Impianto destinazione, LocalDate dal){
-		this(dipendente, destinazione, dal, null);
+		this(dipendente, destinazione, dal, LocalDate.MAX);
 	}
 	
 	public Dipendente getDipendente() {
@@ -56,9 +56,14 @@ public class Trasferimento implements Serializable{
 		return 
 				t.getDipendente().equals(dipendente) &&
 				t.getImpianto().equals(destinazione) &&
-				t.getDal().equals(dal) &&
-				t.getAl().equals(al);
+				t.getDal().isEqual(dal) &&
+				t.getAl().isEqual(al);
 		
+	}
+	
+	public String toString(){
+		if (getAl() == null) return getImpianto().toString() + " : Dal  " + getDal().toString();
+		return getImpianto().toString() + " : Dal " + getDal().toString() + " al " + getAl().toString();
 	}
 
 }
