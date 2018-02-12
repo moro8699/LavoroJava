@@ -71,7 +71,7 @@ public abstract class Elenco {
 			throw new ElementoGiaEsistente();
 		}
 		lista.add(el);
-		System.out.println("Elemento Aggiunto con successo");
+		System.out.println("Elemento " + el.getClass().getSimpleName() + " Aggiunto con Successo");
 		return lista;
 
 	}
@@ -81,7 +81,7 @@ public abstract class Elenco {
 			throws ElementoNonTrovato {
 			
 		if(lista.remove(el)){
-			System.out.println("Elemento rimosso con successo");
+			System.out.println("Elemento " + el.getClass().getSimpleName() + " Rimosso con Successo");
 			return lista;
 		}
 		System.out.println("Elemento non trovato");

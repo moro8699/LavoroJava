@@ -96,6 +96,11 @@ public class SetDipendenteSW extends JFrame {
         });
 	}
 
+	private void aggiornaImpiantoAppartenenza(Dipendente d){
+		modelDatiDipendente.setValueAt(Controllo.cercaImpiantoDiAppartenenza(d) , 0, IMPIANTO);
+		Principale.aggiornaImpiantiModel();
+	}
+	
 	private void inserisciDataAssunzione (Dipendente d, Date data){
 		
 		try {
@@ -151,6 +156,26 @@ public class SetDipendenteSW extends JFrame {
 		
 	}
 	
+	private Trasferimento trasferimentodamodel(int riga){
+		Trasferimento t;
+		
+		try {
+			t = new Trasferimento(
+					d, 
+					Impianti.getImpiantoSelezionato((String) modelTrasferimenti.getValueAt(riga,DESTINAZIONE)), 
+					LocalDate.parse((String) modelTrasferimenti.getValueAt(riga,DAL)),
+					LocalDate.parse((String) modelTrasferimenti.getValueAt(riga,AL)));
+			
+		} catch(DateTimeParseException exc){
+			t = new Trasferimento(
+					d, 
+					Impianti.getImpiantoSelezionato((String) modelTrasferimenti.getValueAt(riga,DESTINAZIONE)), 
+					LocalDate.parse((String) modelTrasferimenti.getValueAt(riga,DAL)));	
+		} 
+		
+		return t;
+	}
+
 	class DatiDipendente extends JPanel{
 
 		private static final long serialVersionUID = 1L;
@@ -212,7 +237,7 @@ public class SetDipendenteSW extends JFrame {
 			setLayout(new BorderLayout());
 			
 			JPanel sud = new JPanel();
-			assegnaImpianto = new JButton("Assegnazione/Trasferimento Impianto ");
+			assegnaImpianto = new JButton("Nuovo Trasferimento");
 			assegnaImpianto.addActionListener(new ActionListener() {	
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -222,42 +247,35 @@ public class SetDipendenteSW extends JFrame {
 					} catch(ErroreTrasferimento exc) {JOptionPane.showMessageDialog(null, exc.toString());}					
 				}
 			});
-			modificaTrasferimento = new JButton("Chiudi Trasferimento");
+			modificaTrasferimento = new JButton("Modifica Trasferimento");
+			modificaTrasferimento.addActionListener(new ActionListener() {	
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(datiTrasferimenti.getSelectedRow()>=0)
+						new GestioneTrasferimento(trasferimentodamodel(datiTrasferimenti.getSelectedRow()), datiTrasferimenti.getSelectedRow());
+				}
+			});
 			
 			rimuoviTrasferimento = new JButton("Rimuovi");
 			rimuoviTrasferimento.addActionListener(new ActionListener() {	
 				@Override
-				public void actionPerformed(ActionEvent e) {
-					Trasferimento t;
+				public void actionPerformed(ActionEvent e) {				
 					try{
-						t = new Trasferimento(
-								d, 
-								Impianti.getImpiantoSelezionato((String) modelTrasferimenti.getValueAt(datiTrasferimenti.getSelectedRow(),DESTINAZIONE)), 
-								LocalDate.parse((String) modelTrasferimenti.getValueAt(datiTrasferimenti.getSelectedRow(),DAL)),
-								LocalDate.parse((String) modelTrasferimenti.getValueAt(datiTrasferimenti.getSelectedRow(),AL)));
-						
-					} catch(DateTimeParseException exc){
-						t = new Trasferimento(
-								d, 
-								Impianti.getImpiantoSelezionato((String) modelTrasferimenti.getValueAt(datiTrasferimenti.getSelectedRow(),DESTINAZIONE)), 
-								LocalDate.parse((String) modelTrasferimenti.getValueAt(datiTrasferimenti.getSelectedRow(),DAL)));	
-					} 
-					
-					try{
-						ElencoTrasferimenti.eliminaTrasferimento(t);
+						ElencoTrasferimenti.eliminaTrasferimento(trasferimentodamodel(datiTrasferimenti.getSelectedRow()));
 						modelTrasferimenti.removeRow(datiTrasferimenti.getSelectedRow());
 						ElencoTrasferimenti.salvaElencoTrasferimenti();
 					}catch (ElementoNonTrovato exc) {JOptionPane.showMessageDialog(null, exc.toString());}
 				}
 			});
 			sud.add(assegnaImpianto);
+			sud.add(modificaTrasferimento);
 			sud.add(rimuoviTrasferimento);
 			add(scrollpane, BorderLayout.CENTER);
 			add(sud, BorderLayout.SOUTH);
 
 		}
 		
-	}
+	}	
 	
 	class DatiTrasferimentiTableModel extends DefaultTableModel{
 
@@ -443,9 +461,81 @@ public class SetDipendenteSW extends JFrame {
 			setVisible(true);
 		}
 		
+		public GestioneTrasferimento(Trasferimento t, int indiceLista){
+			
+			chKAl = new JCheckBox(" Al ");
+			JPanel nord = new JPanel();
+			nord.add(new JLabel("MODIFICA TRASFERIMENTO"));
+			
+			JPanel centro = new JPanel(), 
+					centroNord = new JPanel(), 
+					centroCentro = new JPanel(),
+					centroSud = new JPanel();
+			
+			centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
+			
+			centroNord.add(new JLabel("Impianto: "+ t.getImpianto().toString()));
+			
+			dal = new DatePicker(Controllo.localDateToDate(t.getDal()));
+			centroCentro.add(new JLabel("Dal:   "));
+			centroCentro.add(dal);
+			
+			if (t.getAl().isEqual(LocalDate.MAX)){
+				chKAl.setSelected(false);
+				al = new DatePicker();
+				al.setEnabled(false);
+			} else {
+				chKAl.setSelected(true);
+				al = new DatePicker(Controllo.localDateToDate(t.getAl()));
+				al.setEnabled(true);
+			}
+			chKAl.addActionListener(new ActionListener() {	
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (chKAl.isSelected()){
+						al.setEnabled(true);
+					} else {
+						al.setEnabled(false);
+					}
+				}
+			});
+			
+			centroSud.add(chKAl);
+			centroSud.add(al);
+			
+			centro.add(centroNord);
+			centro.add(centroCentro);
+			centro.add(centroSud);
+			JPanel sud = new JPanel();
+			
+			ok = new JButton("OK");			
+			ok.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+						
+					new Modifica(t,
+							new Trasferimento(t.getDipendente(), t.getImpianto(),
+							Controllo.DateToLocalDate(dal.getDate()),
+							getAl()), indiceLista);
+				}
+			});
+			sud.add(ok);
+			
+			getContentPane().setLayout(new BorderLayout());
+			getContentPane().add(nord, BorderLayout.NORTH);
+			getContentPane().add(centro, BorderLayout.CENTER);
+			getContentPane().add(sud, BorderLayout.SOUTH);
+			
+			setSize(350,200);		
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			setLocation ((int)(dim.getWidth()-this.getWidth())/2, (int)(dim.getHeight()-this.getHeight())/2);
+			setVisible(true);
+		}
+		
 		private LocalDate getAl(){
 			if (chKAl.isSelected()) return Controllo.DateToLocalDate(al.getDate());
-			return null;
+			return LocalDate.MAX;
 		}
 		
 		private String[] modelListaImpianti() {
@@ -458,18 +548,33 @@ public class SetDipendenteSW extends JFrame {
 			return lista;
 		}
 		
+		class Modifica {
+			public Modifica(Trasferimento daModificare, Trasferimento modificato, int indice) {
+				try {
+					ElencoTrasferimenti.modificaTrasferimento(daModificare, modificato);
+					String alModificato = (modificato.getAl().isEqual(LocalDate.MAX)) ? "" : modificato.getAl().toString();
+					modelTrasferimenti.setValueAt((String) modificato.getDal().toString(), indice, DAL);
+					modelTrasferimenti.setValueAt((String) alModificato, indice, AL);
+					aggiornaImpiantoAppartenenza(modificato.getDipendente());
+					ElencoTrasferimenti.salvaElencoTrasferimenti();
+					setVisible(false);
+				} catch (ErroreTrasferimento e) {
+					JOptionPane.showMessageDialog(null, e.toString());
+				}
+			}
+		}
+		
 		class Inserisci {
 			
 			public Inserisci(Impianto i, LocalDate dal, LocalDate al){
 				Trasferimento t = new Trasferimento(d, i, dal, al);	
-				if (al == null) t= new Trasferimento(d, i, dal);
+				if (al.isEqual(LocalDate.MAX)) t= new Trasferimento(d, i, dal);
 							
 				try {
 					ElencoTrasferimenti.AggiungiTrasferimento(t);
 					modelTrasferimenti.addRow(TrasferimentoToVector(t));
-					modelDatiDipendente.setValueAt(Controllo.cercaImpiantoDiAppartenenza(d) , 0, IMPIANTO);
+					aggiornaImpiantoAppartenenza(d);
 					ListaDipendenti.salvaElencoDipendenti();
-					Principale.aggiornaImpiantiModel();
 					setVisible(false);							
 				} catch (ElementoGiaEsistente exc) {
 					JOptionPane.showMessageDialog(null, exc.toString());

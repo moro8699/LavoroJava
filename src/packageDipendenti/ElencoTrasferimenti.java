@@ -48,15 +48,19 @@ public class ElencoTrasferimenti extends Elenco implements Serializable {
 				private static final long serialVersionUID = -7313944217323401375L;
 				public String toString() {return"Rilevato Conflitto con il seguente Trasferimento: \n" + tras.toString();}
 			};
-			if(tras.getDipendente().equals(t.getDipendente())){
-				if( tras.getDal().isBefore(t.getDal()) && tras.getAl() == LocalDate.MAX) throw exc; 
-				if(!( 
-						(tras.getDal().isAfter(t.getDal()) && tras.getDal().isAfter(t.getAl())) ||
-						(tras.getAl().isBefore(t.getDal())) && tras.getAl().isBefore(t.getAl())))
-					
-					throw exc;
-			}
+			if(conflittoDateTrasferimento(tras, t))	throw exc;
 		}
+	}
+	//restituisce true se c'è conflitto tra le date di inizo e fine dei due Trasferimenti
+	public static boolean conflittoDateTrasferimento (Trasferimento trasferimento, Trasferimento altroTrasferimento){
+		if (!(trasferimento.getDipendente().equals(altroTrasferimento.getDipendente()))) return false;
+		if( trasferimento.getDal().isBefore(altroTrasferimento.getDal()) && trasferimento.getAl() == LocalDate.MAX) return true; 
+		if(!( 
+				(trasferimento.getDal().isAfter(altroTrasferimento.getDal()) && trasferimento.getDal().isAfter(altroTrasferimento.getAl())) ||
+				(trasferimento.getAl().isBefore(altroTrasferimento.getDal())) && trasferimento.getAl().isBefore(altroTrasferimento.getAl())))
+			return true;
+		
+		return false;
 	}
 	
 	public static void eliminaTrasferimento(Trasferimento t) 
@@ -64,16 +68,22 @@ public class ElencoTrasferimenti extends Elenco implements Serializable {
 		elencoTrasferimenti = rimuoviElemento(t, elencoTrasferimenti);
 	}
 	
-	public static void chiudiTrasferimento(Trasferimento t, LocalDate dataTermine) 
-			throws ErroreTrasferimento{
-		if (t.getAl() != LocalDate.MAX) throw new ErroreTrasferimento(){
-			private static final long serialVersionUID = -1314849661027194488L;
-			public String toString(){
-				return "Trasferimento già Chiuso";
-			}
-		};
-		cercaConflitti(new Trasferimento(t.getDipendente(), t.getImpianto(), t.getDal(), dataTermine));
-		t.setAl(dataTermine);
+	public static void modificaTrasferimento(Trasferimento daModificare, Trasferimento modificato) 
+			throws ErroreTrasferimento {		
+		
+		int indice = -1;
+		for(int i =0; i< elencoTrasferimenti.size(); i++){
+			Trasferimento t = elencoTrasferimenti.get(i);
+			if(t.equals(daModificare)){indice = i; continue;}
+			if (conflittoDateTrasferimento(modificato, t)) throw new ErroreTrasferimento() {
+				private static final long serialVersionUID = -7313944217323401375L;
+				public String toString() {return"Rilevato Conflitto con il seguente Trasferimento: \n" + t.toString();}
+			};
+		}
+		if(indice>=0){
+			elencoTrasferimenti.get(indice).setDal(modificato.getDal());
+			elencoTrasferimenti.get(indice).setAl(modificato.getAl());
+		}
 	}
 	
 	public static void AggiungiTrasferimento(Trasferimento t) 
@@ -87,11 +97,11 @@ public class ElencoTrasferimenti extends Elenco implements Serializable {
 		else throw new InserimentoNonCorretto();
 	}	
 	
-	public static void eliminaTrasferimentiDipendente (Dipendente d){
+	public static void eliminaTrasferimentiDipendente (Dipendente d) throws ElementoNonTrovato{
 		for(int i =0; i< elencoTrasferimenti.size(); i++){
 			Trasferimento t = elencoTrasferimenti.get(i);
 			if (t.getDipendente().equals(d)){
-				elencoTrasferimenti.remove(i);
+				eliminaTrasferimento(t);
 			}
 		}
 	}

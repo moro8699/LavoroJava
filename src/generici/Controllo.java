@@ -34,9 +34,9 @@ public class Controllo {
 		for(int k =0; k< ElencoTrasferimenti.getSizeElenco(); k++){
 				Trasferimento t = ElencoTrasferimenti.getElemento(k);
 				if (t.getDipendente().equals(d)){
-					if (t.getDal().isAfter(LocalDate.now())) 
-						continue;
-					if (t.getAl() == null || t.getAl().isAfter(LocalDate.now())) 
+					if (t.getDal().isAfter(LocalDate.now())) continue;
+					if ((t.getDal().isBefore(LocalDate.now()) || t.getDal().isEqual(LocalDate.now())) &&
+							(t.getAl().isEqual(LocalDate.now()) || t.getAl().isAfter(LocalDate.now()))) 
 						return t.getImpianto().toString();
 				}
 			}
